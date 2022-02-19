@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import Link from "next/link";
 import Container from "../components/container";
 import ProjectComponent from "../components/project";
 
@@ -9,10 +10,12 @@ const Home: NextPage = () => {
     <Container activeId="about">
       <h2 className="text-3xl mb-4">{"Hi, I'm Tom"}</h2>
       <p className="leading-7">
-        {"I'm a developer by heart and love to create products. I spend a lot of time apart from my job to work on personal "}
-        <a className="link" href="/projects">
-          projects
-        </a>
+        {
+          "I'm a developer by heart and love to create products. I spend a lot of time apart from my job to work on personal "
+        }
+        <Link href="projects">
+          <a className="link">projects</a>
+        </Link>
         , many of which are already launched. I believe in self-improvement and
         always try to get better at my skills and learn new ones. {"I'm on "}
         <a className="link" href="https://github.com/tn1ck">
@@ -31,19 +34,23 @@ const Home: NextPage = () => {
         Work
       </h2>
       <div className="grid gap-4">
-      <div className="bg-white shadow-lg p-4 leading-7">
+        <div className="bg-white shadow-lg p-4 leading-7">
           <div className="mb-4 flex flex-row-reverse justify-between">
             <time>Mid 2021 - Now</time>
             <strong>VP Engineering @ re:cap</strong>
           </div>
-          {"We're building a funding marketplace for the subscription economy. With re:cap, companies can trade recurring revenue streams for upfront capital – no dilution, no debt, no hassle."}
+          {
+            "We're building a funding marketplace for the subscription economy. With re:cap, companies can trade recurring revenue streams for upfront capital – no dilution, no debt, no hassle."
+          }
         </div>
         <div className="bg-white shadow-lg p-4 leading-7">
           <div className="mb-4 flex flex-row-reverse justify-between">
             <time>Mid 2019 - Mid 2021</time>
             <strong>Software Engineer @ Google / YouTube</strong>
           </div>
-          {"Worked on bringing e-commerce features onto YouTube (ShopTube). Work included working on the whole YouTube stack and cross collaborating with several other teams."}
+          {
+            "Worked on bringing e-commerce features onto YouTube (ShopTube). Work included working on the whole YouTube stack and cross collaborating with several other teams."
+          }
         </div>
         <div className="bg-white shadow-lg p-4 leading-7">
           <div className="mb-4 flex flex-row-reverse justify-between">
@@ -126,9 +133,9 @@ const Home: NextPage = () => {
           </div>
           In university my focus revolved mostly around Machine Learning, AI,
           Robotics and Application Development. My thesis can be found under{" "}
-          <a className="link" href="/projects">
-            Projects
-          </a>
+          <Link href="/projects">
+            <a className="link">Projects</a>
+          </Link>
           .
         </div>
         <div className="bg-white shadow-lg p-4 leading-7">
