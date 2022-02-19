@@ -9,6 +9,25 @@ const Projects: NextPage = () => {
       <div className="grid gap-8">
         <ProjectComponent
           project={{
+            title: "mastersfordesigners.com",
+            year: "2019",
+            author: "Tom Nick & Stephanie Brenner",
+            video: "/projects/mastersfordesigners.mp4",
+            preview: "/projects/mastersfordesigners.png",
+          }}
+        >
+          <p>
+            <a className="link" href="https://mastersfordesigners.com">
+              mastersfordesigners.com
+            </a>{" "}
+            is a project by Stefanie Brenner and me which aims to simplify the finding
+            and choosing of design masters in germany. It has a very advanced
+            filtering feature, a bookmark functionality and a very nice
+            glossary.
+          </p>
+        </ProjectComponent>
+        <ProjectComponent
+          project={{
             title: "anagrams.io",
             year: "2017",
             author: "Tom Nick",
@@ -17,12 +36,16 @@ const Projects: NextPage = () => {
           }}
         >
           <p>
-            With <a className="link" href="https://anagrams.io">anagrams.io</a> we tried to
-            create the best anagram generator in the world. The project started
-            because we once searched for anagrams and all generators were not
-            sufficient enough. The biggest challenge here was to combine the
-            immense search space of an anagram generator with a nice and fast
-            UI. Using Mobx, webworkers and React this goal was achieved.
+            With{" "}
+            <a className="link" href="https://anagrams.io">
+              anagrams.io
+            </a>{" "}
+            we tried to create the best anagram generator in the world. The
+            project started because we once searched for anagrams and all
+            generators were not sufficient enough. The biggest challenge here
+            was to combine the immense search space of an anagram generator with
+            a nice and fast UI. Using Mobx, webworkers and React this goal was
+            achieved.
           </p>
         </ProjectComponent>
         <ProjectComponent
@@ -72,9 +95,12 @@ const Projects: NextPage = () => {
           }}
         >
           <p>
-            In <a  className="link" href="https://tn1ck.github.io/pixel-ocd/">Pixel OCD</a> you
-            have to find the <em>wrong</em> pixel. When clicked the canvas will
-            change to its color. It is surprisingly meditative.
+            In{" "}
+            <a className="link" href="https://tn1ck.github.io/pixel-ocd/">
+              Pixel OCD
+            </a>{" "}
+            you have to find the <em>wrong</em> pixel. When clicked the canvas
+            will change to its color. It is surprisingly meditative.
           </p>
         </ProjectComponent>
         <ProjectComponent
