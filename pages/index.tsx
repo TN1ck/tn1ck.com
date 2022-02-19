@@ -13,7 +13,7 @@ const Home: NextPage = () => {
         {
           "I'm a developer by heart and love to create products. I spend a lot of time apart from my job to work on personal "
         }
-        <Link href="projects">
+        <Link href="/projects">
           <a className="link">projects</a>
         </Link>
         , many of which are already launched. I believe in self-improvement and
