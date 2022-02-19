@@ -191,7 +191,7 @@ const Projects: NextPage = () => {
           is a game that was normally played in the classroom. It is a tough
           game, which you can actually loose when you found a loop. I computed
           the minimal solution once, read it{" "}
-          <a className="link" href="/blog/numbers-game-minimal-solution/">
+          <a className="link" href="https://tomnick.netlify.app/blog/numbers-game-minimal-solution/">
             here
           </a>
           .

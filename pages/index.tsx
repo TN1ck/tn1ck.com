@@ -1,9 +1,6 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import Container from "../components/container";
-import ProjectComponent from "../components/project";
-
-const Job = () => {};
 
 const Home: NextPage = () => {
   return (
