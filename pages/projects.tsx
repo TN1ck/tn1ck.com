@@ -7,6 +7,25 @@ const Projects: NextPage = () => {
     <Container activeId="projects">
       <h2 className="text-3xl mb-4">Personal Projects</h2>
       <div className="grid gap-8">
+      <ProjectComponent
+          project={{
+            title: "sudoku.tn1ck.com",
+            year: "2022",
+            author: "Tom Nick",
+            video: "/projects/sudoku.webm",
+            preview: "/projects/sudoku.png",
+          }}
+        >
+          <p>
+            <a className="link" href="https://sudoku.tn1ck.com">
+              sudoku.tn1ck.com
+            </a>{" "} is full featured sudoku app with a decently polished web UI. 
+            It has support for notes, hints, keyboard shortcuts, a timer that stops when the window loses focus, 
+            100 sudokus for each of the difficulties and first class citizen support for desktop (mobile or mouse) and mobile.
+            I started this project out of frustration for the available web options back then (2017), this has since then greatly improved.
+            The project is <a className="link" href="https://github.com/TN1ck/super-sudoku">open source on Github</a>.
+          </p>
+        </ProjectComponent>
         <ProjectComponent
           project={{
             title: "mastersfordesigners.com",
@@ -108,8 +127,8 @@ const Projects: NextPage = () => {
             title: "BrightnessChanger",
             year: "2015",
             author: "Tom Nick",
-            video: "/projects/aruco-print.mp4",
-            preview: "/projects/aruco-print.png",
+            video: "/projects/brightnesschanger.mp4",
+            preview: "/projects/brightnesschanger.png",
           }}
         >
           <p>
