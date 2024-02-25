@@ -10,8 +10,8 @@ const Home: NextPage = () => {
         {
           "I'm a developer by heart and love to create products. I spend a lot of time apart from my job to work on personal "
         }
-        <Link href="/projects">
-          <a className="link">projects</a>
+        <Link href="/projects" className="link">
+          projects
         </Link>
         , many of which are already launched. I believe in self-improvement and
         always try to get better at my skills and learn new ones. {"I'm on "}
@@ -130,8 +130,8 @@ const Home: NextPage = () => {
           </div>
           In university my focus revolved mostly around Machine Learning, AI,
           Robotics and Application Development. My thesis can be found under{" "}
-          <Link href="/projects">
-            <a className="link">Projects</a>
+          <Link href="/projects" className="link">
+            Projects
           </Link>
           .
         </div>

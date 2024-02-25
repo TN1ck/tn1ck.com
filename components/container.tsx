@@ -10,8 +10,7 @@ const LINKS = [
 const Navigation = ({activeId} : {activeId: string}) => {
   return (
     <nav className="mb-8">
-      {LINKS.map(link => <Link key={link.id} href={link.link}>
-        <a className={activeId === link.id ? "pt-4 pb-2 mr-4 border-b-4 border-black" : "pt-4 pb-2 mr-4"}>{link.title}</a>
+      {LINKS.map(link => <Link key={link.id} href={link.link} className={activeId === link.id ? "pt-4 pb-2 mr-4 border-b-4 border-black" : "pt-4 pb-2 mr-4"}>{link.title}
       </Link>)}
     </nav>
   );
