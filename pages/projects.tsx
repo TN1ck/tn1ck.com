@@ -1,13 +1,13 @@
-import type { NextPage } from "next";
-import Container from "../components/container";
-import ProjectComponent from "../components/project";
+import type { NextPage } from "next"
+import Container from "../components/container"
+import ProjectComponent from "../components/project"
 
 const Projects: NextPage = () => {
   return (
     <Container activeId="projects">
       <h2 className="text-3xl mb-4">Personal Projects</h2>
       <div className="grid gap-8">
-      <ProjectComponent
+        <ProjectComponent
           project={{
             title: "sudoku.tn1ck.com",
             year: "2022",
@@ -19,11 +19,18 @@ const Projects: NextPage = () => {
           <p>
             <a className="link" href="https://sudoku.tn1ck.com">
               sudoku.tn1ck.com
-            </a>{" "} is full featured sudoku app with a decently polished web UI. 
-            It has support for notes, hints, keyboard shortcuts, a timer that stops when the window loses focus, 
-            100 sudokus for each of the difficulties and first class citizen support for desktop (mobile or mouse) and mobile.
-            I started this project out of frustration for the available web options back then (2017), this has since then greatly improved.
-            The project is <a className="link" href="https://github.com/TN1ck/super-sudoku">open source on Github</a>.
+            </a>{" "}
+            is full featured sudoku app with a decently polished web UI. It has
+            support for notes, hints, keyboard shortcuts, a timer that stops
+            when the window loses focus, 100 sudokus for each of the
+            difficulties and first class citizen support for desktop (mobile or
+            mouse) and mobile. I started this project out of frustration for the
+            available web options back then (2017), this has since then greatly
+            improved. The project is{" "}
+            <a className="link" href="https://github.com/TN1ck/super-sudoku">
+              open source on Github
+            </a>
+            .
           </p>
         </ProjectComponent>
         <ProjectComponent
@@ -39,9 +46,9 @@ const Projects: NextPage = () => {
             <a className="link" href="https://mastersfordesigners.com">
               mastersfordesigners.com
             </a>{" "}
-            is a project by Stefanie Brenner and me which aims to simplify the finding
-            and choosing of design masters in germany. It has a very advanced
-            filtering feature, a bookmark functionality and a very nice
+            is a project by Stefanie Brenner and me which aims to simplify the
+            finding and choosing of design masters in germany. It has a very
+            advanced filtering feature, a bookmark functionality and a very nice
             glossary.
           </p>
         </ProjectComponent>
@@ -210,7 +217,10 @@ const Projects: NextPage = () => {
           is a game that was normally played in the classroom. It is a tough
           game, which you can actually loose when you found a loop. I computed
           the minimal solution once, read it{" "}
-          <a className="link" href="https://tomnick.netlify.app/blog/numbers-game-minimal-solution/">
+          <a
+            className="link"
+            href="https://tomnick.netlify.app/blog/numbers-game-minimal-solution/"
+          >
             here
           </a>
           .
@@ -237,7 +247,7 @@ const Projects: NextPage = () => {
         </ProjectComponent>
       </div>
     </Container>
-  );
-};
+  )
+}
 
-export default Projects;
+export default Projects

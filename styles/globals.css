@@ -1,6 +1,6 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
 
 body {
   @apply bg-gray-100 p-4;
@@ -37,7 +37,7 @@ main {
   transition: all 0.1s ease-in-out;
   position: absolute;
   display: block;
-  content: '';
+  content: "";
   height: 4px;
   top: 21px;
   @apply bg-yellow-300;

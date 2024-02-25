@@ -1,6 +1,6 @@
-import type { NextPage } from "next";
-import Link from "next/link";
-import Container from "../components/container";
+import type { NextPage } from "next"
+import Link from "next/link"
+import Container from "../components/container"
 
 const Home: NextPage = () => {
   return (
@@ -143,7 +143,7 @@ const Home: NextPage = () => {
         </div>
       </div>
     </Container>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
