@@ -5,6 +5,7 @@ import React from "react"
 const LINKS = [
   { title: "About", id: "about", link: "/" },
   { title: "Projects", id: "projects", link: "/projects" },
+  { title: "Blog", id: "blog", link: "/blog" },
 ]
 
 const Navigation = ({ activeId }: { activeId: string }) => {

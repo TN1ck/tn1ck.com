@@ -1,9 +1,12 @@
+@import 'highlight.js/styles/github-dark.css';
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  @apply bg-gray-100 p-4;
+  @apply bg-gray-100 p-4 leading-7;
 }
 
 main {
@@ -42,4 +45,12 @@ main {
   top: 21px;
   @apply bg-yellow-300;
   width: 100%;
+}
+
+ul, ol {
+  @apply list-outside list-disc pl-4;
+}
+
+address {
+  font-style: normal;
 }
