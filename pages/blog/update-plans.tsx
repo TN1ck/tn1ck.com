@@ -252,15 +252,16 @@ pepper,100
 const Home: NextPage = () => {
   return (
     <Container activeId="blog">
-      <h2 className="text-3xl mb-4">
-        {"Safe guarding changes using update plans"}
-      </h2>
+      <h1 className="text-2xl mb-4">
+        {"Safe guarding database changes using update plans"}
+      </h1>
       <div className="flex gap-1">
         <address>
           By{" "}
           <a
             className="link"
             rel="author"
+            target="_blank"
             href="https://www.linkedin.com/in/tom-nick/"
           >
             Tom Nick
@@ -275,9 +276,13 @@ const Home: NextPage = () => {
         At the company I’m currently working at, we have a lot of business
         critical manual data imports e.g. a customer provided CSV file that we
         want to import into our database and that affects business operations. A
-        great way to improve the safety of these changes is to use update plans.
+        simple pattern I came to love to make this process fast & safe are
+        update plans.
       </p>
       <h3 className="text-xl mt-8">What are update plans?</h3>
+      <p className="my-4">
+        Update plans are a way to preview changes before they are applied.
+      </p>
       <p className="my-4">
         If you know terraform, you already know update plans. Terraform is a
         tool that is used to manage infrastructure using a declarative
@@ -308,14 +313,32 @@ const Home: NextPage = () => {
         current state to the desired one and allow the user to only act on that
         plan. This way, the developer can verify that the changes look good and
         would immediately catch if their changes have more effects than wanted.
-        (For terraform this not perfect sadly, there are often “noise” changes
-        due to e.g. AWS api changes etc.).
+        <a href="#footnotes">
+          <sup>1</sup>
+        </a>
       </p>
+      <p>Some more examples:</p>
+      <ul className="ml-4 my-4">
+        <li>
+          Checkout pages are basically an update plan - they show you what
+          you'll buy, the amount of money to be deducted, where to send it etc.
+          One can read through all this before hitting the "buy" (or rather
+          apply) button.
+        </li>
+        <li>
+          A git diff is an update plan - it shows you the changes you are about
+          to commit.
+        </li>
+        <li>
+          A file deletion dialog is an update plan - it shows you often how many
+          files will be deleted and asks you to confirm.
+        </li>
+      </ul>
       <h3 className="text-xl mt-8">Update plans for database changes</h3>
       <p className="my-4">
         Not every update is as important as updating your infrastructure and
         needs an explicit plan & apply step. But the pattern to split important
-        changes in an plan & apply step is useful not only in infrastracture
+        changes in an plan & apply step is useful not only in infrastructure
         management, but in all cases where one can preview a the final changes
         will look like. Database updates fit this very well and I will show you
         how this can look like.
@@ -326,10 +349,16 @@ const Home: NextPage = () => {
         controlled by a centralized server which gets the prices from a
         database. The prices are updated quite often and it is still a manual
         process by providing a CSV file with two columns: product_id,price.
-        Let’s model this update with an update plan. First we define our product
-        data model, simple ID & price combination, before people scream that one
-        should never use a float for a monetary value, we use an int (normally
-        you’d want to use a decimal).
+        Let’s model this update with an update plan. I'll use go in the
+        following example as its easy to read for anyone and has static typing.
+      </p>
+      <p className="my-4">
+        First we define our product data model a simple ID & price combination,
+        before people scream that one should never use a float for a monetary
+        value, we use an int that represents "money" in cents.
+        <a href="#footnotes">
+          <sup>2</sup>
+        </a>
       </p>
       <CodeBlock language="go">
         {`
@@ -377,9 +406,9 @@ type ProductUpdatePlan struct {
 `}
       </CodeBlock>
       <p className="my-4">
-        The create plan then can look as follows. The cool thing here is that
-        it’s a pure function, it has no side effects and doesn’t even return an
-        error. It’s very easy to test this.
+        The CreatePlan function then can look as follows. The cool thing here is
+        that it’s a pure function, it has no side effects and doesn’t even
+        return an error. It’s very easy to test this.
       </p>
       <CodeBlock language="go">
         {`
@@ -493,7 +522,50 @@ func UpdateProducts(repo repo, csv string, preview bool) (ProductUpdatePlan, err
         <StoreExample />
       </div>
       <h3 className="text-xl mt-8">
-        Why do normal databases not implement this?
+        When should one use update plans for database updates
+      </h3>
+      <p className="my-4">
+        This pattern does not make sense for most data updates, my heuristic
+        would be to use this pattern when the following is true:
+        <ul className="ml-4 my-4">
+          <li>
+            You're updating multiple rows and the result of the result hard to
+            grasp.
+          </li>
+          <li>The updates matter and and it's not trivial to revert them.</li>
+          <li>
+            It would help the user be more confident and be faster in checking
+            that what they are about to do is correct, e.g. wouldn't it be nice
+            if email clients would tell you how many people you are about to
+            send an email too if you are sending to a group?
+          </li>
+        </ul>
+      </p>
+      <h3 className="text-xl mt-8">Snapshots & undo</h3>
+      <p className="my-4">
+        Update plans do not prevent a faulty update from being applied, so it is
+        important as well, that there is an undo. Sometimes this is not
+        completely possible - e.g. when Terraform deleted your production
+        database, you can't just "undo" that
+        <a href="#footnotes">
+          <sup>3</sup>
+        </a>{" "}
+        . But in many cases, it is possible to have a snapshot of the database
+        before the update and then revert to that snapshot if the update was
+        faulty.
+      </p>
+      <p className="my-4">
+        Some update plans can actually be used to implement this feature e.g.
+        git commits are exactly that. Git commits are update plans, that you can
+        freely undo and redo.
+        <a href="#footnotes">
+          <sup>4</sup>
+        </a>{" "}
+        This works only so long as <i>all</i> changes to the system are made
+        through the update plan, so for most systems this is not a feasible.
+      </p>
+      <h3 className="text-xl mt-8">
+        Why is this not a database feature already?
       </h3>
       <p className="my-4">
         I really would like this to be a first class citizen in databases as
@@ -506,6 +578,51 @@ func UpdateProducts(repo repo, csv string, preview bool) (ProductUpdatePlan, err
         databases to know why this is not a thing. I’d love to hear from someone
         who knows more.
       </p>
+      <h3 id="footnotes" className="text-xl mt-16">
+        Footnotes
+      </h3>
+      <ol className="ml-4">
+        <li>
+          For terraform this not perfect sadly, there are often “noise” changes
+          due to e.g. aws API changes etc. that actually don't change anything.
+          And this is actually a difficult part of writing update plans - to
+          correctly asses an "update" and a "no change".
+        </li>
+        <li>
+          <p>
+            And you should never, I'll haunt you personally. Floats are not
+            precise enough for monetary values or anything really where
+            precision is important. I find that Representing money as fraction
+            of a cent is a decent way (e.g. stripes API does this), normally I
+            use a decimal type, those are sadly not built into programming
+            languages, but there are libraries e.g. in Go there is the{" "}
+            <a
+              className="link"
+              rel="nofollow"
+              target="_blank"
+              href="https://github.com/shopspring/decimal"
+            >
+              github.com/shopspring/decimal
+            </a>{" "}
+            package, JavaScript has the{" "}
+            <a className="link" href="https://github.com/MikeMcl/big.js">
+              big.js
+            </a>{" "}
+            package.
+          </p>
+        </li>
+        <li>
+          If you manage your aws database using terraform, please make sure you
+          have "skip_final_snapshot" set to false as deleting a database also
+          deletes the backups.
+        </li>
+        <li>
+          Gits UX is just a bit lacking as while it is easy enough to undo a
+          commit, it becomes much harder to undo e.g. a rebase. Git reflog
+          exists, but it's not a very user friendly interface. Imgagine git just
+          had an "undo" command.
+        </li>
+      </ol>
     </Container>
   )
 }
