@@ -252,8 +252,8 @@ pepper,100
 const Home: NextPage = () => {
   return (
     <Container activeId="blog">
-      <h1 className="text-2xl mb-4">
-        {"Safe guarding database changes using update plans"}
+      <h1 className="text-3xl mb-4">
+        Safeguarding database changes <br /> using update plans
       </h1>
       <div className="flex gap-1">
         <address>
@@ -273,12 +273,12 @@ const Home: NextPage = () => {
         </time>
       </div>
       <p className="my-4">
-        At the company I’m currently working at aka{" "}
+        At the company I’m currently working at, aka{" "}
         <a className="link" href="https://re-cap.com">
           re-cap
         </a>
-        , we have some manual data imports that are business critical e.g. a
-        customer provided CSV file that we want to import into our database and
+        , we have some manual data imports that are business-critical, e.g., a
+        customer-provided CSV file that we want to import into our database and
         that affects business operations. A simple pattern I came to love to
         make this process fast & safe are update plans.
       </p>
@@ -287,22 +287,22 @@ const Home: NextPage = () => {
         Update plans are a way to preview changes before they are applied.
       </p>
       <p className="my-4">
-        If you know terraform, you already know update plans. Terraform is a
+        If you know Terraform, you already know update plans. Terraform is a
         tool that is used to manage infrastructure using a declarative
         programming language. Changing infrastructure is extremely delicate,
-        removing one line of code and the production server could be deleted. To
-        safeguard changing this, an infrastructure update is typically done like
-        this:
+        removing one line of code, and the production server could be deleted.
+        To safeguard changing this, an infrastructure update is typically done
+        like this:
       </p>
       <ol className="my-4 ml-4">
         <li>
-          The developer changes the infrastructure code as they desire, e.g.
+          The developer changes the infrastructure code as they desire, e.g.,
           increasing the memory of a server from 8 to 16 GB.
         </li>
         <li>
           The developer executes "terraform plan". This command will compare the
           wanted changes to what is currently active. The result is a plan on
-          “how move the current state to the desired state”.
+          “how to move the current state to the desired state”.
         </li>
         <li>The developer verifies that the changes look sound.</li>
         <li>
@@ -311,11 +311,11 @@ const Home: NextPage = () => {
         </li>
       </ol>
       <p>
-        The powerful safeguard is that terraform doesn’t go ahead and just
-        applies the changes, but first creates a plan on how to transform the
-        current state to the desired one and allow the user to only act on that
-        plan. This way, the developer can verify that the changes look good and
-        would immediately catch if their changes have more effects than wanted.
+        The key safeguard is that Terraform doesn't directly apply changes but
+        first creates a plan how to transition the current state to the desired
+        one, allowing the user to review and approve the plan. This ensures the
+        developer can verify the changes are as intended, catching any
+        unintended effects early.
         <a href="#footnotes">
           <sup>1</sup>
         </a>
@@ -324,7 +324,7 @@ const Home: NextPage = () => {
       <ul className="ml-4 my-4">
         <li>
           Checkout pages are basically an update plan - they show you what
-          you'll buy, the amount of money to be deducted, where to send it etc.
+          you'll buy, the amount of money to be deducted, where to send it, etc.
           One can read through all this before hitting the "buy" (or rather
           apply) button.
         </li>
@@ -333,7 +333,7 @@ const Home: NextPage = () => {
           to commit.
         </li>
         <li>
-          A file deletion dialog is an update plan - it shows you often how many
+          A file deletion dialog is an update plan - it often shows how many
           files will be deleted and asks you to confirm.
         </li>
       </ul>
@@ -341,24 +341,24 @@ const Home: NextPage = () => {
       <p className="my-4">
         Not every update is as important as updating your infrastructure and
         needs an explicit plan & apply step. But the pattern to split important
-        changes in an plan & apply step is useful not only in infrastructure
-        management, but in all cases where one can preview a the final changes
-        will look like. Database updates fit this very well and I will show you
+        changes into a plan & apply step is useful not only in infrastructure
+        management but in all cases where one can preview what the final changes
+        will look like. Database updates fit this very well, and I will show you
         how this can look like.
       </p>
       <p className="my-4">
-        An example, say you are working on the system for a supermarket chain
+        An example: say you are working on the system for a supermarket chain
         and the prices for each product are shown on a tiny screen that is
-        controlled by a centralized server which gets the prices from a
-        database. The prices are updated quite often and it is still a manual
-        process by providing a CSV file with two columns: product_id,price.
-        Let’s model this update with an update plan. I'll use go in the
-        following example as its easy to read.
+        controlled by a centralized server, which gets the prices from a
+        database. The prices are updated quite often, and it is still a manual
+        process by providing a CSV file with two columns: product_id, price.
+        Let’s model this update with an update plan. I'll use Go in the
+        following example as it's easy to read.
       </p>
       <p className="my-4">
-        First we define our product data model a simple ID & price combination,
-        before people scream that one should never use a float for a monetary
-        value, we use an int that represents "money" in cents.
+        First, we define our product data model: a simple ID & price
+        combination, before people scream that one should never use a float for
+        a monetary value, we use an int that represents "money" in cents.
         <a href="#footnotes">
           <sup>2</sup>
         </a>
@@ -372,25 +372,25 @@ type Product struct {
 `}
       </CodeBlock>
       <p className="my-4">
-        Then we define how our ProductPlan is supposed to look like. Our update
-        plan has
+        Then we define how our ProductPlan is supposed to look. Our update plan
+        has
       </p>
       <ul className="ml-4 my-4">
         <li>
           Added - products that are only in the new dataset and thus will be
-          added
+          added.
         </li>
         <li>
           NoChanges - products that are both in the old and new dataset, but the
-          price did not change
+          price did not change.
         </li>
         <li>
           Updated - products that are both in the old and new dataset, but the
-          price changed
+          price changed.
         </li>
         <li>
           Removed - products that are only in the old dataset and thus will be
-          removed
+          removed.
         </li>
       </ul>
       <CodeBlock language="go">
@@ -410,7 +410,7 @@ type ProductUpdatePlan struct {
       </CodeBlock>
       <p className="my-4">
         The CreatePlan function then can look as follows. The cool thing here is
-        that it’s a pure function, it has no side effects and doesn’t even
+        that it’s a pure function; it has no side effects and doesn’t even
         return an error. It’s very easy to test this.
       </p>
       <CodeBlock language="go">
@@ -446,9 +446,9 @@ func CreatePlan(oldProducts []Product, newProducts []Product) ProductUpdatePlan 
 `}
       </CodeBlock>
       <p className="my-4">
-        To actually apply these changes, we define an interface, that will
+        To actually apply these changes, we define an interface that will
         represent the database. We keep it simple and do not use any batch
-        updates / inserts here.
+        updates/inserts here.
       </p>
       <CodeBlock language="go">
         {`
@@ -484,7 +484,7 @@ func (pup ProductUpdatePlan) Apply(repo) error {
       </CodeBlock>
       <p className="my-4">
         The overall flow could look like this - this could be the function an
-        endpoint would call, the preview flag controls if it’s just a preview or
+        endpoint would call; the preview flag controls if it’s just a preview or
         the actual import.
       </p>
       <CodeBlock language="go">
@@ -493,11 +493,11 @@ func UpdateProducts(repo repo, csv string, preview bool) (ProductUpdatePlan, err
 	// Implementing parseCSV is left as an exercise for the reader.
 	products, err := parseCSV(csv)
 	if err != nil {
-		return err
+		return ProductUpdatePlan{}, err
 	}
 	oldProducts, err := repo.GetProducts()
 	if err != nil {
-		return err
+		return ProductUpdatePlan{}, err
 	}
 	plan := CreatePlan(oldProducts, products)
 	if preview {
@@ -516,8 +516,8 @@ func UpdateProducts(repo repo, csv string, preview bool) (ProductUpdatePlan, err
       <h3 className="text-xl mt-8">Interactive example</h3>
       <p className="my-4">
         To have an excuse that this blog is built with React.js, here is an
-        interactive toy example of how this could look like. You can provide a
-        CSV with products and see the update plan. You can then apply the update
+        interactive toy example of how this could look. You can provide a CSV
+        with products and see the update plan. You can then apply the update
         plan to the database. The products and CSV are seeded with some sensible
         data.
       </p>
@@ -525,54 +525,54 @@ func UpdateProducts(repo repo, csv string, preview bool) (ProductUpdatePlan, err
         <StoreExample />
       </div>
       <h3 className="text-xl mt-8">
-        When should one use update plans for database updates
+        When should one use update plans for database updates?
       </h3>
       <p className="my-4">
-        This pattern does not make sense for most data updates, my heuristic
+        This pattern does not make sense for most data updates; my heuristic
         would be to use this pattern when any of the following is true:
-        <ul className="ml-4 my-4">
-          <li>
-            You're updating multiple rows and the result of the result hard to
-            grasp.
-          </li>
-          <li>The updates matter and and it's not trivial to revert them.</li>
-          <li>
-            It would help the user be more confident and be faster in checking
-            that what they are about to do is correct, e.g. wouldn't it be nice
-            if email clients would tell you how many people you are about to
-            send an email too if you are sending to a group?
-          </li>
-        </ul>
       </p>
+      <ul className="ml-4 my-4">
+        <li>
+          You're updating multiple rows, and the result of the update is hard to
+          grasp.
+        </li>
+        <li>The updates matter, and it's not trivial to revert them.</li>
+        <li>
+          It would help the user be more confident and be faster in checking
+          that what they are about to do is correct, e.g., wouldn't it be nice
+          if email clients would tell you how many people you are about to send
+          an email to if you are sending to a group?
+        </li>
+      </ul>
       <h3 className="text-xl mt-8">Snapshots & undo</h3>
       <p className="my-4">
         Update plans do not prevent a faulty update from being applied, so it is
         important as well, that there is an undo. Sometimes this is not
-        completely possible - e.g. when Terraform deleted your production
-        database, you can't just "undo" that
+        completely possible - e.g., when Terraform deletes your production
+        database, you can't just "undo" that.
         <a href="#footnotes">
           <sup>3</sup>
         </a>{" "}
-        . But in many cases, it is possible to have a snapshot of the database
+        But in many cases, it is possible to have a snapshot of the database
         before the update and then revert to that snapshot if the update was
         faulty.
       </p>
       <p className="my-4">
-        Some update plans can actually be used to implement this feature e.g.
-        git commits are exactly that. Git commits are update plans, that you can
+        Some update plans can actually be used to implement this feature, e.g.,
+        git commits are exactly that. Git commits are update plans that you can
         freely undo and redo.
         <a href="#footnotes">
           <sup>4</sup>
         </a>{" "}
         This works only so long as <i>all</i> changes to the system are made
-        through the update plan, so for most systems this is not a feasible.
+        through the update plan, so for most systems, this is not feasible.
       </p>
       <h3 className="text-xl mt-8">
         Why is this not a database feature already?
       </h3>
       <p className="my-4">
-        I really would like this to be a first class citizen in databases as
-        this pattern is useful in a lot of occasions. Most databases already
+        I really would like this to be a first-class citizen in databases, as
+        this pattern is useful on a lot of occasions. Most databases already
         have transactions, where you can safely make updates to a database and
         either commit or abort all the changes one made. If the database would
         then allow me to see the final result of said transaction - which tables
@@ -586,16 +586,16 @@ func UpdateProducts(repo repo, csv string, preview bool) (ProductUpdatePlan, err
       </h3>
       <ol className="ml-4">
         <li>
-          For terraform this not perfect sadly, there are often “noise” changes
-          due to e.g. aws API changes etc. that actually don't change anything.
-          And this is actually a difficult part of writing update plans - to
-          correctly asses an "update" and a "no change".
+          For Terraform, this is not perfect, sadly. There are often “noise”
+          changes due to e.g., AWS API changes etc., that actually don't change
+          anything. And this is actually a difficult part of writing update
+          plans - to correctly assess an "update" and a "no change".
         </li>
         <li>
           <p>
             And you should never, I'll haunt you personally. Floats are not
             precise enough for monetary values or anything really where
-            precision is important. I find that Representing money as fraction
+            precision is important. I find that representing money as fraction
             of a cent is a decent way (e.g. stripes API does this), normally I
             use a decimal type, those are sadly not built into programming
             languages, but there are libraries e.g. in Go there is the{" "}

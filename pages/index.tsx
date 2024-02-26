@@ -5,28 +5,38 @@ import Container from "../components/container"
 const Home: NextPage = () => {
   return (
     <Container activeId="about">
-      <h2 className="text-3xl mb-4">{"Hi, I'm Tom"}</h2>
-      <p className="leading-7">
-        {
-          "I'm a developer by heart and love to create products. I spend a lot of time apart from my job to work on personal "
-        }
-        <Link href="/projects" className="link">
-          projects
-        </Link>
-        , many of which are already launched. I believe in self-improvement and
-        always try to get better at my skills and learn new ones. {"I'm on "}
-        <a className="link" href="https://github.com/tn1ck">
-          Github
-        </a>{" "}
-        and{" "}
-        <a
-          className="link"
-          href="https://www.linkedin.com/in/tom-nick-50515110b/"
-        >
-          LinkedIn
-        </a>
-        .
-      </p>
+      <div className="flex gap-4 sm:gap-8 sm:items-center">
+        <img
+          src="/tom.jpg"
+          alt="Tom Nick"
+          className="rounded-full sm:w-48 sm:h-48 w-16 h-16"
+        />
+        <div>
+          <h2 className="text-3xl mb-4">{"Hi, I'm Tom"}</h2>
+          <p className="leading-7">
+            {
+              "I'm passionate about technology and love to create products. I work occasionally on personal "
+            }
+            <Link href="/projects" className="link">
+              projects
+            </Link>
+            , many of which are already launched. I believe in self-improvement
+            and always try to get better at my skills and learn new ones.{" "}
+            {"I'm on "}
+            <a className="link" href="https://github.com/tn1ck">
+              Github
+            </a>{" "}
+            and{" "}
+            <a
+              className="link"
+              href="https://www.linkedin.com/in/tom-nick-50515110b/"
+            >
+              LinkedIn
+            </a>
+            .
+          </p>
+        </div>
+      </div>
       <h2 id="work" className="page-break text-2xl mt-8 mb-4">
         Work
       </h2>
@@ -135,12 +145,13 @@ const Home: NextPage = () => {
           </Link>
           .
         </div>
-        <div className="bg-white shadow-lg p-4 leading-7">
+        {/* Who cares? */}
+        {/* <div className="bg-white shadow-lg p-4 leading-7">
           <div className="mb-4 flex flex-row-reverse justify-between">
             <time>1998 - 2011</time>
             <strong>First & Secondary School</strong>
           </div>
-        </div>
+        </div> */}
       </div>
     </Container>
   )
