@@ -171,7 +171,7 @@ pepper,100
   return (
     <div>
       <h3 className="text-lg mb-2">Products in the database</h3>
-      <div className="p-4 bg-black text-gray-300 h-72 overflow-scroll">
+      <div className="p-4 bg-gray-300 text-black h-72 overflow-scroll">
         <div className="flex">
           <div className="w-40">ID</div>
           <div>Price</div>
@@ -180,9 +180,11 @@ pepper,100
           <ProductDetails key={product.ID} product={product} />
         ))}
       </div>
-      <h4 className="text-lg mb-2 mt-4">CSV Data</h4>
+      <h4 className="text-lg mb-2 mt-4">
+        CSV Data to be uploaded (you can change me!)
+      </h4>
       <textarea
-        className="bg-black text-gray-300 p-4"
+        className="bg-white text-black p-4"
         value={csvData}
         onChange={(e) => setCsvData(e.target.value)}
         placeholder="Enter CSV data here"
@@ -200,7 +202,7 @@ pepper,100
       {!updatePlan && <div>No update plan available</div>}
       {updatePlan && (
         <div>
-          <div className="p-4 bg-black text-gray-300">
+          <div className="p-4 bg-gray-300 text-black">
             <div>
               <strong>Added: </strong>
               <div className="ml-4">
@@ -275,26 +277,29 @@ const Home: NextPage = () => {
         </time>
       </div>
       <p className="my-4">
-        At the company I’m currently working at, aka{" "}
+        At the company I’m currently working at, a.k.a.{" "}
         <a className="link" href="https://re-cap.com">
           re-cap
         </a>
         , we have some manual data imports that are business-critical, e.g., a
         customer-provided CSV file that we want to import into our database and
         that affects business operations. A simple pattern I came to love to
-        make this process fast & safe are update plans.
+        make this process fast & safe is using update plans.
       </p>
       <h3 className="text-xl mt-8">What are update plans?</h3>
       <p className="my-4">
         Update plans are a way to preview changes before they are applied.
       </p>
       <p className="my-4">
-        If you know Terraform, you already know update plans. Terraform is a
-        tool that is used to manage infrastructure using a declarative
-        programming language. Changing infrastructure is extremely delicate,
-        removing one line of code, and the production server could be deleted.
-        To safeguard changing this, an infrastructure update is typically done
-        like this:
+        If you know{" "}
+        <a className="link" href="https://www.terraform.io/">
+          Terraform
+        </a>
+        , you already know update plans. Terraform is a tool that is used to
+        manage infrastructure using a declarative programming language. Changing
+        infrastructure is extremely delicate, remove one line of code, and the
+        production server could be deleted. To safeguard changing this, an
+        infrastructure update is typically done with the following steps:
       </p>
       <ol className="my-4 ml-4">
         <li>
@@ -302,9 +307,9 @@ const Home: NextPage = () => {
           increasing the memory of a server from 8 to 16 GB.
         </li>
         <li>
-          The developer executes "terraform plan". This command will compare the
-          wanted changes to what is currently active. The result is a plan on
-          “how to move the current state to the desired state”.
+          The developer executes the command "terraform plan". This will compare
+          the wanted changes to what is currently active. The result is a plan
+          on “how to move the current state to the desired state”.
         </li>
         <li>The developer verifies that the changes look sound.</li>
         <li>
@@ -313,11 +318,11 @@ const Home: NextPage = () => {
         </li>
       </ol>
       <p>
-        The key safeguard is that Terraform doesn't directly apply changes but
-        first creates a plan how to transition the current state to the desired
-        one, allowing the user to review and approve the plan. This ensures the
-        developer can verify the changes are as intended, catching any
-        unintended effects early.
+        The key safeguard is that Terraform doesn’t directly apply the changes
+        but first creates a plan to transition the current state to the desired
+        one, allowing the user to review and approve the plan. This ensures that
+        the developer can verify the changes are as intended, catching any
+        undesired effects early.
         <a href="#footnotes">
           <sup>1</sup>
         </a>
@@ -326,13 +331,13 @@ const Home: NextPage = () => {
       <ul className="ml-4 my-4">
         <li>
           Checkout pages are basically an update plan - they show you what
-          you'll buy, the amount of money to be deducted, where to send it, etc.
+          you’ll buy, the amount of money to be deducted, where to send it, etc.
           One can read through all this before hitting the "buy" (or rather
-          apply) button.
+          "apply") button.
         </li>
         <li>
-          A git diff is an update plan - it shows you the changes you are about
-          to commit.
+          A git diff is an update plan - it shows you the changes that you are
+          about to commit.
         </li>
         <li>
           A file deletion dialog is an update plan - it often shows how many
@@ -352,15 +357,18 @@ const Home: NextPage = () => {
         An example: say you are working on the system for a supermarket chain
         and the prices for each product are shown on a tiny screen that is
         controlled by a centralized server, which gets the prices from a
-        database. The prices are updated quite often, and it is still a manual
-        process by providing a CSV file with two columns: product_id, price.
-        Let’s model this update with an update plan. I'll use Go in the
-        following example as it's easy to read.
+        database. The prices are updated quite often, but sadly still in a
+        manual way as the supermarkets’ fast paced environment never allowed
+        them to address tech debt. To update the prices, someone has to upload a
+        CSV file with two columns: product_id, price. Let’s model this with an
+        update plan to make sure that the price for frozen pizza is always
+        correct. I’ll use Go in the following example as it’s easy to read (for
+        me):
       </p>
       <p className="my-4">
         First, we define our product data model: a simple ID & price
-        combination, before people scream that one should never use a float for
-        a monetary value, we use an int that represents "money" in cents.
+        combination. Before people scream that one should never use a float for
+        a monetary value, we will use an int that represents "money" in cents.
         <a href="#footnotes">
           <sup>2</sup>
         </a>
@@ -375,7 +383,7 @@ type Product struct {
       </CodeBlock>
       <p className="my-4">
         Then we define how our ProductPlan is supposed to look. Our update plan
-        has
+        has:
       </p>
       <ul className="ml-4 my-4">
         <li>
@@ -383,11 +391,11 @@ type Product struct {
           added.
         </li>
         <li>
-          NoChanges - products that are both in the old and new dataset, but the
-          price did not change.
+          NoChanges - products that are both in the old and new datasets, but
+          the price did not change.
         </li>
         <li>
-          Updated - products that are both in the old and new dataset, but the
+          Updated - products that are both in the old and new datasets, but the
           price changed.
         </li>
         <li>
@@ -524,11 +532,11 @@ repo repo, csv string, preview bool
       </p>
       <h3 className="text-xl mt-8">Interactive example</h3>
       <p className="my-4">
-        To have an excuse that this blog is built with React.js, here is an
+        To have an excuse for building this blog with React.js, here is an
         interactive toy example of how this could look. You can provide a CSV
-        with products and see the update plan. You can then apply the update
-        plan to the database. The products and CSV are seeded with some sensible
-        data.
+        file with products and see the update plan. You can then apply the
+        update plan to the database. The products and CSV are seeded with some
+        sensible data.
       </p>
       <div className="p-4 bg-gray-200">
         <StoreExample />
@@ -542,23 +550,23 @@ repo repo, csv string, preview bool
       </p>
       <ul className="ml-4 my-4">
         <li>
-          You're updating multiple rows, and the result of the update is hard to
+          You’re updating multiple rows, and the result of the update is hard to
           grasp.
         </li>
-        <li>The updates matter, and it's not trivial to revert them.</li>
+        <li>The updates matter, and it’s not trivial to revert them.</li>
         <li>
           It would help the user be more confident and be faster in checking
-          that what they are about to do is correct, e.g., wouldn't it be nice
+          that what they are about to do is correct, e.g., wouldn’t it be nice
           if email clients would tell you how many people you are about to send
-          an email to if you are sending to a group?
+          an email to if you are sending it to a group?
         </li>
       </ul>
       <h3 className="text-xl mt-8">Snapshots & undo</h3>
       <p className="my-4">
         Update plans do not prevent a faulty update from being applied, so it is
-        important as well, that there is an undo. Sometimes this is not
+        important as well that there is an undo option. Sometimes this is not
         completely possible - e.g., when Terraform deletes your production
-        database, you can't just "undo" that.
+        database, you can’t just "undo" that.
         <a href="#footnotes">
           <sup>3</sup>
         </a>{" "}
@@ -580,13 +588,13 @@ repo repo, csv string, preview bool
         Why is this not a database feature already?
       </h3>
       <p className="my-4">
-        I really would like this to be a first-class citizen in databases, as
+        I would really like this to be a first-class citizen in databases, as
         this pattern is useful on a lot of occasions. Most databases already
-        have transactions, where you can safely make updates to a database and
+        have transactions where one can safely make updates to a database and
         either commit or abort all the changes one made. If the database would
         then allow me to see the final result of said transaction - which tables
         will be affected and how - that would make adding an update plan an
-        extremely simple task. I don't know enough about the internals of
+        extremely simple task. I don’t know enough about the internals of
         databases to know why this is not a thing. I’d love to hear from someone
         who knows more.
       </p>
@@ -596,13 +604,13 @@ repo repo, csv string, preview bool
       <ol className="ml-4">
         <li>
           For Terraform, this is not perfect, sadly. There are often “noise”
-          changes due to e.g., AWS API changes etc., that actually don't change
+          changes due to e.g., AWS API changes etc., that actually don’t change
           anything. And this is actually a difficult part of writing update
           plans - to correctly assess an "update" and a "no change".
         </li>
         <li>
           <p>
-            And you should never, I'll haunt you personally. Floats are not
+            And you should never, I’ll haunt you personally. Floats are not
             precise enough for monetary values or anything really where
             precision is important. I find that representing money as fraction
             of a cent is a decent way (e.g. stripes API does this), normally I
@@ -624,15 +632,15 @@ repo repo, csv string, preview bool
           </p>
         </li>
         <li>
-          If you manage your aws database using terraform, please make sure you
+          If you manage your AWS database using Terraform, please make sure you
           have "skip_final_snapshot" set to false as deleting a database also
           deletes the backups.
         </li>
         <li>
-          Gits UX is just a bit lacking as while it is easy enough to undo a
+          Git’s UX is just a bit lacking; while it is easy enough to undo a
           commit, it becomes much harder to undo e.g. a rebase. Git reflog
-          exists, but it's not a very user friendly interface. Imgagine git just
-          had an "undo" command.
+          exists, but it’s not a very user friendly interface. Imagine if Git
+          just had an "undo" command...
         </li>
       </ol>
     </Container>
