@@ -37,7 +37,7 @@ const Container = ({
 }) => {
   return (
     <div>
-      <main>
+      <main className="max-w-screen-md m-auto mt-8 mb-16">
         <Navigation activeId={activeId} />
         <div className="">{children}</div>
       </main>

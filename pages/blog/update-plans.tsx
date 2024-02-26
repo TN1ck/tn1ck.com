@@ -415,7 +415,9 @@ type ProductUpdatePlan struct {
       </p>
       <CodeBlock language="go">
         {`
-func CreatePlan(oldProducts []Product, newProducts []Product) ProductUpdatePlan {
+func CreatePlan(
+	oldProducts []Product, newProducts []Product,
+) ProductUpdatePlan {
 	plan := ProductUpdatePlan{}
 	oldProductMap := make(map[string]Product)
 	for _, product := range oldProducts {
@@ -427,7 +429,10 @@ func CreatePlan(oldProducts []Product, newProducts []Product) ProductUpdatePlan 
 		if !ok {
 			plan.Added = append(plan.Added, product)
 		} else if oldProduct.Price != product.Price {
-			plan.Updated = append(plan.Updated, ProductPair{OldProduct: oldProduct, NewProduct: product})
+			plan.Updated = append(plan.Updated, ProductPair{
+				OldProduct: oldProduct,
+				NewProduct: product,
+			})
 		} else {
 			plan.NoChanges = append(plan.NoChanges, product)
 		}
@@ -489,7 +494,9 @@ func (pup ProductUpdatePlan) Apply(repo) error {
       </p>
       <CodeBlock language="go">
         {`
-func UpdateProducts(repo repo, csv string, preview bool) (ProductUpdatePlan, error) {
+func UpdateProducts(
+repo repo, csv string, preview bool
+) (ProductUpdatePlan, error) {
 	// Implementing parseCSV is left as an exercise for the reader.
 	products, err := parseCSV(csv)
 	if err != nil {
