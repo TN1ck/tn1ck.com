@@ -5,6 +5,8 @@ import { CodeBlock } from "../../components/code-block"
 
 import React, { useState } from "react"
 
+/* eslint-disable react/no-unescaped-entities */
+
 // Define types
 type Product = {
   ID: string

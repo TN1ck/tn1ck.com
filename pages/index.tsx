@@ -8,7 +8,7 @@ const Home: NextPage = () => {
       <div className="flex gap-4 sm:gap-8 sm:items-center">
         <img
           src="/tom.jpg"
-          alt="Tom Nick"
+          alt="An image of Tom Nick"
           className="rounded-full sm:w-48 sm:h-48 w-16 h-16"
         />
         <div>
