@@ -273,11 +273,14 @@ const Home: NextPage = () => {
         </time>
       </div>
       <p className="my-4">
-        At the company I’m currently working at, we have a lot of business
-        critical manual data imports e.g. a customer provided CSV file that we
-        want to import into our database and that affects business operations. A
-        simple pattern I came to love to make this process fast & safe are
-        update plans.
+        At the company I’m currently working at aka{" "}
+        <a className="link" href="https://re-cap.com">
+          re-cap
+        </a>
+        , we have some manual data imports that are business critical e.g. a
+        customer provided CSV file that we want to import into our database and
+        that affects business operations. A simple pattern I came to love to
+        make this process fast & safe are update plans.
       </p>
       <h3 className="text-xl mt-8">What are update plans?</h3>
       <p className="my-4">
@@ -350,7 +353,7 @@ const Home: NextPage = () => {
         database. The prices are updated quite often and it is still a manual
         process by providing a CSV file with two columns: product_id,price.
         Let’s model this update with an update plan. I'll use go in the
-        following example as its easy to read for anyone and has static typing.
+        following example as its easy to read.
       </p>
       <p className="my-4">
         First we define our product data model a simple ID & price combination,
@@ -513,8 +516,8 @@ func UpdateProducts(repo repo, csv string, preview bool) (ProductUpdatePlan, err
       <h3 className="text-xl mt-8">Interactive example</h3>
       <p className="my-4">
         To have an excuse that this blog is built with React.js, here is an
-        interactive example of how this could look like. You can provide a CSV
-        with products and see the update plan. You can then apply the update
+        interactive toy example of how this could look like. You can provide a
+        CSV with products and see the update plan. You can then apply the update
         plan to the database. The products and CSV are seeded with some sensible
         data.
       </p>
@@ -526,7 +529,7 @@ func UpdateProducts(repo repo, csv string, preview bool) (ProductUpdatePlan, err
       </h3>
       <p className="my-4">
         This pattern does not make sense for most data updates, my heuristic
-        would be to use this pattern when the following is true:
+        would be to use this pattern when any of the following is true:
         <ul className="ml-4 my-4">
           <li>
             You're updating multiple rows and the result of the result hard to
