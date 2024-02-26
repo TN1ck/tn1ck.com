@@ -598,7 +598,7 @@ repo repo, csv string, preview bool
         databases to know why this is not a thing. I’d love to hear from someone
         who knows more.
       </p>
-      <h3 id="footnotes" className="text-xl mt-16">
+      <h3 id="footnotes" className="text-xl mt-16 mb-4">
         Footnotes
       </h3>
       <ol className="ml-4">
