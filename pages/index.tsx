@@ -44,7 +44,7 @@ const Home: NextPage = () => {
         <div className="bg-white shadow-lg p-4 leading-7">
           <div className="mb-4 flex flex-row-reverse justify-between">
             <time>Mid 2021 - Now</time>
-            <strong>VP Engineering @ re:cap</strong>
+            <strong>VP of Engineering @ re:cap</strong>
           </div>
           {
             "We're building a funding marketplace for the subscription economy. With re:cap, companies can trade recurring revenue streams for upfront capital – no dilution, no debt, no hassle."
@@ -61,34 +61,25 @@ const Home: NextPage = () => {
         </div>
         <div className="bg-white shadow-lg p-4 leading-7">
           <div className="mb-4 flex flex-row-reverse justify-between">
-            <time>Early 2018 - Mid 2019</time>
-            <strong>Head of Software Engineering @ Infographics Group</strong>
+            <time>Mid 2018 - Mid 2019</time>
+            <strong>Head of Software Engineering @ Separa / KPV Lab</strong>
           </div>
           The{" "}
-          <a className="link" href="https://infographics.group">
-            Infographics Group
+          <a
+            className="link"
+            href="https://www.linkedin.com/company/sapera-studios"
+          >
+            Sapera
           </a>{" "}
-          is a venture capital funded agency for infographics. By combining the
-          know how of infographics and tech, the Infographics Group creates next
-          generation tools that help creatives create{" "}
-          <a className="link" href="http://info.graphics">
-            interactive stories the web
+          (before Infographics Group / KPV Lab) was a venture capital funded
+          agency for infographics. We were building a tool to enable creatives
+          to build web native stories. The tool ended up being something like
+          Flash, but based on Three.js and heavily optimized for phones. The
+          software still exists at{" "}
+          <a className="link" href="https://business.scrolly.com/">
+            scrlly.com
           </a>
           .
-        </div>
-        <div className="bg-white shadow-lg p-4 leading-7">
-          <div className="mb-4 flex flex-row-reverse justify-between">
-            <time>Mid 2017 - Early 2018</time>
-            <strong>Senior Software Engineer @ KPV Lab</strong>
-          </div>
-          <a className="link" href="http://kpv-lab.com/">
-            KPV Lab
-          </a>{" "}
-          is a tech holding partnership founded 2015 in Berlin. It seeded
-          multiple start-ups which are operating in stealth mode - as is the
-          parent entity. Focus is on next-gen software, advanced
-          user-interfaces, realtime interactive visual tools, creating entirely
-          novel solutions, each unprecedented in their field.
         </div>
         <div className="bg-white shadow-lg p-4 leading-7">
           <div className="mb-4 flex flex-row-reverse justify-between">

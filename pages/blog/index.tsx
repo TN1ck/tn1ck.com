@@ -1,6 +1,7 @@
 import type { NextPage } from "next"
 import Link from "next/link"
 import Container from "../../components/container"
+import { TITLE as updatePlansTitle } from "./update-plans"
 
 const Home: NextPage = () => {
   return (
@@ -9,7 +10,7 @@ const Home: NextPage = () => {
       <ul className="list-disc list-outside">
         <li>
           <Link className="link" href="/blog/update-plans">
-            {"Use update plans to handle large database updates"}
+            {updatePlansTitle}
           </Link>
         </li>
       </ul>

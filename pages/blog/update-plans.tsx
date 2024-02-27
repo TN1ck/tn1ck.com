@@ -267,10 +267,11 @@ pepper,100
   )
 }
 
-const Home: NextPage = () => {
+export const TITLE = "Safeguarding changes using update plans"
+const UpdatePlans: NextPage = () => {
   return (
     <Container activeId="blog">
-      <h1 className="text-3xl mb-4">Safeguarding changes using update plans</h1>
+      <h1 className="text-3xl mb-4">{TITLE}</h1>
       <div className="flex gap-1">
         <address>
           By{" "}
@@ -686,4 +687,4 @@ func UpdateProducts(
   )
 }
 
-export default Home
+export default UpdatePlans
