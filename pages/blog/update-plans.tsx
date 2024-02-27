@@ -169,86 +169,100 @@ pepper,100
   }
 
   return (
-    <div>
-      <h3 className="text-lg mb-2">Products in the database</h3>
-      <div className="p-4 bg-gray-300 text-black h-72 overflow-scroll">
-        <div className="flex">
-          <div className="w-40">ID</div>
-          <div>Price</div>
-        </div>
-        {database.map((product) => (
-          <ProductDetails key={product.ID} product={product} />
-        ))}
-      </div>
-      <h4 className="text-lg mb-2 mt-4">
-        CSV Data to be uploaded (you can change me!)
-      </h4>
-      <textarea
-        className="bg-white text-black p-4"
-        value={csvData}
-        onChange={(e) => setCsvData(e.target.value)}
-        placeholder="Enter CSV data here"
-        rows={10}
-        style={{ width: "100%" }}
-      />
-      <div className="gap-4 flex">
+    <div className="grid sm:grid-cols-2 gap-4 grid-cols-1">
+      <div>
         <div>
-          <button className="bg-yellow-400 px-4 py-2" onClick={handlePreview}>
-            Preview Update Plan
-          </button>
-        </div>
-      </div>
-      <h4 className="text-lg mt-4 mb-2">Update Plan</h4>
-      {!updatePlan && <div>No update plan available</div>}
-      {updatePlan && (
-        <div>
-          <div className="p-4 bg-gray-300 text-black">
-            <div>
-              <strong>Added: </strong>
-              <div className="ml-4">
-                {updatePlan.Added.map((product) => (
-                  <ProductDetails key={product.ID} product={product} />
-                ))}
-                {updatePlan.Added.length === 0 && "None"}
-              </div>
+          <h3 className="text-lg mb-2">Products in the database</h3>
+          <div className="p-4 bg-gray-300 text-black h-72 overflow-scroll rounded-md">
+            <div className="flex">
+              <div className="w-40">ID</div>
+              <div>Price</div>
             </div>
-            <div>
-              <strong>No Changes: </strong>
-              <div className="ml-4">
-                {updatePlan.NoChanges.map((product) => (
-                  <ProductDetails key={product.ID} product={product} />
-                ))}
-                {updatePlan.NoChanges.length === 0 && "None"}
-              </div>
-            </div>
-            <div>
-              <strong>Updated: </strong>
-              <div className="ml-4">
-                {updatePlan.Updated.map((pair) => (
-                  <UpdatedProductDetails key={pair.NewProduct.ID} pair={pair} />
-                ))}
-                {updatePlan.Updated.length === 0 && "None"}
-              </div>
-            </div>
-            <div>
-              <strong>Deleted: </strong>
-              <div className="ml-4">
-                {updatePlan.Deleted.map((product) => (
-                  <ProductDetails key={product.ID} product={product} />
-                ))}
-                {updatePlan.Deleted.length === 0 && "None"}
-              </div>
-            </div>
+            {database.map((product) => (
+              <ProductDetails key={product.ID} product={product} />
+            ))}
           </div>
-          <button
-            className="bg-yellow-400 px-4 py-2 mt-2 disabled:bg-gray-300"
-            onClick={handleApply}
-            disabled={!updatePlan}
-          >
-            Apply Update Plan
-          </button>
         </div>
-      )}
+        <div className="mt-4">
+          <h4 className="text-lg mb-2">CSV Data (you can change me!)</h4>
+          <textarea
+            className="bg-white text-black p-4 h-72 rounded-md"
+            value={csvData}
+            onChange={(e) => setCsvData(e.target.value)}
+            placeholder="Enter CSV data here"
+            rows={10}
+            style={{ width: "100%" }}
+          />
+          <div className="flex justify-between">
+            <button
+              className="bg-yellow-400 px-4 py-2 rounded-md"
+              onClick={handlePreview}
+            >
+              Preview changes
+            </button>
+            <button
+              className="bg-yellow-400 px-4 py-2 disabled:bg-gray-300 rounded-md"
+              onClick={handleApply}
+              disabled={!updatePlan}
+            >
+              Apply changes
+            </button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div>
+          <h4 className="text-lg">Update Plan</h4>
+          {!updatePlan && (
+            <div className="text-gray-600">No update plan available.</div>
+          )}
+          {updatePlan && (
+            <div className="mt-2">
+              <div className="p-4 bg-gray-300 text-black rounded-md">
+                <div>
+                  <strong>Added: </strong>
+                  <div className="ml-4">
+                    {updatePlan.Added.map((product) => (
+                      <ProductDetails key={product.ID} product={product} />
+                    ))}
+                    {updatePlan.Added.length === 0 && "None"}
+                  </div>
+                </div>
+                <div>
+                  <strong>No Changes: </strong>
+                  <div className="ml-4">
+                    {updatePlan.NoChanges.map((product) => (
+                      <ProductDetails key={product.ID} product={product} />
+                    ))}
+                    {updatePlan.NoChanges.length === 0 && "None"}
+                  </div>
+                </div>
+                <div>
+                  <strong>Updated: </strong>
+                  <div className="ml-4">
+                    {updatePlan.Updated.map((pair) => (
+                      <UpdatedProductDetails
+                        key={pair.NewProduct.ID}
+                        pair={pair}
+                      />
+                    ))}
+                    {updatePlan.Updated.length === 0 && "None"}
+                  </div>
+                </div>
+                <div>
+                  <strong>Deleted: </strong>
+                  <div className="ml-4">
+                    {updatePlan.Deleted.map((product) => (
+                      <ProductDetails key={product.ID} product={product} />
+                    ))}
+                    {updatePlan.Deleted.length === 0 && "None"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
@@ -256,9 +270,7 @@ pepper,100
 const Home: NextPage = () => {
   return (
     <Container activeId="blog">
-      <h1 className="text-3xl mb-4">
-        Safeguarding database changes <br /> using update plans
-      </h1>
+      <h1 className="text-3xl mb-4">Safeguarding changes using update plans</h1>
       <div className="flex gap-1">
         <address>
           By{" "}
@@ -298,7 +310,8 @@ const Home: NextPage = () => {
         , you already know update plans. Terraform is a tool that is used to
         manage infrastructure using a declarative programming language. Changing
         infrastructure is extremely delicate, remove one line of code, and the
-        production server could be deleted. To safeguard changing this, an
+        production server could be deleted, increasing the avg. heart rate of
+        the team by 50 BPM. To safeguard our servers and heart rates, an
         infrastructure update is typically done with the following steps:
       </p>
       <ol className="my-4 ml-4">
@@ -362,8 +375,8 @@ const Home: NextPage = () => {
         them to address tech debt. To update the prices, someone has to upload a
         CSV file with two columns: product_id, price. Let’s model this with an
         update plan to make sure that the price for frozen pizza is always
-        correct. I’ll use Go in the following example as it’s easy to read (for
-        me):
+        correct. I’ll use Go in the following example, because it's a great
+        language.
       </p>
       <p className="my-4">
         First, we define our product data model: a simple ID & price
@@ -505,7 +518,7 @@ func (pup ProductUpdatePlan) Apply(repo) error {
       <CodeBlock language="go">
         {`
 func UpdateProducts(
-repo repo, csv string, preview bool
+	repo repo, csv string, preview bool
 ) (ProductUpdatePlan, error) {
 	// Implementing parseCSV is left as an exercise for the reader.
 	products, err := parseCSV(csv)
@@ -533,25 +546,25 @@ repo repo, csv string, preview bool
       <h3 className="text-xl mt-8">Interactive example</h3>
       <p className="my-4">
         To have an excuse for building this blog with React.js, here is an
-        interactive toy example of how this could look. You can provide a CSV
-        file with products and see the update plan. You can then apply the
-        update plan to the database. The products and CSV are seeded with some
-        sensible data.
+        interactive toy example of how this could look. You can change the
+        provided CSV data, click "Preview changes" and see the update plan. You
+        can then apply the update plan to the database by clicking "Apply
+        changes". The products and CSV data are seeded with some sensible data.
+        There is no error handling, you have to rely on the update plan for the
+        safe guarding ;).
       </p>
-      <div className="p-4 bg-gray-200">
+      <div className="p-4 bg-gray-200 rounded-md">
         <StoreExample />
       </div>
-      <h3 className="text-xl mt-8">
-        When should one use update plans for database updates?
-      </h3>
+      <h3 className="text-xl mt-8">When should one use update plans?</h3>
       <p className="my-4">
-        This pattern does not make sense for most data updates; my heuristic
-        would be to use this pattern when any of the following is true:
+        This pattern does not make sense for most data updates; as this entails
+        more work and complexity. It makes sense when:
       </p>
       <ul className="ml-4 my-4">
         <li>
-          You’re updating multiple rows, and the result of the update is hard to
-          grasp.
+          You’re updating something that is hard to grasp, but doing the update
+          creates immediate negative effects.
         </li>
         <li>The updates matter, and it’s not trivial to revert them.</li>
         <li>
@@ -570,9 +583,8 @@ repo repo, csv string, preview bool
         <a href="#footnotes">
           <sup>3</sup>
         </a>{" "}
-        But in many cases, it is possible to have a snapshot of the database
-        before the update and then revert to that snapshot if the update was
-        faulty.
+        But in many cases, it is possible. E.g. snapshot the database before the
+        update and then revert to that snapshot if the update was faulty.
       </p>
       <p className="my-4">
         Some update plans can actually be used to implement this feature, e.g.,
@@ -588,16 +600,44 @@ repo repo, csv string, preview bool
         Why is this not a database feature already?
       </h3>
       <p className="my-4">
-        I would really like this to be a first-class citizen in databases, as
-        this pattern is useful on a lot of occasions. Most databases already
-        have transactions where one can safely make updates to a database and
-        either commit or abort all the changes one made. If the database would
-        then allow me to see the final result of said transaction - which tables
-        will be affected and how - that would make adding an update plan an
-        extremely simple task. I don’t know enough about the internals of
-        databases to know why this is not a thing. I’d love to hear from someone
-        who knows more.
+        Personally I'm using this feature mostly with database updates and would
+        really like this to be a first class citizen from them. I asked{" "}
+        <a href="https://reddit.com/r/Database" className="link">
+          /r/Database
+        </a>{" "}
+        if anybody knows of some database features that could enable something
+        like this.{" "}
+        <a
+          className="link"
+          href="https://old.reddit.com/r/Database/comments/1b0u6vu/are_there_databases_that_can_emit_exactly_which/"
+        >
+          Here
+        </a>{" "}
+        is the thread if you are interested, my conclusion:
       </p>
+      <ul className="ml-4 my-4 list-disc list-outside">
+        <li>
+          <a href="https://github.com/dolthub/dolt">DoltDB</a> basically
+          supports this OOTB with its ability to create branches and native diff
+          support. I find this project extremely intriguing personally,
+          effortlessly creating snapshots is a game changer (I'm not affiliated
+          with them).{" "}
+        </li>
+        <li>
+          Traditional databases do not have good support for this use case, CDC
+          was suggested multiple times, but that only helps you <i>after</i> the
+          commit. One could do scd2 (append only, you can query any version of
+          the data) or something similar (append only, but clean up afterwards).
+          This moves the complexity into the data model, which I'm personally
+          not a fan of.
+        </li>
+      </ul>
+      <p className="my-4">
+        For me the application logic approach I showed above is the best for me
+        personally as it is agnostic to whatever technology you use to actually
+        save the data to and only entails moving around application logic.
+      </p>
+
       <h3 id="footnotes" className="text-xl mt-16 mb-4">
         Footnotes
       </h3>
@@ -634,13 +674,12 @@ repo repo, csv string, preview bool
         <li>
           If you manage your AWS database using Terraform, please make sure you
           have "skip_final_snapshot" set to false as deleting a database also
-          deletes the backups.
+          deletes the backups. Ask me how I know that.
         </li>
         <li>
           Git’s UX is just a bit lacking; while it is easy enough to undo a
           commit, it becomes much harder to undo e.g. a rebase. Git reflog
-          exists, but it’s not a very user friendly interface. Imagine if Git
-          just had an "undo" command...
+          exists, but it’s not a user friendly interface.
         </li>
       </ol>
     </Container>

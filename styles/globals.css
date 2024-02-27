@@ -12,30 +12,16 @@ body {
 .link {
   color: black;
   text-decoration: none;
-  position: relative;
-  display: inline-block;
-  z-index: 3;
+  transition: all 0.1s ease;
+  box-shadow: 0 4px 0px 0 rgb(253 224 71), inset 0 0px 0 0 rgb(253 224 71);
 }
 
 .link:visited {
-  color: black;
+  @apply text-gray-500;
 }
 
-.link:hover:before {
-  height: 25px;
-  top: 0px;
-}
-
-.link:before {
-  z-index: -1;
-  transition: all 0.1s ease-in-out;
-  position: absolute;
-  display: block;
-  content: "";
-  height: 4px;
-  top: 21px;
-  @apply bg-yellow-300;
-  width: 100%;
+.link:hover {
+  box-shadow: 0 4px 0px 0 rgb(253 224 71), inset 0 -20px 0 0 rgb(253 224 71);
 }
 
 ul {
