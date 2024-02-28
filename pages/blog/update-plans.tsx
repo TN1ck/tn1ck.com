@@ -292,7 +292,7 @@ const UpdatePlans: NextPage = () => {
       <p className="my-4">
         At the company I’m currently working at, a.k.a.{" "}
         <a className="link" href="https://re-cap.com">
-          re-cap
+          re:cap
         </a>
         , we have some manual data imports that are business-critical, e.g., a
         customer-provided CSV file that we want to import into our database and
@@ -481,33 +481,36 @@ func CreatePlan(
       </p>
       <CodeBlock language="go">
         {`
-type repo interface {
+type Repo interface {
 	InsertProduct(product Product) error
 	UpdateProduct(product Product) error
 	DeleteProduct(product Product) error
 	GetProducts() ([]Product, error)
+	Transaction(func(repo Repo) error) error
 }
 
-func (pup ProductUpdatePlan) Apply(repo) error {
-	for _, product := range pup.Added {
-		err := repo.InsertProduct(product)
-		if err != nil {
-			return err
+func (pup ProductUpdatePlan) Apply(repo Repo) error {
+	return repo.Transaction(func(repo Repo) error {
+		for _, product := range pup.Added {
+			err := repo.InsertProduct(product)
+			if err != nil {
+				return err
+			}
 		}
-	}
-	for _, productPair := range pup.Updated {
-		err := repo.UpdateProduct(productPair.NewProduct)
-		if err != nil {
-			return err
+		for _, productPair := range pup.Updated {
+			err := repo.UpdateProduct(productPair.NewProduct)
+			if err != nil {
+				return err
+			}
 		}
-	}
-	for _, product := range pup.Deleted {
-		err := repo.DeleteProduct(product)
-		if err != nil {
-			return err
+		for _, product := range pup.Deleted {
+			err := repo.DeleteProduct(product)
+			if err != nil {
+				return err
+			}
 		}
-	}
-	return nil
+		return nil
+	})
 }
 `}
       </CodeBlock>
