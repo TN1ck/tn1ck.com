@@ -5,12 +5,14 @@ import { METADATA as updatePlansMetadata } from "./update-plans"
 import { METADATA as miuMetadata } from "./miu"
 import { METADATA as numbersGameMetadata } from "./numbers-game"
 import { METADATA as dropboxMetadata } from "./dropbox-header"
+import { METADATA as hashCodeMetadata } from "./hashcode"
 
 const BLOG_ENTRIES = [
   updatePlansMetadata,
   dropboxMetadata,
   numbersGameMetadata,
   miuMetadata,
+  hashCodeMetadata,
 ]
 
 const Home: NextPage = () => {
@@ -21,8 +23,10 @@ const Home: NextPage = () => {
         {BLOG_ENTRIES.map((metadata) => (
           <li key={metadata.title} className="mb-2">
             <Link className="link" href={`/blog/${metadata.slug}`}>
-              {metadata.date} - {metadata.title}
+              {metadata.title}
             </Link>
+            {" - "}
+            {metadata.date}
           </li>
         ))}
       </ul>
