@@ -29,16 +29,18 @@ const Navigation = ({ activeId }: { activeId: string }) => {
 
 const Container = ({
   activeId,
+  className,
   children,
 }: {
   activeId: string
+  className?: string
   children: React.ReactNode
 }) => {
   return (
     <div>
       <main className="max-w-screen-md m-auto mt-8 mb-16">
         <Navigation activeId={activeId} />
-        <div className="">{children}</div>
+        <div className={className}>{children}</div>
       </main>
     </div>
   )

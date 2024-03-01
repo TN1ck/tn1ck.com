@@ -35,3 +35,35 @@ ol {
 address {
   font-style: normal;
 }
+
+.blog h1 {
+  @apply text-4xl mb-4;
+}
+
+.blog p {
+  @apply my-4;
+}
+
+.blog a {
+  @apply link;
+}
+
+/* .blog a:hover {
+  @apply .link:hover;
+} */
+
+.blog h2 {
+  @apply text-3xl mb-4 mt-8;
+}
+
+.blog h3 {
+  @apply text-2xl mb-4 mt-8;
+}
+
+.blog ol, ul {
+  @apply my-4 ml-4;
+}
+
+.blog blockquote {
+  @apply border-l-4 border-yellow-400 pl-4 my-4;
+}

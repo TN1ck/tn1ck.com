@@ -4,6 +4,7 @@ import Container from "../../components/container"
 import { CodeBlock } from "../../components/code-block"
 
 import React, { useState } from "react"
+import { Author, BlogContent } from "../../components/blog"
 
 /* eslint-disable react/no-unescaped-entities */
 
@@ -267,158 +268,144 @@ pepper,100
   )
 }
 
-export const TITLE = "Safeguarding changes using update plans"
+export const METADATA = {
+  title: "Safeguarding changes using update plans",
+  date: "2024-02-26",
+  slug: "update-plans",
+}
+
 const UpdatePlans: NextPage = () => {
   return (
     <Container activeId="blog">
-      <h1 className="text-3xl mb-4">{TITLE}</h1>
-      <div className="flex gap-1">
-        <address>
-          By{" "}
-          <a
-            className="link"
-            rel="author"
-            target="_blank"
-            href="https://www.linkedin.com/in/tom-nick/"
-          >
-            Tom Nick
+      <BlogContent>
+        <h1>{METADATA.title}</h1>
+        <Author date={METADATA.date} />
+        <p className="my-4">
+          At the company I’m currently working at, a.k.a.{" "}
+          <a href="https://re-cap.com">re:cap</a>, we have some manual data
+          imports that are business-critical, e.g., a customer-provided CSV file
+          that we want to import into our database and that affects business
+          operations. A simple pattern I came to love to make this process fast
+          & safe is using update plans.
+        </p>
+        <h3>What are update plans?</h3>
+        <p>
+          Update plans are a way to preview changes before they are applied.
+        </p>
+        <p>
+          If you know <a href="https://www.terraform.io/">Terraform</a>, you
+          already know update plans. Terraform is a tool that is used to manage
+          infrastructure using a declarative programming language. Changing
+          infrastructure is extremely delicate, remove one line of code, and the
+          production server could be deleted, increasing the avg. heart rate of
+          the team by 50 BPM. To safeguard our servers and heart rates, an
+          infrastructure update is typically done with the following steps:
+        </p>
+        <ol>
+          <li>
+            The developer changes the infrastructure code as they desire, e.g.,
+            increasing the memory of a server from 8 to 16 GB.
+          </li>
+          <li>
+            The developer executes the command "terraform plan". This will
+            compare the wanted changes to what is currently active. The result
+            is a plan on “how to move the current state to the desired state”.
+          </li>
+          <li>The developer verifies that the changes look sound.</li>
+          <li>
+            The developer executes "terraform apply" to actually apply the
+            changes.
+          </li>
+        </ol>
+        <p>
+          The key safeguard is that Terraform doesn’t directly apply the changes
+          but first creates a plan to transition the current state to the
+          desired one, allowing the user to review and approve the plan. This
+          ensures that the developer can verify the changes are as intended,
+          catching any undesired effects early.
+          <a href="#footnotes">
+            <sup>1</sup>
           </a>
-        </address>
-        {" on "}
-        <time dateTime="2024-02-26" title="February 26th, 2024">
-          2024-02-26
-        </time>
-      </div>
-      <p className="my-4">
-        At the company I’m currently working at, a.k.a.{" "}
-        <a className="link" href="https://re-cap.com">
-          re:cap
-        </a>
-        , we have some manual data imports that are business-critical, e.g., a
-        customer-provided CSV file that we want to import into our database and
-        that affects business operations. A simple pattern I came to love to
-        make this process fast & safe is using update plans.
-      </p>
-      <h3 className="text-xl mt-8">What are update plans?</h3>
-      <p className="my-4">
-        Update plans are a way to preview changes before they are applied.
-      </p>
-      <p className="my-4">
-        If you know{" "}
-        <a className="link" href="https://www.terraform.io/">
-          Terraform
-        </a>
-        , you already know update plans. Terraform is a tool that is used to
-        manage infrastructure using a declarative programming language. Changing
-        infrastructure is extremely delicate, remove one line of code, and the
-        production server could be deleted, increasing the avg. heart rate of
-        the team by 50 BPM. To safeguard our servers and heart rates, an
-        infrastructure update is typically done with the following steps:
-      </p>
-      <ol className="my-4 ml-4">
-        <li>
-          The developer changes the infrastructure code as they desire, e.g.,
-          increasing the memory of a server from 8 to 16 GB.
-        </li>
-        <li>
-          The developer executes the command "terraform plan". This will compare
-          the wanted changes to what is currently active. The result is a plan
-          on “how to move the current state to the desired state”.
-        </li>
-        <li>The developer verifies that the changes look sound.</li>
-        <li>
-          The developer executes "terraform apply" to actually apply the
-          changes.
-        </li>
-      </ol>
-      <p>
-        The key safeguard is that Terraform doesn’t directly apply the changes
-        but first creates a plan to transition the current state to the desired
-        one, allowing the user to review and approve the plan. This ensures that
-        the developer can verify the changes are as intended, catching any
-        undesired effects early.
-        <a href="#footnotes">
-          <sup>1</sup>
-        </a>
-      </p>
-      <p>Some more examples:</p>
-      <ul className="ml-4 my-4">
-        <li>
-          Checkout pages are basically an update plan - they show you what
-          you’ll buy, the amount of money to be deducted, where to send it, etc.
-          One can read through all this before hitting the "buy" (or rather
-          "apply") button.
-        </li>
-        <li>
-          A git diff is an update plan - it shows you the changes that you are
-          about to commit.
-        </li>
-        <li>
-          A file deletion dialog is an update plan - it often shows how many
-          files will be deleted and asks you to confirm.
-        </li>
-      </ul>
-      <h3 className="text-xl mt-8">Update plans for database changes</h3>
-      <p className="my-4">
-        Not every update is as important as updating your infrastructure and
-        needs an explicit plan & apply step. But the pattern to split important
-        changes into a plan & apply step is useful not only in infrastructure
-        management but in all cases where one can preview what the final changes
-        will look like. Database updates fit this very well, and I will show you
-        how this can look like.
-      </p>
-      <p className="my-4">
-        An example: say you are working on the system for a supermarket chain
-        and the prices for each product are shown on a tiny screen that is
-        controlled by a centralized server, which gets the prices from a
-        database. The prices are updated quite often, but sadly still in a
-        manual way as the supermarkets’ fast paced environment never allowed
-        them to address tech debt. To update the prices, someone has to upload a
-        CSV file with two columns: product_id, price. Let’s model this with an
-        update plan to make sure that the price for frozen pizza is always
-        correct. I’ll use Go in the following example, because it's a great
-        language.
-      </p>
-      <p className="my-4">
-        First, we define our product data model: a simple ID & price
-        combination. Before people scream that one should never use a float for
-        a monetary value, we will use an int that represents "money" in cents.
-        <a href="#footnotes">
-          <sup>2</sup>
-        </a>
-      </p>
-      <CodeBlock language="go">
-        {`
+        </p>
+        <p>Some more examples:</p>
+        <ul>
+          <li>
+            Checkout pages are basically an update plan - they show you what
+            you’ll buy, the amount of money to be deducted, where to send it,
+            etc. One can read through all this before hitting the "buy" (or
+            rather "apply") button.
+          </li>
+          <li>
+            A git diff is an update plan - it shows you the changes that you are
+            about to commit.
+          </li>
+          <li>
+            A file deletion dialog is an update plan - it often shows how many
+            files will be deleted and asks you to confirm.
+          </li>
+        </ul>
+        <h3>Update plans for database changes</h3>
+        <p>
+          Not every update is as important as updating your infrastructure and
+          needs an explicit plan & apply step. But the pattern to split
+          important changes into a plan & apply step is useful not only in
+          infrastructure management but in all cases where one can preview what
+          the final changes will look like. Database updates fit this very well,
+          and I will show you how this can look like.
+        </p>
+        <p>
+          An example: say you are working on the system for a supermarket chain
+          and the prices for each product are shown on a tiny screen that is
+          controlled by a centralized server, which gets the prices from a
+          database. The prices are updated quite often, but sadly still in a
+          manual way as the supermarkets’ fast paced environment never allowed
+          them to address tech debt. To update the prices, someone has to upload
+          a CSV file with two columns: product_id, price. Let’s model this with
+          an update plan to make sure that the price for frozen pizza is always
+          correct. I’ll use Go in the following example, because it's a great
+          language.
+        </p>
+        <p>
+          First, we define our product data model: a simple ID & price
+          combination. Before people scream that one should never use a float
+          for a monetary value, we will use an int that represents "money" in
+          cents.
+          <a href="#footnotes">
+            <sup>2</sup>
+          </a>
+        </p>
+        <CodeBlock language="go" className="-mx-8">
+          {`
 type Product struct {
 	ID    string
 	Price int
 }
 `}
-      </CodeBlock>
-      <p className="my-4">
-        Then we define how our ProductPlan is supposed to look. Our update plan
-        has:
-      </p>
-      <ul className="ml-4 my-4">
-        <li>
-          Added - products that are only in the new dataset and thus will be
-          added.
-        </li>
-        <li>
-          NoChanges - products that are both in the old and new datasets, but
-          the price did not change.
-        </li>
-        <li>
-          Updated - products that are both in the old and new datasets, but the
-          price changed.
-        </li>
-        <li>
-          Removed - products that are only in the old dataset and thus will be
-          removed.
-        </li>
-      </ul>
-      <CodeBlock language="go">
-        {`
+        </CodeBlock>
+        <p>
+          Then we define how our ProductPlan is supposed to look. Our update
+          plan has:
+        </p>
+        <ul>
+          <li>
+            Added - products that are only in the new dataset and thus will be
+            added.
+          </li>
+          <li>
+            NoChanges - products that are both in the old and new datasets, but
+            the price did not change.
+          </li>
+          <li>
+            Updated - products that are both in the old and new datasets, but
+            the price changed.
+          </li>
+          <li>
+            Removed - products that are only in the old dataset and thus will be
+            removed.
+          </li>
+        </ul>
+        <CodeBlock language="go" className="-mx-8">
+          {`
 type ProductPair struct {
 	OldProduct Product
 	NewProduct Product
@@ -431,14 +418,14 @@ type ProductUpdatePlan struct {
 	Deleted   []Product
 }
 `}
-      </CodeBlock>
-      <p className="my-4">
-        The CreatePlan function then can look as follows. The cool thing here is
-        that it’s a pure function; it has no side effects and doesn’t even
-        return an error. It’s very easy to test this.
-      </p>
-      <CodeBlock language="go">
-        {`
+        </CodeBlock>
+        <p>
+          The CreatePlan function then can look as follows. The cool thing here
+          is that it’s a pure function; it has no side effects and doesn’t even
+          return an error. It’s very easy to test this.
+        </p>
+        <CodeBlock language="go" className="-mx-8">
+          {`
 func CreatePlan(
 	oldProducts []Product, newProducts []Product,
 ) ProductUpdatePlan {
@@ -473,14 +460,14 @@ func CreatePlan(
 	return plan
 }
 `}
-      </CodeBlock>
-      <p className="my-4">
-        To actually apply these changes, we define an interface that will
-        represent the database. We keep it simple and do not use any batch
-        updates/inserts here.
-      </p>
-      <CodeBlock language="go">
-        {`
+        </CodeBlock>
+        <p>
+          To actually apply these changes, we define an interface that will
+          represent the database. We keep it simple and do not use any batch
+          updates/inserts here.
+        </p>
+        <CodeBlock language="go" className="-mx-8">
+          {`
 type Repo interface {
 	InsertProduct(product Product) error
 	UpdateProduct(product Product) error
@@ -513,14 +500,14 @@ func (pup ProductUpdatePlan) Apply(repo Repo) error {
 	})
 }
 `}
-      </CodeBlock>
-      <p className="my-4">
-        The overall flow could look like this - this could be the function an
-        endpoint would call; the preview flag controls if it’s just a preview or
-        the actual import.
-      </p>
-      <CodeBlock language="go">
-        {`
+        </CodeBlock>
+        <p>
+          The overall flow could look like this - this could be the function an
+          endpoint would call; the preview flag controls if it’s just a preview
+          or the actual import.
+        </p>
+        <CodeBlock language="go" className="-mx-8">
+          {`
 func UpdateProducts(
 	repo repo, csv string, preview bool
 ) (ProductUpdatePlan, error) {
@@ -541,151 +528,143 @@ func UpdateProducts(
 	return plan, plan.Apply(repo)
 }
 `}
-      </CodeBlock>
-      <p className="my-4">
-        With this, we can offer a user experience that feels safe and
-        predictable. The user can clearly see how their changes will interact
-        with the system.
-      </p>
-      <h3 className="text-xl mt-8">Interactive example</h3>
-      <p className="my-4">
-        To have an excuse for building this blog with React.js, here is an
-        interactive toy example of how this could look. You can change the
-        provided CSV data, click "Preview changes" and see the update plan. You
-        can then apply the update plan to the database by clicking "Apply
-        changes". The products and CSV data are seeded with some sensible data.
-        There is no error handling, you have to rely on the update plan for the
-        safe guarding ;).
-      </p>
+        </CodeBlock>
+        <p>
+          With this, we can offer a user experience that feels safe and
+          predictable. The user can clearly see how their changes will interact
+          with the system.
+        </p>
+        <h3>Interactive example</h3>
+        <p>
+          To have an excuse for building this blog with React.js, here is an
+          interactive toy example of how this could look. You can change the
+          provided CSV data, click "Preview changes" and see the update plan.
+          You can then apply the update plan to the database by clicking "Apply
+          changes". The products and CSV data are seeded with some sensible
+          data. There is no error handling, you have to rely on the update plan
+          for the safe guarding ;).
+        </p>
+      </BlogContent>
       <div className="p-4 bg-gray-200 rounded-md">
         <StoreExample />
       </div>
-      <h3 className="text-xl mt-8">When should one use update plans?</h3>
-      <p className="my-4">
-        This pattern does not make sense for most data updates; as this entails
-        more work and complexity. It makes sense when:
-      </p>
-      <ul className="ml-4 my-4">
-        <li>
-          You’re updating something that is hard to grasp, but doing the update
-          creates immediate negative effects.
-        </li>
-        <li>The updates matter, and it’s not trivial to revert them.</li>
-        <li>
-          It would help the user be more confident and be faster in checking
-          that what they are about to do is correct, e.g., wouldn’t it be nice
-          if email clients would tell you how many people you are about to send
-          an email to if you are sending it to a group?
-        </li>
-      </ul>
-      <h3 className="text-xl mt-8">Snapshots & undo</h3>
-      <p className="my-4">
-        Update plans do not prevent a faulty update from being applied, so it is
-        important as well that there is an undo option. Sometimes this is not
-        completely possible - e.g., when Terraform deletes your production
-        database, you can’t just "undo" that.
-        <a href="#footnotes">
-          <sup>3</sup>
-        </a>{" "}
-        But in many cases, it is possible. E.g. snapshot the database before the
-        update and then revert to that snapshot if the update was faulty.
-      </p>
-      <p className="my-4">
-        Some update plans can actually be used to implement this feature, e.g.,
-        git commits are exactly that. Git commits are update plans that you can
-        freely undo and redo.
-        <a href="#footnotes">
-          <sup>4</sup>
-        </a>{" "}
-        This works only so long as <i>all</i> changes to the system are made
-        through the update plan, so for most systems, this is not feasible.
-      </p>
-      <h3 className="text-xl mt-8">
-        Why is this not a database feature already?
-      </h3>
-      <p className="my-4">
-        Personally I'm using this feature mostly with database updates and would
-        really like this to be a first class citizen from them. I asked{" "}
-        <a href="https://reddit.com/r/Database" className="link">
-          /r/Database
-        </a>{" "}
-        if anybody knows of some database features that could enable something
-        like this.{" "}
-        <a
-          className="link"
-          href="https://old.reddit.com/r/Database/comments/1b0u6vu/are_there_databases_that_can_emit_exactly_which/"
-        >
-          Here
-        </a>{" "}
-        is the thread if you are interested, my conclusion:
-      </p>
-      <ul className="ml-4 my-4 list-disc list-outside">
-        <li>
-          <a href="https://github.com/dolthub/dolt">DoltDB</a> basically
-          supports this OOTB with its ability to create branches and native diff
-          support. I find this project extremely intriguing personally,
-          effortlessly creating snapshots is a game changer (I'm not affiliated
-          with them).{" "}
-        </li>
-        <li>
-          Traditional databases do not have good support for this use case, CDC
-          was suggested multiple times, but that only helps you <i>after</i> the
-          commit. One could do scd2 (append only, you can query any version of
-          the data) or something similar (append only, but clean up afterwards).
-          This moves the complexity into the data model, which I'm personally
-          not a fan of.
-        </li>
-      </ul>
-      <p className="my-4">
-        For me the application logic approach I showed above is the best for me
-        personally as it is agnostic to whatever technology you use to actually
-        save the data to and only entails moving around application logic.
-      </p>
+      <BlogContent>
+        <h3>When should one use update plans?</h3>
+        <p>
+          This pattern does not make sense for most data updates; as this
+          entails more work and complexity. It makes sense when:
+        </p>
+        <ul>
+          <li>
+            You’re updating something that is hard to grasp, but doing the
+            update creates immediate negative effects.
+          </li>
+          <li>The updates matter, and it’s not trivial to revert them.</li>
+          <li>
+            It would help the user be more confident and be faster in checking
+            that what they are about to do is correct, e.g., wouldn’t it be nice
+            if email clients would tell you how many people you are about to
+            send an email to if you are sending it to a group?
+          </li>
+        </ul>
+        <h3>Snapshots & undo</h3>
+        <p>
+          Update plans do not prevent a faulty update from being applied, so it
+          is important as well that there is an undo option. Sometimes this is
+          not completely possible - e.g., when Terraform deletes your production
+          database, you can’t just "undo" that.
+          <a href="#footnotes">
+            <sup>3</sup>
+          </a>{" "}
+          But in many cases, it is possible. E.g. snapshot the database before
+          the update and then revert to that snapshot if the update was faulty.
+        </p>
+        <p>
+          Some update plans can actually be used to implement this feature,
+          e.g., git commits are exactly that. Git commits are update plans that
+          you can freely undo and redo.
+          <a href="#footnotes">
+            <sup>4</sup>
+          </a>{" "}
+          This works only so long as <i>all</i> changes to the system are made
+          through the update plan, so for most systems, this is not feasible.
+        </p>
+        <h3>Why is this not a database feature already?</h3>
+        <p>
+          Personally I'm using this feature mostly with database updates and
+          would really like this to be a first class citizen from them. I asked{" "}
+          <a href="https://reddit.com/r/Database">/r/Database</a> if anybody
+          knows of some database features that could enable something like this.{" "}
+          <a href="https://old.reddit.com/r/Database/comments/1b0u6vu/are_there_databases_that_can_emit_exactly_which/">
+            Here
+          </a>{" "}
+          is the thread if you are interested, my conclusion:
+        </p>
+        <ul className="ml-4 my-4 list-disc list-outside">
+          <li>
+            <a href="https://github.com/dolthub/dolt">DoltDB</a> basically
+            supports this OOTB with its ability to create branches and native
+            diff support. I find this project extremely intriguing personally,
+            effortlessly creating snapshots is a game changer (I'm not
+            affiliated with them).{" "}
+          </li>
+          <li>
+            Traditional databases do not have good support for this use case,
+            CDC was suggested multiple times, but that only helps you{" "}
+            <i>after</i> the commit. One could do scd2 (append only, you can
+            query any version of the data) or something similar (append only,
+            but clean up afterwards). This moves the complexity into the data
+            model, which I'm personally not a fan of.
+          </li>
+        </ul>
+        <p>
+          For me the application logic approach I showed above is the best for
+          me personally as it is agnostic to whatever technology you use to
+          actually save the data to and only entails moving around application
+          logic.
+        </p>
 
-      <h3 id="footnotes" className="text-xl mt-16 mb-4">
-        Footnotes
-      </h3>
-      <ol className="ml-4">
-        <li>
-          For Terraform, this is not perfect, sadly. There are often “noise”
-          changes due to e.g., AWS API changes etc., that actually don’t change
-          anything. And this is actually a difficult part of writing update
-          plans - to correctly assess an "update" and a "no change".
-        </li>
-        <li>
-          <p>
-            And you should never, I’ll haunt you personally. Floats are not
-            precise enough for monetary values or anything really where
-            precision is important. I find that representing money as fraction
-            of a cent is a decent way (e.g. stripes API does this), normally I
-            use a decimal type, those are sadly not built into programming
-            languages, but there are libraries e.g. in Go there is the{" "}
-            <a
-              className="link"
-              rel="nofollow"
-              target="_blank"
-              href="https://github.com/shopspring/decimal"
-            >
-              github.com/shopspring/decimal
-            </a>{" "}
-            package, JavaScript has the{" "}
-            <a className="link" href="https://github.com/MikeMcl/big.js">
-              big.js
-            </a>{" "}
-            package.
-          </p>
-        </li>
-        <li>
-          If you manage your AWS database using Terraform, please make sure you
-          have "skip_final_snapshot" set to false as deleting a database also
-          deletes the backups. Ask me how I know that.
-        </li>
-        <li>
-          Git’s UX is just a bit lacking; while it is easy enough to undo a
-          commit, it becomes much harder to undo e.g. a rebase. Git reflog
-          exists, but it’s not a user friendly interface.
-        </li>
-      </ol>
+        <h3 id="footnotes" className="text-xl mt-16 mb-4">
+          Footnotes
+        </h3>
+        <ol>
+          <li>
+            For Terraform, this is not perfect, sadly. There are often “noise”
+            changes due to e.g., AWS API changes etc., that actually don’t
+            change anything. And this is actually a difficult part of writing
+            update plans - to correctly assess an "update" and a "no change".
+          </li>
+          <li>
+            <p>
+              And you should never, I’ll haunt you personally. Floats are not
+              precise enough for monetary values or anything really where
+              precision is important. I find that representing money as fraction
+              of a cent is a decent way (e.g. stripes API does this), normally I
+              use a decimal type, those are sadly not built into programming
+              languages, but there are libraries e.g. in Go there is the{" "}
+              <a
+                rel="nofollow"
+                target="_blank"
+                href="https://github.com/shopspring/decimal"
+              >
+                github.com/shopspring/decimal
+              </a>{" "}
+              package, JavaScript has the{" "}
+              <a href="https://github.com/MikeMcl/big.js">big.js</a> package.
+            </p>
+          </li>
+          <li>
+            If you manage your AWS database using Terraform, please make sure
+            you have "skip_final_snapshot" set to false as deleting a database
+            also deletes the backups. Ask me how I know that.
+          </li>
+          <li>
+            Git’s UX is just a bit lacking; while it is easy enough to undo a
+            commit, it becomes much harder to undo e.g. a rebase. Git reflog
+            exists, but it’s not a user friendly interface.
+          </li>
+        </ol>
+      </BlogContent>
     </Container>
   )
 }
