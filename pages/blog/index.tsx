@@ -4,8 +4,14 @@ import Container from "../../components/container"
 import { METADATA as updatePlansMetadata } from "./update-plans"
 import { METADATA as miuMetadata } from "./miu"
 import { METADATA as numbersGameMetadata } from "./numbers-game"
+import { METADATA as dropboxMetadata } from "./dropbox-header"
 
-const BLOG_ENTRIES = [updatePlansMetadata, numbersGameMetadata, miuMetadata]
+const BLOG_ENTRIES = [
+  updatePlansMetadata,
+  dropboxMetadata,
+  numbersGameMetadata,
+  miuMetadata,
+]
 
 const Home: NextPage = () => {
   return (
