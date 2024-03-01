@@ -24,14 +24,6 @@ body {
   box-shadow: 0 4px 0px 0 rgb(253 224 71), inset 0 -20px 0 0 rgb(253 224 71);
 }
 
-ul {
-  @apply list-outside list-disc pl-4;
-}
-
-ol {
-  @apply list-outside list-decimal pl-4;
-}
-
 address {
   font-style: normal;
 }
@@ -60,8 +52,12 @@ address {
   @apply text-2xl mb-4 mt-8;
 }
 
-.blog ol, ul {
-  @apply my-4 ml-4;
+.blog ul {
+  @apply my-4 ml-4 list-outside list-disc;
+}
+
+.blog ol {
+  @apply my-4 ml-4 list-outside list-decimal;
 }
 
 .blog blockquote {

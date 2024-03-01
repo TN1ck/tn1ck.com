@@ -19,7 +19,7 @@ const Home: NextPage = () => {
   return (
     <Container activeId="blog">
       <h2 className="text-3xl mb-4">{"Blog index"}</h2>
-      <ul className="list-disc list-outside">
+      <ul className="">
         {BLOG_ENTRIES.map((metadata) => (
           <li key={metadata.title} className="mb-2">
             <Link className="link" href={`/blog/${metadata.slug}`}>
