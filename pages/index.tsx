@@ -61,7 +61,7 @@ const Home: NextPage = () => {
         </div>
         <div className="bg-white shadow-lg p-4 leading-7">
           <div className="mb-4 flex flex-row-reverse justify-between">
-            <time>Mid 2018 - Mid 2019</time>
+            <time>Mid 2017 - Mid 2019</time>
             <strong>Head of Software Engineering @ Separa / KPV Lab</strong>
           </div>
           The{" "}
