@@ -2,11 +2,13 @@ import hljs from "highlight.js/lib/core"
 import go from "highlight.js/lib/languages/go"
 import plaintext from "highlight.js/lib/languages/plaintext"
 import xml from "highlight.js/lib/languages/xml"
+import typescript from "highlight.js/lib/languages/typescript"
 import css from "highlight.js/lib/languages/css"
 import clsx from "clsx"
 hljs.registerLanguage("go", go)
 hljs.registerLanguage("plaintext", plaintext)
 hljs.registerLanguage("xml", xml)
+hljs.registerLanguage("typescript", typescript)
 hljs.registerLanguage("css", css)
 
 export function CodeBlock({
