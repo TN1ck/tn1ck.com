@@ -3,6 +3,18 @@ import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
 import { useCallback, useRef, useState } from "react"
+import {
+  DomainSudoku,
+  SUDOKU_1,
+  SUDOKU_NUMBERS,
+  SimpleSudoku,
+  dfsBruteForce,
+  dfsMinimumRemainingValue,
+  dfsWithValidCheck,
+  solveGridAC3,
+  toDomainSudoku,
+  toSimpleSudoku,
+} from "../../lib/sudokus"
 
 export const METADATA = {
   title: "How to generate Sudokus & rate their difficulties",
@@ -10,202 +22,27 @@ export const METADATA = {
   slug: "how-to-generate-sudokus",
 }
 
-type SudokuGrid = number[][]
-
-const SUDOKU_1: SudokuGrid = [
-  [0, 1, 0, 0, 0, 0, 6, 7, 4],
-  [0, 8, 9, 7, 0, 0, 0, 0, 0],
-  [0, 0, 2, 0, 6, 3, 8, 0, 0],
-  [0, 2, 8, 0, 0, 0, 7, 6, 0],
-  [0, 0, 0, 1, 0, 0, 4, 3, 0],
-  [0, 0, 6, 9, 2, 0, 0, 1, 8],
-  [0, 6, 0, 2, 3, 5, 0, 0, 0],
-  [2, 0, 0, 4, 0, 8, 1, 0, 6],
-  [5, 7, 0, 0, 0, 0, 0, 0, 0],
+const NOTE_COORDINATES = [
+  [0, 0], // 0
+  [0, 0], // 1
+  [0, 1], // 2
+  [0, 2], // 3
+  [1, 0], // 4
+  [1, 1], // 5
+  [1, 2], // 6
+  [2, 0], // 7
+  [2, 1], // 8
+  [2, 2], // 9
 ]
-
-const SUDOKU_1_SOLVED: SudokuGrid = [
-  [3, 1, 5, 8, 9, 2, 6, 7, 4],
-  [6, 8, 9, 7, 4, 1, 3, 2, 5],
-  [7, 4, 2, 5, 6, 3, 8, 9, 1],
-  [1, 2, 8, 3, 5, 4, 7, 6, 9],
-  [9, 5, 7, 1, 8, 6, 4, 3, 2],
-  [4, 3, 6, 9, 2, 7, 5, 1, 8],
-  [8, 6, 1, 2, 3, 5, 9, 4, 7],
-  [2, 9, 3, 4, 7, 8, 1, 5, 6],
-  [5, 7, 4, 6, 1, 9, 2, 8, 3],
-]
-
-const isSudokuFilled = (sudoku: SudokuGrid): boolean => {
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      if (sudoku[i][j] === 0) return false
-    }
-  }
-  return true
-}
-
-const isSudokuValid = (sudoku: SudokuGrid): boolean => {
-  // Check rows.
-  for (let i = 0; i < 9; i++) {
-    const row = sudoku[i]
-    const set = new Set(row)
-    set.delete(0)
-    if (set.size !== row.filter((n) => n !== 0).length) return false
-  }
-
-  // Check columns.
-  for (let i = 0; i < 9; i++) {
-    const column = sudoku.map((row) => row[i])
-    const set = new Set(column)
-    set.delete(0)
-    if (set.size !== column.filter((n) => n !== 0).length) return false
-  }
-
-  // Check squares.
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      const square = []
-      for (let k = 0; k < 3; k++) {
-        for (let l = 0; l < 3; l++) {
-          square.push(sudoku[i * 3 + k][j * 3 + l])
-        }
-      }
-      const set = new Set(square)
-      set.delete(0)
-      if (set.size !== square.filter((n) => n !== 0).length) return false
-    }
-  }
-
-  return true
-}
-
-// Most simple solver. Basically a brute force.
-const solveSudokuV1 = async (
-  stack: SudokuGrid[],
-  cb: (sudokus: SudokuGrid[]) => Promise<void>,
-): Promise<SudokuGrid | null> => {
-  if (stack.length === 0) return null
-  await cb(stack)
-
-  const [sudoku, ...rest] = stack
-
-  const isFilled = isSudokuFilled(sudoku)
-  const isValid = isSudokuValid(sudoku)
-
-  if (isFilled && isValid) return sudoku
-
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      if (sudoku[i][j] === 0) {
-        // We try all numbers from 1 to 9.
-        const newSudokus = []
-        for (let k = 1; k <= 9; k++) {
-          const newSudoku = sudoku.map((row) => row.slice())
-          newSudoku[i][j] = k
-          newSudokus.push(newSudoku)
-        }
-        return solveSudokuV1([...newSudokus, ...rest], cb)
-      }
-    }
-  }
-
-  return solveSudokuV1(rest, cb)
-}
-
-const solveSudokuV2 = async (
-  stack: SudokuGrid[],
-  cb: (sudokus: SudokuGrid[]) => Promise<void>,
-): Promise<SudokuGrid | null> => {
-  if (stack.length === 0) return null
-  await cb(stack)
-
-  const [sudoku, ...rest] = stack
-
-  const isFilled = isSudokuFilled(sudoku)
-  const isValid = isSudokuValid(sudoku)
-
-  if (isFilled && isValid) return sudoku
-  if (!isValid || isFilled) return solveSudokuV2(rest, cb)
-
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      if (sudoku[i][j] === 0) {
-        // We try all numbers from 1 to 9.
-        const newSudokus = []
-        for (let k = 1; k <= 9; k++) {
-          const newSudoku = sudoku.map((row) => row.slice())
-          newSudoku[i][j] = k
-          newSudokus.push(newSudoku)
-        }
-        return solveSudokuV2([...newSudokus, ...rest], cb)
-      }
-    }
-  }
-
-  return solveSudokuV2(rest, cb)
-}
-
-const solveSudokuV3 = async (
-  stack: SudokuGrid[],
-  cb: (sudokus: SudokuGrid[]) => Promise<void>,
-): Promise<SudokuGrid | null> => {
-  if (stack.length === 0) return null
-  await cb(stack)
-
-  const [sudoku, ...rest] = stack
-
-  const isFilled = isSudokuFilled(sudoku)
-  const isValid = isSudokuValid(sudoku)
-
-  if (isFilled && isValid) return sudoku
-  if (!isValid || isFilled) return solveSudokuV3(rest, cb)
-
-  const emptyCoordinates = []
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      if (sudoku[i][j] === 0) {
-        emptyCoordinates.push([i, j])
-      }
-    }
-  }
-
-  // For every coordinate, calculate the number of possibilities.
-  const possibilities = emptyCoordinates.map(([i, j]) => {
-    const row = sudoku[i]
-    const column = sudoku.map((row) => row[j])
-    const square = []
-    for (let k = 0; k < 3; k++) {
-      for (let l = 0; l < 3; l++) {
-        square.push(sudoku[i - (i % 3) + k][j - (j % 3) + l])
-      }
-    }
-    const set = new Set([...row, ...column, ...square])
-    set.delete(0)
-    return [i, j, 9 - set.size]
-  })
-
-  // Sort by the number of possibilities.
-  const sortedPossibilities = possibilities.sort((a, b) => a[2] - b[2])
-
-  // We take the first coordinate with the least possibilities.
-  const [i, j] = sortedPossibilities[0]
-  const newSudokus = []
-  for (let k = 1; k <= 9; k++) {
-    const newSudoku = sudoku.map((row) => row.slice())
-    newSudoku[i][j] = k
-    newSudokus.push(newSudoku)
-  }
-
-  return solveSudokuV3([...newSudokus, ...rest], cb)
-}
 
 const SudokuPreview = ({
   sudoku,
+  notes,
   size,
 }: {
   size: number
-  sudoku: SudokuGrid
+  sudoku: SimpleSudoku
+  notes?: DomainSudoku
 }) => {
   const height = 100
   const width = 100
@@ -260,19 +97,55 @@ const SudokuPreview = ({
         return (
           <div key={y}>
             {row.map((n, x) => {
-              return n !== 0 ? (
-                <div
-                  key={x}
-                  style={{
-                    position: "absolute",
-                    left: xSection * (x + 0.5) + "%",
-                    top: ySection * (y + 0.5) + "%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  {n}
+              const cellNotes = notes && notes[y][x]
+              return (
+                <div key={x}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: xSection * (x + 0.5) + "%",
+                      top: ySection * (y + 0.5) + "%",
+                      transform: "translate(-50%, -50%)",
+                    }}
+                  >
+                    {n === 0 ? "" : n}
+                  </div>
+                  {cellNotes && cellNotes.length > 1 ? (
+                    <div
+                      style={{
+                        height: `${xSection}%`,
+                        width: `${ySection}%`,
+                        position: "absolute",
+                        left: xSection * x + "%",
+                        top: ySection * y + "%",
+                      }}
+                    >
+                      <div
+                        className="w-full h-full flex flex-wrap"
+                        style={{
+                          padding: "10%",
+                        }}
+                      >
+                        {cellNotes?.map((n) => {
+                          return (
+                            <div
+                              className="flex items-center justify-center"
+                              key={n}
+                              style={{
+                                fontSize: 4,
+                                height: "33.333%",
+                                width: "33.333%",
+                              }}
+                            >
+                              {cellNotes && cellNotes.includes(n) ? n : ""}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
-              ) : null
+              )
             })}
           </div>
         )
@@ -285,13 +158,13 @@ const SudokuSolver = ({
   sudokuToSolve,
   solver,
 }: {
-  sudokuToSolve: SudokuGrid
+  sudokuToSolve: SimpleSudoku
   solver: (
-    sudokus: SudokuGrid[],
-    cb: (sudokus: SudokuGrid[]) => Promise<void>,
-  ) => Promise<SudokuGrid | null>
+    sudokus: SimpleSudoku[],
+    cb: (sudokus: SimpleSudoku[]) => Promise<void>,
+  ) => Promise<SimpleSudoku | null>
 }) => {
-  const [sudoku, setSudoku] = useState<SudokuGrid>(sudokuToSolve)
+  const [sudoku, setSudoku] = useState<SimpleSudoku>(sudokuToSolve)
   const [timeoutValue, setTimeoutValue] = useState<number>(0)
   const [iterations, setIterations] = useState<number>(0)
   const ref = useRef({
@@ -299,13 +172,11 @@ const SudokuSolver = ({
   })
 
   const callback = useCallback(
-    async (sudokus: SudokuGrid[]): Promise<void> => {
+    async (sudokus: SimpleSudoku[]): Promise<void> => {
       setIterations((i) => i + 1)
       if (ref.current.cancel) {
-        console.log("CANCEL!")
         throw new Error("Cancelled")
       } else {
-        console.log("Solved 1")
         setSudoku(sudokus[0])
         await new Promise<void>((resolve) => setTimeout(resolve, timeoutValue))
       }
@@ -317,13 +188,11 @@ const SudokuSolver = ({
     try {
       const result = await solver([sudokuToSolve], callback)
       if (result === null) {
-        alert("No solution found")
+        // alert("No solution found")
       } else {
-        console.log("Solved 2")
         setSudoku(result)
       }
     } catch {
-      console.log("Cancelled")
       setSudoku(sudokuToSolve)
     }
   }, [setSudoku, solver, callback, sudokuToSolve])
@@ -331,6 +200,95 @@ const SudokuSolver = ({
   return (
     <div>
       <SudokuPreview sudoku={sudoku} size={300} />
+      <button
+        className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        onClick={() => {
+          ref.current.cancel = true
+          setTimeout(() => {
+            ref.current.cancel = false
+            setIterations(0)
+            setSudoku(sudokuToSolve)
+            solveSudokuLocal()
+          }, 100)
+        }}
+      >
+        {"Solve"}
+      </button>
+      <button
+        className="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600"
+        onClick={() => {
+          ref.current.cancel = true
+          setTimeout(() => {
+            ref.current.cancel = false
+            setSudoku(sudokuToSolve)
+            setIterations(0)
+          }, 100)
+        }}
+      >
+        {"Cancel"}
+      </button>
+      <input
+        className="w-20 border border-gray-300 rounded-md p-1"
+        min={1}
+        max={1000}
+        value={timeoutValue}
+        onChange={(e) => setTimeoutValue(parseInt(e.target.value))}
+      />
+      <div>Iterations: {iterations}</div>
+    </div>
+  )
+}
+
+const SudokuSolverDomain = ({
+  sudokuToSolve,
+  solver,
+}: {
+  sudokuToSolve: SimpleSudoku
+  solver: (
+    sudokus: DomainSudoku[],
+    cb: (sudokus: DomainSudoku[]) => Promise<void>,
+  ) => Promise<SimpleSudoku | null>
+}) => {
+  const [sudoku, setSudoku] = useState<SimpleSudoku>(sudokuToSolve)
+  const [notes, setNotes] = useState<DomainSudoku>(
+    toDomainSudoku(sudokuToSolve),
+  )
+  const [timeoutValue, setTimeoutValue] = useState<number>(0)
+  const [iterations, setIterations] = useState<number>(0)
+  const ref = useRef({
+    cancel: false,
+  })
+
+  const callback = useCallback(
+    async (sudokus: DomainSudoku[]): Promise<void> => {
+      setIterations((i) => i + 1)
+      if (ref.current.cancel) {
+        throw new Error("Cancelled")
+      } else {
+        setNotes(sudokus[0])
+        setSudoku(toSimpleSudoku(sudokus[0]))
+        await new Promise<void>((resolve) => setTimeout(resolve, timeoutValue))
+      }
+    },
+    [setSudoku, timeoutValue],
+  )
+
+  const solveSudokuLocal = useCallback(async () => {
+    try {
+      const result = await solver([toDomainSudoku(sudokuToSolve)], callback)
+      if (result === null) {
+        // alert("No solution found")
+      } else {
+        setSudoku(result)
+      }
+    } catch {
+      setSudoku(sudokuToSolve)
+    }
+  }, [setSudoku, solver, callback, sudokuToSolve])
+
+  return (
+    <div>
+      <SudokuPreview sudoku={sudoku} size={300} notes={notes} />
       <button
         className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
         onClick={() => {
@@ -466,11 +424,16 @@ const Hashcode: NextPage = () => {
         </p>
         <CodeBlock language="typescript">TODO</CodeBlock>
         <h3>Brute force version</h3>
-        <SudokuSolver sudokuToSolve={SUDOKU_1} solver={solveSudokuV1} />
+        <SudokuSolver sudokuToSolve={SUDOKU_1} solver={dfsBruteForce} />
         <h3>A bit better</h3>
-        <SudokuSolver sudokuToSolve={SUDOKU_1} solver={solveSudokuV2} />
+        <SudokuSolver sudokuToSolve={SUDOKU_1} solver={dfsWithValidCheck} />
         <h3>Minimum remaining value</h3>
-        <SudokuSolver sudokuToSolve={SUDOKU_1} solver={solveSudokuV3} />
+        <SudokuSolver
+          sudokuToSolve={SUDOKU_1}
+          solver={dfsMinimumRemainingValue}
+        />
+        <h3>AC 3</h3>
+        <SudokuSolverDomain sudokuToSolve={SUDOKU_1} solver={solveGridAC3} />
         <p>
           The first optimization we do is to use a technique called "Minimum
           remaining value". This is a heuristic we can use to not search
