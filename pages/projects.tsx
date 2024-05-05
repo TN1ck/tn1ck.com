@@ -211,16 +211,13 @@ const Projects: NextPage = () => {
             preview: "/projects/numbers-game.png",
           }}
         >
-          <a className="link" href="https://tn1ck.gitlab.io/numbers-game/">
+          <a className="link" href="https://tn1ck.github.io/numbers-game/">
             Numbers Game
           </a>{" "}
           is a game that was normally played in the classroom. It is a tough
           game, which you can actually loose when you found a loop. I computed
           the minimal solution once, read it{" "}
-          <a
-            className="link"
-            href="https://tomnick.netlify.app/blog/numbers-game-minimal-solution/"
-          >
+          <a className="link" href="https://tn1ck.com/blog/numbers-game">
             here
           </a>
           .

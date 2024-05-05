@@ -4,17 +4,21 @@ import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
 import { useCallback, useRef, useState } from "react"
 import {
-  DomainSudoku,
-  SUDOKU_1,
-  SUDOKU_NUMBERS,
-  SimpleSudoku,
   dfsBruteForce,
   dfsMinimumRemainingValue,
   dfsWithValidCheck,
-  solveGridAC3,
+} from "../../lib/sudoku/sudokus"
+import {
+  DomainSudoku,
+  SUDOKU_1,
+  SUDOKU_2,
+  SUDOKU_3,
+  SUDOKU_UNSOLVABLE as SUDOKU_EVIL,
+  SimpleSudoku,
   toDomainSudoku,
   toSimpleSudoku,
-} from "../../lib/sudokus"
+} from "../../lib/sudoku/common"
+import { solveGridAC3 } from "../../lib/sudoku/ac3"
 
 export const METADATA = {
   title: "How to generate Sudokus & rate their difficulties",
@@ -173,6 +177,7 @@ const SudokuSolver = ({
 
   const callback = useCallback(
     async (sudokus: SimpleSudoku[]): Promise<void> => {
+      console.log(sudokus)
       setIterations((i) => i + 1)
       if (ref.current.cancel) {
         throw new Error("Cancelled")
@@ -188,7 +193,7 @@ const SudokuSolver = ({
     try {
       const result = await solver([sudokuToSolve], callback)
       if (result === null) {
-        // alert("No solution found")
+        alert("No solution found")
       } else {
         setSudoku(result)
       }
@@ -426,14 +431,14 @@ const Hashcode: NextPage = () => {
         <h3>Brute force version</h3>
         <SudokuSolver sudokuToSolve={SUDOKU_1} solver={dfsBruteForce} />
         <h3>A bit better</h3>
-        <SudokuSolver sudokuToSolve={SUDOKU_1} solver={dfsWithValidCheck} />
+        <SudokuSolver sudokuToSolve={SUDOKU_2} solver={dfsWithValidCheck} />
         <h3>Minimum remaining value</h3>
         <SudokuSolver
-          sudokuToSolve={SUDOKU_1}
+          sudokuToSolve={SUDOKU_2}
           solver={dfsMinimumRemainingValue}
         />
         <h3>AC 3</h3>
-        <SudokuSolverDomain sudokuToSolve={SUDOKU_1} solver={solveGridAC3} />
+        <SudokuSolverDomain sudokuToSolve={SUDOKU_EVIL} solver={solveGridAC3} />
         <p>
           The first optimization we do is to use a technique called "Minimum
           remaining value". This is a heuristic we can use to not search
@@ -441,7 +446,28 @@ const Hashcode: NextPage = () => {
           a human would do as well - fill or work on the cells with least
           options.
         </p>
-        <h3 id="criticism">Algorithm as described by the paper</h3>
+        <h3>How to generate sudokus</h3>
+        <p>
+          To now generate a sudoku of a specific difficulty, we do the
+          following:
+        </p>
+        <ol>
+          <li>
+            We generate a random _valid_ Sudoku. We do this by assigning
+            randomly filling the coordinates of the Sudoku and removing any
+            numbers that are in conflict.
+          </li>
+          <li>
+            If the sudoku is already unique, meaning there can only be one
+            solution we continue, if not we add numbers as long until it is
+            unique. If we could not make it unique, go back to step 1.
+          </li>
+          <li>
+            To generate a sudoku of a wanted difficulty, we either remove
+            numbers or add numbers until the reached difficulty is reached.
+          </li>
+        </ol>
+        h<h3 id="criticism">Algorithm as described by the paper</h3>
         <p>
           As mentioned above, the algorithm described in the paper has some
           issues, which in effect make it <strong>very</strong> slow albeit
