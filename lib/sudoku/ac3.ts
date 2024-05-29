@@ -7,16 +7,18 @@ import {
   toSimpleSudoku,
 } from "./common"
 
+// If domain2 consists of only one number, remove it from domain1.
+//
+// This is an optimization of AC3:
+// AC3 checks if there is a value in domain1 that
+// does not comply the constraint with at least one value in domain2.
+// But because the constraint for sudoku is inequality, the case happens only
+// when the domain2 is just one variable. The <= is just a safe-check.
 function removeValuesFromDomain(
   domain1: number[],
   domain2: number[],
 ): [number[], boolean] {
   let change = false
-  // this is an optimization:
-  // AC3 checks if there is a value in domain1 that
-  // does not comply the constraint with at least one value in domain2.
-  // But because the constraint is inequality, the case happens only
-  // when the domain2 is just one variable. The <= is just a safe-check.
   if (domain2.length <= 1) {
     const index = domain1.indexOf(domain2[0])
     if (index !== -1) {
@@ -46,18 +48,29 @@ export async function solveGridAC3(
 
   const rows = grid
 
-  //   Loop until no changes are made to any domain of any cell.
+  // Loop until no changes are made to any domain of any cell.
   while (true) {
     let change = false
-    // add row column constraints
+    // Add constraints (unique numbers in row / column / square).
+    //
+    // We do this by iterating over every cell and checking that cell with
+    // all other cells in the same row / column / square and remove every
+    // value from its domain that is in conflict with another one.
+    // E.g.
+    // Initially the cell is unfilled and has all possible values in its domain 1 - 9.
+    // We then check the row and see that the numbers 1,4 are taken,
+    // so we remove them, leaving us with 2,3,5,6,7,8,9.
+    // We then check the columns and see that 2,5,6 are taken, so we end up with 3,7,8,9.
+    // We then check the squares and see that 5 is taken, so we end up with 2 and 6.
+    //
+    // If the domain of any cell changed during this, we do this again for every cell,
+    // as the change of one domain can lead to the change of another.
     for (let y = 0; y < 9; y++) {
       const row = rows[y]
       for (let x = 0; x < 9; x++) {
         let domainCell1 = row[x]
-        // Note: I tried to be clever and tried not to compare cells twice
-        // but this is will falsify the algorithm.
 
-        //   Cells in the same row
+        // Cells in the same row.
         for (let xx = 0; xx < 9; xx++) {
           if (xx === x) {
             continue
@@ -69,7 +82,7 @@ export async function solveGridAC3(
           row[x] = domainCell1
         }
 
-        //   Cells in the same column
+        // Cells in the same column.
         for (let yy = 0; yy < 9; yy++) {
           if (yy === y) {
             continue
@@ -81,7 +94,7 @@ export async function solveGridAC3(
           row[x] = domainCell1
         }
 
-        //   Cells in the same square
+        // Cells in the same square.
         const square = SQUARE_TABLE[squareIndex(x, y)]
         for (let c = 0; c < 9; c++) {
           const s = square[c]
@@ -96,7 +109,8 @@ export async function solveGridAC3(
           row[x] = domainCell1
         }
 
-        // A domain became empty (e.g. no value works for a cell), we can't solve this Sudoku, continue with the next one.
+        // A domain became empty (e.g. no value works for a cell), we can't solve this Sudoku,
+        // continue with the next one.
         if (domainCell1.length === 0) {
           return solveGridAC3(rest, cb)
         }

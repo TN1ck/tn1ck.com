@@ -136,7 +136,7 @@ const SudokuPreview = ({
                               className="flex items-center justify-center"
                               key={n}
                               style={{
-                                fontSize: 4,
+                                fontSize: 6,
                                 height: "33.333%",
                                 width: "33.333%",
                               }}
@@ -424,28 +424,62 @@ const Hashcode: NextPage = () => {
           We represent the Sudoku as an array of array of numbers, namely{" "}
           <code>type SudokuGrid = number[][]</code> (We'll use TypeScript for
           the code examples). To simplify this constrain check, we can create a
-          function called `isSudokuSolved(sudoku: number[][])`. A depth first
-          search based solver could now rely on this method to solve any sudoku:
+          function called `isSudokuSolved(sudoku: number[][])`.
         </p>
-        <CodeBlock language="typescript">TODO</CodeBlock>
+        <h2>Creating a sudoku solver</h2>
+        Here is a step by step guide on how to create the solver we will use for
+        sudoku generation. We start with the most basic brute force algorithm
+        and end up with the final one.
         <h3>Brute force version</h3>
+        <CodeBlock language="typescript">TODO</CodeBlock>
+        <p>
+          This is the most simple algorithm to solve a sudoku, we literally try
+          out all the values without any other check. This is extremely slow,
+          especially as we only check for "complete and valid" sudoku and do not
+          break early if the current sudoku is not valid.
+        </p>
         <SudokuSolver sudokuToSolve={SUDOKU_1} solver={dfsBruteForce} />
-        <h3>A bit better</h3>
+        <h3>Break early</h3>
+        <p>
+          Instead of trying to solve invalid configurations of sudokus, we stop
+          as soon as we encounter an invalid one e.g. there are two 1's in the
+          same row. The biggest problem here is that we don't have any strategy
+          which cells to fill as we just take the next empty one.
+        </p>
         <SudokuSolver sudokuToSolve={SUDOKU_2} solver={dfsWithValidCheck} />
         <h3>Minimum remaining value</h3>
+        <p>
+          "Minimum remaining value" is a heuristic we can use to not search
+          blindly, but to select the cell next with the least amount of
+          possibilities. This is something a human would do as well - fill or
+          work on the cells with least options. This greatly reduces the number
+          of iterations needed for the difficult sudoku. This algorithm is
+          pretty solid now as it can solve even the hardest sudokus in the
+          millisecond range.
+        </p>
         <SudokuSolver
           sudokuToSolve={SUDOKU_2}
           solver={dfsMinimumRemainingValue}
         />
         <h3>AC 3</h3>
-        <SudokuSolverDomain sudokuToSolve={SUDOKU_EVIL} solver={solveGridAC3} />
         <p>
-          The first optimization we do is to use a technique called "Minimum
-          remaining value". This is a heuristic we can use to not search
-          blindly, but fill the least troublesome cells first. This is something
-          a human would do as well - fill or work on the cells with least
-          options.
+          The intuitive way on how AC3 works is that for every cell in the
+          sudoku, we keep track of its possible values. We reduce the possible
+          values for every cell by checking the sudoku constraints e.g. remove
+          the numbers that are already have a value in the same row / column /
+          square. We do this as long until no domain is changing anymore. This
+          "reduction of domains using the constraints" is AC3. For very simple
+          sudokus, this is already enough to solve one, for harder ones, we are
+          left with multiple options for every unfilled cell. This means we have
+          to employ a search again. We use then the "Minimum remaining value"
+          strategy again to select the cell with the least options and fill it
+          with a value and execute the algorithm again. The number of iterations
+          we count here are the times we executed the whole AC3 algorithm i.e.
+          reduce the amount of possibilities as long as nothing changes. This is
+          really similar on how experts solve sudokus, which means that the
+          iteration count should be very good indicator for the difficulty.
         </p>
+        <SudokuSolverDomain sudokuToSolve={SUDOKU_EVIL} solver={solveGridAC3} />
         <h3>How to generate sudokus</h3>
         <p>
           To now generate a sudoku of a specific difficulty, we do the
