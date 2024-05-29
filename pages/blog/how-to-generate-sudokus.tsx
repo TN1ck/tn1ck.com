@@ -21,6 +21,7 @@ import {
   toSimpleSudoku,
 } from "../../lib/sudoku/common"
 import { AC3Strategy, ac3 } from "../../lib/sudoku/ac3"
+import clsx from "clsx"
 
 export const METADATA = {
   title: "How to generate Sudokus & rate their difficulties",
@@ -104,6 +105,7 @@ const SudokuPreview = ({
           <div key={y}>
             {row.map((n, x) => {
               const cellNotes = notes && notes[y][x]
+              const alert = cellNotes?.length === 0
               return (
                 <div key={x}>
                   <div
@@ -118,6 +120,9 @@ const SudokuPreview = ({
                   </div>
                   {cellNotes && sudoku[y][x] === 0 ? (
                     <div
+                      className={clsx({
+                        "bg-red-600": alert,
+                      })}
                       style={{
                         height: `${xSection}%`,
                         width: `${ySection}%`,
@@ -212,7 +217,9 @@ const SudokuSolverDomain = ({
     if (!running) {
       return
     }
-    step(timeoutValue)
+    setTimeout(() => {
+      step(timeoutValue)
+    })
   }, [step, timeoutValue, running])
 
   return (
@@ -239,6 +246,7 @@ const SudokuSolverDomain = ({
         onClick={() => {
           setRunning(false)
           setIterations(0)
+          setHistory([])
           setSudoku(sudokuToSolve)
           setStack([sudokuToSolve])
         }}
@@ -261,6 +269,7 @@ const SudokuSolverDomain = ({
         onChange={(e) => setTimeoutValue(parseInt(e.target.value))}
       />
       <div>Iterations: {iterations}</div>
+      <div>Stack size: {stack.length}</div>
     </div>
   )
 }
@@ -372,7 +381,7 @@ const Hashcode: NextPage = () => {
         </p>
         <SudokuSolverDomain
           showNotes={false}
-          sudokuToSolve={SUDOKU_1}
+          sudokuToSolve={SUDOKU_2}
           strategy={bruteForceStrategy}
         />
         <h3>Break early</h3>
@@ -384,7 +393,7 @@ const Hashcode: NextPage = () => {
         </p>
         <SudokuSolverDomain
           showNotes={false}
-          sudokuToSolve={SUDOKU_1}
+          sudokuToSolve={SUDOKU_2}
           strategy={withValidCheckStrategy}
         />
         <h3>Minimum remaining value</h3>
@@ -399,7 +408,7 @@ const Hashcode: NextPage = () => {
         </p>
         <SudokuSolverDomain
           showNotes={false}
-          sudokuToSolve={SUDOKU_1}
+          sudokuToSolve={SUDOKU_2}
           strategy={minimumRemainingValueStrategy}
         />
         <h3>AC 3</h3>
