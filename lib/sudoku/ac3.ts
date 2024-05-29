@@ -4,8 +4,10 @@ import {
   SQUARE_TABLE,
   SimpleSudoku,
   squareIndex,
+  toDomainSudoku,
   toSimpleSudoku,
 } from "./common"
+import { isSudokuFilled, isSudokuValid } from "./sudokus"
 
 // If domain2 consists of only one number, remove it from domain1.
 //
@@ -30,24 +32,12 @@ function removeValuesFromDomain(
   return [domain1, change]
 }
 
-/**
- * For more information see the paper
- * Rating and Generating Sudoku Puzzles Based On Constraint Satisfaction Problems
- * by Bahare Fatemi, Seyed Mehran Kazemi, Nazanin Mehrasa
- */
-export async function solveGridAC3(
-  stack: DomainSudoku[],
-  cb: (sudokus: DomainSudoku[]) => Promise<void>,
-): Promise<SimpleSudoku | null> {
-  if (stack.length === 0) {
-    return null
-  }
-  await cb(stack)
-
-  const [grid, ...rest] = stack
-
-  const rows = grid
-
+// AC3 algorithm. Returns the reduced domain sudoku and if it is valid.
+export function ac3(sudoku: DomainSudoku): {
+  sudoku: DomainSudoku
+  solvable: boolean
+} {
+  sudoku = sudoku.map((r) => r.map((c) => c.slice()))
   // Loop until no changes are made to any domain of any cell.
   while (true) {
     let change = false
@@ -66,7 +56,7 @@ export async function solveGridAC3(
     // If the domain of any cell changed during this, we do this again for every cell,
     // as the change of one domain can lead to the change of another.
     for (let y = 0; y < 9; y++) {
-      const row = rows[y]
+      const row = sudoku[y]
       for (let x = 0; x < 9; x++) {
         let domainCell1 = row[x]
 
@@ -87,7 +77,7 @@ export async function solveGridAC3(
           if (yy === y) {
             continue
           }
-          const domainCell2 = rows[yy][x]
+          const domainCell2 = sudoku[yy][x]
           const result = removeValuesFromDomain(domainCell1, domainCell2)
           domainCell1 = result[0]
           change = change || result[1]
@@ -102,7 +92,7 @@ export async function solveGridAC3(
           if (xx === x && yy === y) {
             continue
           }
-          const domainCell2 = rows[yy][xx]
+          const domainCell2 = sudoku[yy][xx]
           const result = removeValuesFromDomain(domainCell1, domainCell2)
           domainCell1 = result[0]
           change = change || result[1]
@@ -112,7 +102,7 @@ export async function solveGridAC3(
         // A domain became empty (e.g. no value works for a cell), we can't solve this Sudoku,
         // continue with the next one.
         if (domainCell1.length === 0) {
-          return solveGridAC3(rest, cb)
+          return { sudoku, solvable: false }
         }
       }
     }
@@ -121,19 +111,28 @@ export async function solveGridAC3(
     }
   }
 
-  const isFilled = grid.every((row) => {
-    return row.every((cells) => {
-      return cells.length === 1
-    })
-  })
+  return { sudoku, solvable: true }
+}
 
-  // Every domain is length 1, we found a solution!
-  if (isFilled) {
-    return toSimpleSudoku(grid)
+/**
+ * For more information see the paper
+ * Rating and Generating Sudoku Puzzles Based On Constraint Satisfaction Problems
+ * by Bahare Fatemi, Seyed Mehran Kazemi, Nazanin Mehrasa
+ */
+export function AC3Strategy(sudoku: SimpleSudoku): SimpleSudoku[] {
+  const domainSudoku = toDomainSudoku(sudoku)
+  const { solvable, sudoku: reducedDomainSudoku } = ac3(domainSudoku)
+  if (!solvable) {
+    return []
+  }
+  // If we already solved the sudoku, return the sudoku.
+  const simpleSudoku = toSimpleSudoku(reducedDomainSudoku)
+  if (isSudokuFilled(simpleSudoku) && isSudokuValid(simpleSudoku)) {
+    return [simpleSudoku]
   }
 
   // No solution found yet. We create a list of all cells that have more than 1 solution as x/y coordinates.
-  const possibleRowAndCells = grid.reduce(
+  const possibleRowAndCells = reducedDomainSudoku.reduce(
     (current: Array<[number, number]>, row, index) => {
       const possibleCells = row.reduce(
         (currentCells: Array<[number, number]>, cells, cellIndex) => {
@@ -148,32 +147,26 @@ export async function solveGridAC3(
     },
     [],
   )
+
   // We sort the possible cells to have the ones with the least possibilities be first.
   // This is called "Minimum remaining value" and is a very good heuristic. It is similar to how
-  // humans solve Sudokus.
+  // humans solve sudokus.
   const sortedPossibleRowAndCells = sortBy(
     possibleRowAndCells,
     ([rowIndex, cellIndex]) => {
-      return grid[rowIndex][cellIndex].length
+      return reducedDomainSudoku[rowIndex][cellIndex].length
     },
   )
+
   // Take the best cell and create a new grid for every possibility the cell has.
   const [rowIndex, cellIndex] = sortedPossibleRowAndCells[0]
-  const cell = grid[rowIndex][cellIndex]
+  const cell = reducedDomainSudoku[rowIndex][cellIndex]
   const newGrids = cell.map((n) => {
-    return grid.map((row, r) => {
-      if (r === rowIndex) {
-        return row.map((cells, c) => {
-          if (c === cellIndex) {
-            return [n]
-          }
-          return [...cells]
-        })
-      }
-      return [...row]
-    })
+    const sudokuCopy = simpleSudoku.map((r) => r.slice())
+    sudokuCopy[rowIndex][cellIndex] = n
+
+    return sudokuCopy as SimpleSudoku
   })
-  // The new stack is put first and we recursively descend.
-  const newStack = newGrids.concat(rest)
-  return solveGridAC3(newStack, cb)
+
+  return newGrids
 }

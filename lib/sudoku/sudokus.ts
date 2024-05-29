@@ -1,7 +1,7 @@
 import { sortBy, groupBy, flatten } from "lodash-es"
 import { SimpleSudoku } from "./common"
 
-const isSudokuFilled = (sudoku: SimpleSudoku): boolean => {
+export const isSudokuFilled = (sudoku: SimpleSudoku): boolean => {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) return false
@@ -10,7 +10,7 @@ const isSudokuFilled = (sudoku: SimpleSudoku): boolean => {
   return true
 }
 
-const isSudokuValid = (sudoku: SimpleSudoku): boolean => {
+export const isSudokuValid = (sudoku: SimpleSudoku): boolean => {
   // Check rows.
   for (let i = 0; i < 9; i++) {
     const row = sudoku[i]
@@ -46,20 +46,7 @@ const isSudokuValid = (sudoku: SimpleSudoku): boolean => {
 }
 
 // Most simple solver. Basically a brute force.
-export const dfsBruteForce = async (
-  stack: SimpleSudoku[],
-  cb: (sudokus: SimpleSudoku[]) => Promise<void>,
-): Promise<SimpleSudoku | null> => {
-  if (stack.length === 0) return null
-  await cb(stack)
-
-  const [sudoku, ...rest] = stack
-
-  const isFilled = isSudokuFilled(sudoku)
-  const isValid = isSudokuValid(sudoku)
-
-  if (isFilled && isValid) return sudoku
-
+export function bruteForceStrategy(sudoku: SimpleSudoku): SimpleSudoku[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -70,29 +57,16 @@ export const dfsBruteForce = async (
           newSudoku[i][j] = k
           newSudokus.push(newSudoku)
         }
-        return dfsBruteForce([...newSudokus, ...rest], cb)
+        return newSudokus
       }
     }
   }
 
-  return dfsBruteForce(rest, cb)
+  return []
 }
 
-export const dfsWithValidCheck = async (
-  stack: SimpleSudoku[],
-  cb: (sudokus: SimpleSudoku[]) => Promise<void>,
-): Promise<SimpleSudoku | null> => {
-  if (stack.length === 0) return null
-  await cb(stack)
-
-  const [sudoku, ...rest] = stack
-
-  const isFilled = isSudokuFilled(sudoku)
-  const isValid = isSudokuValid(sudoku)
-
-  if (isFilled && isValid) return sudoku
-  if (!isValid || isFilled) return dfsWithValidCheck(rest, cb)
-
+// Slightly better, we skip the invalid sudokus.
+export function withValidCheckStrategy(sudoku: SimpleSudoku): SimpleSudoku[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -101,15 +75,35 @@ export const dfsWithValidCheck = async (
         for (let k = 1; k <= 9; k++) {
           const newSudoku = sudoku.map((row) => row.slice())
           newSudoku[i][j] = k
-          newSudokus.push(newSudoku)
+          if (isSudokuValid(newSudoku)) {
+            newSudokus.push(newSudoku)
+          }
         }
-        return dfsWithValidCheck([...newSudokus, ...rest], cb)
+        return newSudokus
       }
     }
   }
 
-  return dfsWithValidCheck(rest, cb)
+  return []
 }
+
+// function dfs(
+//   stack: SimpleSudoku[],
+//   strategy: (sudoku: SimpleSudoku) => SimpleSudoku[],
+// ): [SimpleSudoku | null, SimpleSudoku[]] {
+//   if (stack.length === 0) return [null, []]
+
+//   const [sudoku, ...rest] = stack
+
+//   const isFilled = isSudokuFilled(sudoku)
+//   const isValid = isSudokuValid(sudoku)
+
+//   if (isFilled && isValid) return [sudoku, []]
+
+//   const newSudokus = strategy(sudoku)
+
+//   return dfs([...newSudokus, ...rest], strategy)
+// }
 
 const getEmptyCoordinates = (sudoku: SimpleSudoku): [number, number][] => {
   const emptyCoordinates: [number, number][] = []
@@ -123,21 +117,9 @@ const getEmptyCoordinates = (sudoku: SimpleSudoku): [number, number][] => {
   return emptyCoordinates
 }
 
-export const dfsMinimumRemainingValue = async (
-  stack: SimpleSudoku[],
-  cb: (sudokus: SimpleSudoku[]) => Promise<void>,
-): Promise<SimpleSudoku | null> => {
-  if (stack.length === 0) return null
-  await cb(stack)
-
-  const [sudoku, ...rest] = stack
-
-  const isFilled = isSudokuFilled(sudoku)
-  const isValid = isSudokuValid(sudoku)
-
-  if (isFilled && isValid) return sudoku
-  if (!isValid || isFilled) return dfsMinimumRemainingValue(rest, cb)
-
+export function minimumRemainingValueStrategy(
+  sudoku: SimpleSudoku,
+): SimpleSudoku[] {
   const emptyCoordinates = getEmptyCoordinates(sudoku)
 
   // For every coordinate, calculate the number of possibilities.
@@ -164,8 +146,10 @@ export const dfsMinimumRemainingValue = async (
   for (let k = 1; k <= 9; k++) {
     const newSudoku = sudoku.map((row) => row.slice())
     newSudoku[i][j] = k
-    newSudokus.push(newSudoku)
+    if (isSudokuValid(newSudoku)) {
+      newSudokus.push(newSudoku)
+    }
   }
 
-  return dfsMinimumRemainingValue([...newSudokus, ...rest], cb)
+  return newSudokus
 }

@@ -2,11 +2,13 @@ import { NextPage } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
-  dfsBruteForce,
-  dfsMinimumRemainingValue,
-  dfsWithValidCheck,
+  bruteForceStrategy,
+  isSudokuFilled,
+  isSudokuValid,
+  minimumRemainingValueStrategy,
+  withValidCheckStrategy,
 } from "../../lib/sudoku/sudokus"
 import {
   DomainSudoku,
@@ -18,7 +20,7 @@ import {
   toDomainSudoku,
   toSimpleSudoku,
 } from "../../lib/sudoku/common"
-import { solveGridAC3 } from "../../lib/sudoku/ac3"
+import { AC3Strategy, ac3 } from "../../lib/sudoku/ac3"
 
 export const METADATA = {
   title: "How to generate Sudokus & rate their difficulties",
@@ -114,7 +116,7 @@ const SudokuPreview = ({
                   >
                     {n === 0 ? "" : n}
                   </div>
-                  {cellNotes && cellNotes.length > 1 ? (
+                  {cellNotes && sudoku[y][x] === 0 ? (
                     <div
                       style={{
                         height: `${xSection}%`,
@@ -158,168 +160,98 @@ const SudokuPreview = ({
   )
 }
 
-const SudokuSolver = ({
-  sudokuToSolve,
-  solver,
-}: {
-  sudokuToSolve: SimpleSudoku
-  solver: (
-    sudokus: SimpleSudoku[],
-    cb: (sudokus: SimpleSudoku[]) => Promise<void>,
-  ) => Promise<SimpleSudoku | null>
-}) => {
-  const [sudoku, setSudoku] = useState<SimpleSudoku>(sudokuToSolve)
-  const [timeoutValue, setTimeoutValue] = useState<number>(0)
-  const [iterations, setIterations] = useState<number>(0)
-  const ref = useRef({
-    cancel: false,
-  })
-
-  const callback = useCallback(
-    async (sudokus: SimpleSudoku[]): Promise<void> => {
-      console.log(sudokus)
-      setIterations((i) => i + 1)
-      if (ref.current.cancel) {
-        throw new Error("Cancelled")
-      } else {
-        setSudoku(sudokus[0])
-        await new Promise<void>((resolve) => setTimeout(resolve, timeoutValue))
-      }
-    },
-    [setSudoku, timeoutValue],
-  )
-
-  const solveSudokuLocal = useCallback(async () => {
-    try {
-      const result = await solver([sudokuToSolve], callback)
-      if (result === null) {
-        alert("No solution found")
-      } else {
-        setSudoku(result)
-      }
-    } catch {
-      setSudoku(sudokuToSolve)
-    }
-  }, [setSudoku, solver, callback, sudokuToSolve])
-
-  return (
-    <div>
-      <SudokuPreview sudoku={sudoku} size={300} />
-      <button
-        className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        onClick={() => {
-          ref.current.cancel = true
-          setTimeout(() => {
-            ref.current.cancel = false
-            setIterations(0)
-            setSudoku(sudokuToSolve)
-            solveSudokuLocal()
-          }, 100)
-        }}
-      >
-        {"Solve"}
-      </button>
-      <button
-        className="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600"
-        onClick={() => {
-          ref.current.cancel = true
-          setTimeout(() => {
-            ref.current.cancel = false
-            setSudoku(sudokuToSolve)
-            setIterations(0)
-          }, 100)
-        }}
-      >
-        {"Cancel"}
-      </button>
-      <input
-        className="w-20 border border-gray-300 rounded-md p-1"
-        min={1}
-        max={1000}
-        value={timeoutValue}
-        onChange={(e) => setTimeoutValue(parseInt(e.target.value))}
-      />
-      <div>Iterations: {iterations}</div>
-    </div>
-  )
-}
-
 const SudokuSolverDomain = ({
   sudokuToSolve,
-  solver,
+  strategy,
+  showNotes,
+  getNotes,
 }: {
   sudokuToSolve: SimpleSudoku
-  solver: (
-    sudokus: DomainSudoku[],
-    cb: (sudokus: DomainSudoku[]) => Promise<void>,
-  ) => Promise<SimpleSudoku | null>
+  strategy: (sudoku: SimpleSudoku) => SimpleSudoku[]
+  showNotes: boolean
+  getNotes?: (sudoku: SimpleSudoku) => DomainSudoku
 }) => {
+  const [history, setHistory] = useState<SimpleSudoku[]>([])
   const [sudoku, setSudoku] = useState<SimpleSudoku>(sudokuToSolve)
-  const [notes, setNotes] = useState<DomainSudoku>(
-    toDomainSudoku(sudokuToSolve),
-  )
-  const [timeoutValue, setTimeoutValue] = useState<number>(0)
+  const [stack, setStack] = useState<SimpleSudoku[]>([sudokuToSolve])
+  const [timeoutValue, setTimeoutValue] = useState<number>(10)
   const [iterations, setIterations] = useState<number>(0)
-  const ref = useRef({
-    cancel: false,
-  })
 
-  const callback = useCallback(
-    async (sudokus: DomainSudoku[]): Promise<void> => {
-      setIterations((i) => i + 1)
-      if (ref.current.cancel) {
-        throw new Error("Cancelled")
-      } else {
-        setNotes(sudokus[0])
-        setSudoku(toSimpleSudoku(sudokus[0]))
-        await new Promise<void>((resolve) => setTimeout(resolve, timeoutValue))
+  const [running, setRunning] = useState(false)
+
+  const step = useCallback(
+    (timeout: number) => {
+      const [current, ...rest] = stack
+      setSudoku(current)
+      setHistory([current, ...history])
+      if (isSudokuFilled(current) && isSudokuValid(current)) {
+        setStack([sudokuToSolve])
+        setRunning(false)
+        return
       }
+      setTimeout(() => {
+        const newSudokus = strategy(current)
+        setIterations(iterations + 1)
+        setStack([...newSudokus, ...rest])
+      }, timeout)
     },
-    [setSudoku, timeoutValue],
+    [
+      history,
+      setHistory,
+      stack,
+      setStack,
+      setRunning,
+      strategy,
+      setIterations,
+      iterations,
+      sudokuToSolve,
+    ],
   )
 
-  const solveSudokuLocal = useCallback(async () => {
-    try {
-      const result = await solver([toDomainSudoku(sudokuToSolve)], callback)
-      if (result === null) {
-        // alert("No solution found")
-      } else {
-        setSudoku(result)
-      }
-    } catch {
-      setSudoku(sudokuToSolve)
+  useEffect(() => {
+    if (!running) {
+      return
     }
-  }, [setSudoku, solver, callback, sudokuToSolve])
+    step(timeoutValue)
+  }, [step, timeoutValue, running])
 
   return (
     <div>
-      <SudokuPreview sudoku={sudoku} size={300} notes={notes} />
+      <SudokuPreview
+        sudoku={sudoku}
+        size={300}
+        notes={
+          showNotes && getNotes && history.length > 0
+            ? getNotes(history[0])
+            : undefined
+        }
+      />
       <button
         className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
         onClick={() => {
-          ref.current.cancel = true
-          setTimeout(() => {
-            ref.current.cancel = false
-            setIterations(0)
-            setSudoku(sudokuToSolve)
-            solveSudokuLocal()
-          }, 100)
+          setRunning(!running)
         }}
       >
-        {"Solve"}
+        {running ? "Pause" : "Solve"}
       </button>
       <button
         className="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600"
         onClick={() => {
-          ref.current.cancel = true
-          setTimeout(() => {
-            ref.current.cancel = false
-            setSudoku(sudokuToSolve)
-            setIterations(0)
-          }, 100)
+          setRunning(false)
+          setIterations(0)
+          setSudoku(sudokuToSolve)
+          setStack([sudokuToSolve])
         }}
       >
-        {"Cancel"}
+        {"Reset"}
+      </button>
+      <button
+        className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        onClick={() => {
+          step(0)
+        }}
+      >
+        {"Step"}
       </button>
       <input
         className="w-20 border border-gray-300 rounded-md p-1"
@@ -438,7 +370,11 @@ const Hashcode: NextPage = () => {
           especially as we only check for "complete and valid" sudoku and do not
           break early if the current sudoku is not valid.
         </p>
-        <SudokuSolver sudokuToSolve={SUDOKU_1} solver={dfsBruteForce} />
+        <SudokuSolverDomain
+          showNotes={false}
+          sudokuToSolve={SUDOKU_1}
+          strategy={bruteForceStrategy}
+        />
         <h3>Break early</h3>
         <p>
           Instead of trying to solve invalid configurations of sudokus, we stop
@@ -446,7 +382,11 @@ const Hashcode: NextPage = () => {
           same row. The biggest problem here is that we don't have any strategy
           which cells to fill as we just take the next empty one.
         </p>
-        <SudokuSolver sudokuToSolve={SUDOKU_2} solver={dfsWithValidCheck} />
+        <SudokuSolverDomain
+          showNotes={false}
+          sudokuToSolve={SUDOKU_1}
+          strategy={withValidCheckStrategy}
+        />
         <h3>Minimum remaining value</h3>
         <p>
           "Minimum remaining value" is a heuristic we can use to not search
@@ -457,9 +397,10 @@ const Hashcode: NextPage = () => {
           pretty solid now as it can solve even the hardest sudokus in the
           millisecond range.
         </p>
-        <SudokuSolver
-          sudokuToSolve={SUDOKU_2}
-          solver={dfsMinimumRemainingValue}
+        <SudokuSolverDomain
+          showNotes={false}
+          sudokuToSolve={SUDOKU_1}
+          strategy={minimumRemainingValueStrategy}
         />
         <h3>AC 3</h3>
         <p>
@@ -479,7 +420,14 @@ const Hashcode: NextPage = () => {
           really similar on how experts solve sudokus, which means that the
           iteration count should be very good indicator for the difficulty.
         </p>
-        <SudokuSolverDomain sudokuToSolve={SUDOKU_EVIL} solver={solveGridAC3} />
+        <SudokuSolverDomain
+          showNotes={true}
+          sudokuToSolve={SUDOKU_2}
+          strategy={AC3Strategy}
+          getNotes={(sudoku: SimpleSudoku) => {
+            return ac3(toDomainSudoku(sudoku)).sudoku
+          }}
+        />
         <h3>How to generate sudokus</h3>
         <p>
           To now generate a sudoku of a specific difficulty, we do the
