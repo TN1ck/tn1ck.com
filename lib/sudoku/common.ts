@@ -1,9 +1,9 @@
 import { flatten, groupBy, sortBy } from "lodash-es"
 
-export type SimpleSudoku = number[][]
+export type SudokuGrid = number[][]
 export type DomainSudoku = number[][][]
 
-export function toSimpleSudoku(grid: DomainSudoku): SimpleSudoku {
+export function toSimpleSudoku(grid: DomainSudoku): SudokuGrid {
   return grid.map((row) => {
     return row.map((cells) => {
       return cells.length === 1 ? cells[0] : 0
@@ -11,7 +11,7 @@ export function toSimpleSudoku(grid: DomainSudoku): SimpleSudoku {
   })
 }
 
-export function toDomainSudoku(grid: SimpleSudoku): DomainSudoku {
+export function toDomainSudoku(grid: SudokuGrid): DomainSudoku {
   return grid.map((row) => {
     return row.map((c) => {
       return c === 0 ? SUDOKU_NUMBERS : [c]
@@ -19,7 +19,7 @@ export function toDomainSudoku(grid: SimpleSudoku): DomainSudoku {
   })
 }
 // Easy sudoku
-export const SUDOKU_1: SimpleSudoku = [
+export const SUDOKU_1: SudokuGrid = [
   [0, 1, 0, 0, 0, 0, 6, 7, 4],
   [0, 8, 9, 7, 0, 0, 0, 0, 0],
   [0, 0, 2, 0, 6, 3, 8, 0, 0],
@@ -32,7 +32,7 @@ export const SUDOKU_1: SimpleSudoku = [
 ]
 
 // Medium sudoku
-export const SUDOKU_3: SimpleSudoku = [
+export const SUDOKU_3: SudokuGrid = [
   [6, 3, 0, 0, 0, 0, 0, 5, 0],
   [2, 0, 5, 3, 4, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 6, 9, 0, 0],
@@ -45,7 +45,7 @@ export const SUDOKU_3: SimpleSudoku = [
 ]
 
 // Evil sudoku
-export const SUDOKU_2: SimpleSudoku = [
+export const SUDOKU_2: SudokuGrid = [
   [0, 6, 0, 0, 0, 0, 0, 0, 4],
   [0, 5, 0, 0, 6, 1, 0, 8, 0],
   [0, 1, 0, 0, 9, 0, 0, 0, 3],
@@ -57,7 +57,7 @@ export const SUDOKU_2: SimpleSudoku = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-const SUDOKU_1_SOLVED: SimpleSudoku = [
+const SUDOKU_1_SOLVED: SudokuGrid = [
   [3, 1, 5, 8, 9, 2, 6, 7, 4],
   [6, 8, 9, 7, 4, 1, 3, 2, 5],
   [7, 4, 2, 5, 6, 3, 8, 9, 1],
@@ -69,7 +69,7 @@ const SUDOKU_1_SOLVED: SimpleSudoku = [
   [5, 7, 4, 6, 1, 9, 2, 8, 3],
 ]
 
-export const SUDOKU_UNSOLVABLE: SimpleSudoku = [
+export const SUDOKU_UNSOLVABLE: SudokuGrid = [
   [0, 0, 0, 0, 3, 0, 0, 0, 9],
   [0, 0, 0, 0, 0, 5, 0, 6, 0],
   [0, 0, 0, 0, 0, 7, 5, 0, 8],

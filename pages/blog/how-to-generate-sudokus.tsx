@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { NextPage } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
@@ -16,7 +17,7 @@ import {
   SUDOKU_2,
   SUDOKU_3,
   SUDOKU_UNSOLVABLE as SUDOKU_EVIL,
-  SimpleSudoku,
+  SudokuGrid,
   toDomainSudoku,
   toSimpleSudoku,
 } from "../../lib/sudoku/common"
@@ -24,7 +25,7 @@ import { AC3Strategy, ac3 } from "../../lib/sudoku/ac3"
 import clsx from "clsx"
 
 export const METADATA = {
-  title: "How to generate Sudokus & rate their difficulties",
+  title: "How to generate Sudokus & rate their difficulties (WIP)",
   date: "2024-04-27",
   slug: "how-to-generate-sudokus",
 }
@@ -48,7 +49,7 @@ const SudokuPreview = ({
   size,
 }: {
   size: number
-  sudoku: SimpleSudoku
+  sudoku: SudokuGrid
   notes?: DomainSudoku
 }) => {
   const height = 100
@@ -171,14 +172,14 @@ const SudokuSolverDomain = ({
   showNotes,
   getNotes,
 }: {
-  sudokuToSolve: SimpleSudoku
-  strategy: (sudoku: SimpleSudoku) => SimpleSudoku[]
+  sudokuToSolve: SudokuGrid
+  strategy: (sudoku: SudokuGrid) => SudokuGrid[]
   showNotes: boolean
-  getNotes?: (sudoku: SimpleSudoku) => DomainSudoku
+  getNotes?: (sudoku: SudokuGrid) => DomainSudoku
 }) => {
-  const [history, setHistory] = useState<SimpleSudoku[]>([])
-  const [sudoku, setSudoku] = useState<SimpleSudoku>(sudokuToSolve)
-  const [stack, setStack] = useState<SimpleSudoku[]>([sudokuToSolve])
+  const [history, setHistory] = useState<SudokuGrid[]>([])
+  const [sudoku, setSudoku] = useState<SudokuGrid>(sudokuToSolve)
+  const [stack, setStack] = useState<SudokuGrid[]>([sudokuToSolve])
   const [timeoutValue, setTimeoutValue] = useState<number>(10)
   const [iterations, setIterations] = useState<number>(0)
 
@@ -291,14 +292,14 @@ const Hashcode: NextPage = () => {
         </p>
         <p>
           The main problem that one faces when generating a sudoku is to assign
-          the difficulty rating for a human solver. As we don't want to manually
+          the difficulty rating for a human solver. As we don’t want to manually
           verify every Sudoku we generate, we need an automatic way for us to
           group a newly generated Sudoku according to its difficulty. The
           "standard" Sudoku solver one writes, uses the most of the time a depth
           first search to brute force the Sudoku. One could think that e.g. the
           number of iterations needed might be a valid metric for difficultyness
           here, but it is not when we simply try it out. I have a list of 200?
-          Sudokus with already grouped difficulties, let's see how well the
+          Sudokus with already grouped difficulties, let’s see how well the
           metric performs. TODO: Add cool algorithm TODO: Rate the difficulty.
         </p>
         <ul>
@@ -324,7 +325,7 @@ const Hashcode: NextPage = () => {
           now is trying to adjust the difficulty. We can make it easier by
           filling some spots and make it harder by removing a number and have it
           still solvable (if possible). This step is only necessary if you aim
-          for a certain difficulty grade. But this approach doesn't guarantee
+          for a certain difficulty grade. But this approach doesn’t guarantee
           that every sudoku will abide to a certain difficulty.
         </p>
         <h3>Generating a Sudoku with a specific difficulties</h3>
@@ -363,34 +364,91 @@ const Hashcode: NextPage = () => {
         </p>
         <p>
           We represent the Sudoku as an array of array of numbers, namely{" "}
-          <code>type SudokuGrid = number[][]</code> (We'll use TypeScript for
+          <code>type SudokuGrid = number[][]</code> (We’ll use TypeScript for
           the code examples). To simplify this constrain check, we can create a
           function called `isSudokuSolved(sudoku: number[][])`.
         </p>
         <h2>Creating a sudoku solver</h2>
         Here is a step by step guide on how to create the solver we will use for
         sudoku generation. We start with the most basic brute force algorithm
-        and end up with the final one.
+        and end up with the final one. We use a depth first search (short DFS)
+        for all our different strategies here, we abstract this by the following
+        function. We make it sudoku specific instead of completely generic for
+        ease of use. Adding caching to prevent calculating the same branch
+        multiple times is left as an exercise for the reader.
+        <CodeBlock language="typescript">
+          {`function dfs(
+  stack: SudokuGrid[],
+  getNeighbours: (sudoku: SudokuGrid) => SudokuGrid[],
+): [SudokuGrid | null, SudokuGrid[]] {
+  if (stack.length === 0) return [null, []]
+
+  const [sudoku, ...rest] = stack
+
+  const isFilled = isSudokuFilled(sudoku)
+  const isValid = isSudokuValid(sudoku)
+
+  if (isFilled && isValid) return [sudoku, []]
+
+  const newSudokus = getNeighbours(sudoku)
+
+  return dfs([...newSudokus, ...rest], getNeighbours)
+}`}
+        </CodeBlock>
         <h3>Brute force version</h3>
-        <CodeBlock language="typescript">TODO</CodeBlock>
         <p>
-          This is the most simple algorithm to solve a sudoku, we literally try
-          out all the values without any other check. This is extremely slow,
-          especially as we only check for "complete and valid" sudoku and do not
-          break early if the current sudoku is not valid.
+          This is the most simple strategy to solve the sudoku: We find an empty
+          spot and fill in a number between 1 - 9. We don’t do anything else.
+          This is horribly slow, do not try this at home.
         </p>
+        <CodeBlock language="typescript">{`function bruteForceStrategy(sudoku: SudokuGrid): SimpleSudoku[] {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (sudoku[i][j] === 0) {
+        const newSudokus = []
+        for (let k = 1; k <= 9; k++) {
+          const newSudoku = sudoku.map((row) => row.slice())
+          newSudoku[i][j] = k
+          newSudokus.push(newSudoku)
+        }
+        return newSudokus
+      }
+    }
+  }
+
+  return []
+}`}</CodeBlock>
         <SudokuSolverDomain
           showNotes={false}
           sudokuToSolve={SUDOKU_2}
           strategy={bruteForceStrategy}
         />
-        <h3>Break early</h3>
+        <h3>Skip on invalid sudokus</h3>
         <p>
-          Instead of trying to solve invalid configurations of sudokus, we stop
-          as soon as we encounter an invalid one e.g. there are two 1's in the
-          same row. The biggest problem here is that we don't have any strategy
-          which cells to fill as we just take the next empty one.
+          The simplest and most substantial change we can do, is not not waiting
+          until the whole Sudoku is filled, but skipping on the Sudokus that are
+          already invalid.
         </p>
+        <CodeBlock language="typescript">{`function withValidCheckStrategy(sudoku: SudokuGrid): SudokuGrid[] {
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (sudoku[i][j] === 0) {
+        const newSudokus = []
+        for (let k = 1; k <= 9; k++) {
+          const newSudoku = sudoku.map((row) => row.slice())
+          newSudoku[i][j] = k
+          // This is the change!
+          if (isSudokuValid(newSudoku)) {
+            newSudokus.push(newSudoku)
+          }
+        }
+        return newSudokus
+      }
+    }
+  }
+
+  return []
+}`}</CodeBlock>
         <SudokuSolverDomain
           showNotes={false}
           sudokuToSolve={SUDOKU_2}
@@ -406,6 +464,54 @@ const Hashcode: NextPage = () => {
           pretty solid now as it can solve even the hardest sudokus in the
           millisecond range.
         </p>
+        <CodeBlock language="typescript">{`function getEmptyCoordinates(sudoku: SudokuGrid): [number, number][] {
+  const emptyCoordinates: [number, number][] = []
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (sudoku[i][j] === 0) {
+        emptyCoordinates.push([i, j])
+      }
+    }
+  }
+  return emptyCoordinates
+}
+
+function minimumRemainingValueStrategy(
+  sudoku: SudokuGrid,
+): SudokuGrid[] {
+  const emptyCoordinates = getEmptyCoordinates(sudoku)
+
+  // For every coordinate, calculate the number of possibilities.
+  const possibilities = emptyCoordinates.map(([i, j]) => {
+    const row = sudoku[i]
+    const column = sudoku.map((row) => row[j])
+    const square = []
+    for (let k = 0; k < 3; k++) {
+      for (let l = 0; l < 3; l++) {
+        square.push(sudoku[i - (i % 3) + k][j - (j % 3) + l])
+      }
+    }
+    const set = new Set([...row, ...column, ...square])
+    set.delete(0)
+    return [i, j, 9 - set.size]
+  })
+
+  // Sort by the number of possibilities.
+  const sortedPossibilities = possibilities.sort((a, b) => a[2] - b[2])
+
+  // We take the first coordinate with the least possibilities.
+  const [i, j] = sortedPossibilities[0]
+  const newSudokus = []
+  for (let k = 1; k <= 9; k++) {
+    const newSudoku = sudoku.map((row) => row.slice())
+    newSudoku[i][j] = k
+    if (isSudokuValid(newSudoku)) {
+      newSudokus.push(newSudoku)
+    }
+  }
+
+  return newSudokus
+}`}</CodeBlock>
         <SudokuSolverDomain
           showNotes={false}
           sudokuToSolve={SUDOKU_2}
@@ -429,11 +535,172 @@ const Hashcode: NextPage = () => {
           really similar on how experts solve sudokus, which means that the
           iteration count should be very good indicator for the difficulty.
         </p>
+        <CodeBlock language="typescript">{`// If domain2 consists of only one number, remove it from domain1.
+//
+// This is an optimization of AC3:
+// AC3 checks if there is a value in domain1 that
+// does not comply the constraint with at least one value in domain2.
+// But because the constraint for sudoku is inequality, the case happens only
+// when the domain2 is just one variable. The <= is just a safe-check.
+function removeValuesFromDomain(
+  domain1: number[],
+  domain2: number[],
+): [number[], boolean] {
+  let change = false
+  if (domain2.length <= 1) {
+    const index = domain1.indexOf(domain2[0])
+    if (index !== -1) {
+      domain1 = domain1.slice()
+      domain1.splice(index, 1)
+      change = true
+    }
+  }
+  return [domain1, change]
+}
+
+// AC3 algorithm. Returns the reduced domain sudoku and if it is valid.
+export function ac3(sudoku: DomainSudoku): {
+  sudoku: DomainSudoku
+  solvable: boolean
+} {
+  sudoku = sudoku.map((r) => r.map((c) => c.slice()))
+  // Loop until no changes are made to any domain of any cell.
+  while (true) {
+    let change = false
+    // Add constraints (unique numbers in row / column / square).
+    //
+    // We do this by iterating over every cell and checking that cell with
+    // all other cells in the same row / column / square and remove every
+    // value from its domain that is in conflict with another one.
+    // E.g.
+    // Initially the cell is unfilled and has all possible values in its domain 1 - 9.
+    // We then check the row and see that the numbers 1,4 are taken,
+    // so we remove them, leaving us with 2,3,5,6,7,8,9.
+    // We then check the columns and see that 2,5,6 are taken, so we end up with 3,7,8,9.
+    // We then check the squares and see that 5 is taken, so we end up with 2 and 6.
+    //
+    // If the domain of any cell changed during this, we do this again for every cell,
+    // as the change of one domain can lead to the change of another.
+    for (let y = 0; y < 9; y++) {
+      const row = sudoku[y]
+      for (let x = 0; x < 9; x++) {
+        let domainCell1 = row[x]
+
+        // Cells in the same row.
+        for (let xx = 0; xx < 9; xx++) {
+          if (xx === x) {
+            continue
+          }
+          const domainCell2 = row[xx]
+          const result = removeValuesFromDomain(domainCell1, domainCell2)
+          domainCell1 = result[0]
+          change = change || result[1]
+          row[x] = domainCell1
+        }
+
+        // Cells in the same column.
+        for (let yy = 0; yy < 9; yy++) {
+          if (yy === y) {
+            continue
+          }
+          const domainCell2 = sudoku[yy][x]
+          const result = removeValuesFromDomain(domainCell1, domainCell2)
+          domainCell1 = result[0]
+          change = change || result[1]
+          row[x] = domainCell1
+        }
+
+        // Cells in the same square.
+        const square = SQUARE_TABLE[squareIndex(x, y)]
+        for (let c = 0; c < 9; c++) {
+          const s = square[c]
+          const [xx, yy] = s
+          if (xx === x && yy === y) {
+            continue
+          }
+          const domainCell2 = sudoku[yy][xx]
+          const result = removeValuesFromDomain(domainCell1, domainCell2)
+          domainCell1 = result[0]
+          change = change || result[1]
+          row[x] = domainCell1
+        }
+
+        // A domain became empty (e.g. no value works for a cell), we can't solve this Sudoku,
+        // continue with the next one.
+        if (domainCell1.length === 0) {
+          return { sudoku, solvable: false }
+        }
+      }
+    }
+    if (!change) {
+      break
+    }
+  }
+
+  return { sudoku, solvable: true }
+}
+
+/**
+ * For more information see the paper
+ * Rating and Generating Sudoku Puzzles Based On Constraint Satisfaction Problems
+ * by Bahare Fatemi, Seyed Mehran Kazemi, Nazanin Mehrasa
+ */
+export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
+  const domainSudoku = toDomainSudoku(sudoku)
+  const { solvable, sudoku: reducedDomainSudoku } = ac3(domainSudoku)
+  if (!solvable) {
+    return []
+  }
+  // If we already solved the sudoku, return the sudoku.
+  const simpleSudoku = toSimpleSudoku(reducedDomainSudoku)
+  if (isSudokuFilled(simpleSudoku) && isSudokuValid(simpleSudoku)) {
+    return [simpleSudoku]
+  }
+
+  // No solution found yet. We create a list of all cells that have more than 1 solution as x/y coordinates.
+  const possibleRowAndCells = reducedDomainSudoku.reduce(
+    (current: Array<[number, number]>, row, index) => {
+      const possibleCells = row.reduce(
+        (currentCells: Array<[number, number]>, cells, cellIndex) => {
+          if (cells.length > 1) {
+            return currentCells.concat([[index, cellIndex]])
+          }
+          return currentCells
+        },
+        [],
+      )
+      return current.concat(possibleCells)
+    },
+    [],
+  )
+
+  // We sort the possible cells to have the ones with the least possibilities be first.
+  // This is called "Minimum remaining value" and is a very good heuristic. It is similar to how
+  // humans solve sudokus.
+  const sortedPossibleRowAndCells = sortBy(
+    possibleRowAndCells,
+    ([rowIndex, cellIndex]) => {
+      return reducedDomainSudoku[rowIndex][cellIndex].length
+    },
+  )
+
+  // Take the best cell and create a new grid for every possibility the cell has.
+  const [rowIndex, cellIndex] = sortedPossibleRowAndCells[0]
+  const cell = reducedDomainSudoku[rowIndex][cellIndex]
+  const newGrids = cell.map((n) => {
+    const sudokuCopy = simpleSudoku.map((r) => r.slice())
+    sudokuCopy[rowIndex][cellIndex] = n
+
+    return sudokuCopy as SudokuGrid
+  })
+
+  return newGrids
+}`}</CodeBlock>
         <SudokuSolverDomain
           showNotes={true}
           sudokuToSolve={SUDOKU_2}
           strategy={AC3Strategy}
-          getNotes={(sudoku: SimpleSudoku) => {
+          getNotes={(sudoku: SudokuGrid) => {
             return ac3(toDomainSudoku(sudoku)).sudoku
           }}
         />
@@ -501,7 +768,7 @@ const Hashcode: NextPage = () => {
           valid sudoku as else the hill climbing will not work as the cost
           function for an invalid configuration should return infinite. While
           theoretically it still works, it takes far too long to stumble upon a
-          valid configuration like this. I'm not entirely sure if they meant to
+          valid configuration like this. I’m not entirely sure if they meant to
           start with a valid Sudoku, but "initial puzzle with some random
           numbers" does not sound like it. Furthermore, "just adding, deleting
           or changing a single number" is not efficient, as again they, this can

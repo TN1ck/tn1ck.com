@@ -1,7 +1,7 @@
 import { sortBy, groupBy, flatten } from "lodash-es"
-import { SimpleSudoku } from "./common"
+import { SudokuGrid } from "./common"
 
-export const isSudokuFilled = (sudoku: SimpleSudoku): boolean => {
+export const isSudokuFilled = (sudoku: SudokuGrid): boolean => {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) return false
@@ -10,7 +10,7 @@ export const isSudokuFilled = (sudoku: SimpleSudoku): boolean => {
   return true
 }
 
-export const isSudokuValid = (sudoku: SimpleSudoku): boolean => {
+export const isSudokuValid = (sudoku: SudokuGrid): boolean => {
   // Check rows.
   for (let i = 0; i < 9; i++) {
     const row = sudoku[i]
@@ -46,7 +46,7 @@ export const isSudokuValid = (sudoku: SimpleSudoku): boolean => {
 }
 
 // Most simple solver. Basically a brute force.
-export function bruteForceStrategy(sudoku: SimpleSudoku): SimpleSudoku[] {
+export function bruteForceStrategy(sudoku: SudokuGrid): SudokuGrid[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -66,7 +66,7 @@ export function bruteForceStrategy(sudoku: SimpleSudoku): SimpleSudoku[] {
 }
 
 // Slightly better, we skip the invalid sudokus.
-export function withValidCheckStrategy(sudoku: SimpleSudoku): SimpleSudoku[] {
+export function withValidCheckStrategy(sudoku: SudokuGrid): SudokuGrid[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -87,25 +87,25 @@ export function withValidCheckStrategy(sudoku: SimpleSudoku): SimpleSudoku[] {
   return []
 }
 
-// function dfs(
-//   stack: SimpleSudoku[],
-//   strategy: (sudoku: SimpleSudoku) => SimpleSudoku[],
-// ): [SimpleSudoku | null, SimpleSudoku[]] {
-//   if (stack.length === 0) return [null, []]
+function dfs(
+  stack: SudokuGrid[],
+  getNeighbours: (sudoku: SudokuGrid) => SudokuGrid[],
+): [SudokuGrid | null, SudokuGrid[]] {
+  if (stack.length === 0) return [null, []]
 
-//   const [sudoku, ...rest] = stack
+  const [sudoku, ...rest] = stack
 
-//   const isFilled = isSudokuFilled(sudoku)
-//   const isValid = isSudokuValid(sudoku)
+  const isFilled = isSudokuFilled(sudoku)
+  const isValid = isSudokuValid(sudoku)
 
-//   if (isFilled && isValid) return [sudoku, []]
+  if (isFilled && isValid) return [sudoku, []]
 
-//   const newSudokus = strategy(sudoku)
+  const newSudokus = getNeighbours(sudoku)
 
-//   return dfs([...newSudokus, ...rest], strategy)
-// }
+  return dfs([...newSudokus, ...rest], getNeighbours)
+}
 
-const getEmptyCoordinates = (sudoku: SimpleSudoku): [number, number][] => {
+const getEmptyCoordinates = (sudoku: SudokuGrid): [number, number][] => {
   const emptyCoordinates: [number, number][] = []
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
@@ -118,8 +118,8 @@ const getEmptyCoordinates = (sudoku: SimpleSudoku): [number, number][] => {
 }
 
 export function minimumRemainingValueStrategy(
-  sudoku: SimpleSudoku,
-): SimpleSudoku[] {
+  sudoku: SudokuGrid,
+): SudokuGrid[] {
   const emptyCoordinates = getEmptyCoordinates(sudoku)
 
   // For every coordinate, calculate the number of possibilities.

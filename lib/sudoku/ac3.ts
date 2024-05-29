@@ -2,7 +2,7 @@ import { sortBy } from "lodash-es"
 import {
   DomainSudoku,
   SQUARE_TABLE,
-  SimpleSudoku,
+  SudokuGrid,
   squareIndex,
   toDomainSudoku,
   toSimpleSudoku,
@@ -119,7 +119,7 @@ export function ac3(sudoku: DomainSudoku): {
  * Rating and Generating Sudoku Puzzles Based On Constraint Satisfaction Problems
  * by Bahare Fatemi, Seyed Mehran Kazemi, Nazanin Mehrasa
  */
-export function AC3Strategy(sudoku: SimpleSudoku): SimpleSudoku[] {
+export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
   const domainSudoku = toDomainSudoku(sudoku)
   const { solvable, sudoku: reducedDomainSudoku } = ac3(domainSudoku)
   if (!solvable) {
@@ -165,7 +165,7 @@ export function AC3Strategy(sudoku: SimpleSudoku): SimpleSudoku[] {
     const sudokuCopy = simpleSudoku.map((r) => r.slice())
     sudokuCopy[rowIndex][cellIndex] = n
 
-    return sudokuCopy as SimpleSudoku
+    return sudokuCopy as SudokuGrid
   })
 
   return newGrids
