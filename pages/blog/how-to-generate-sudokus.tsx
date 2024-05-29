@@ -439,6 +439,14 @@ const Hashcode: NextPage = () => {
         />
         <h3>How to generate sudokus</h3>
         <p>
+          We define the difficulty of a sudoku based on the iterations the
+          algorithm needs to solve it e.g. 200 - 300 for difficulty "hard". In
+          the paper, they download sudokus of each difficulty section from
+          websudoku.com, solve them by <s> students</s> volunteers and then ran
+          their algorithm on it. They then took the average of each category and
+          so they got an iteration to difficulty mapping.
+        </p>
+        <p>
           To now generate a sudoku of a specific difficulty, we do the
           following:
         </p>
@@ -458,7 +466,7 @@ const Hashcode: NextPage = () => {
             numbers or add numbers until the reached difficulty is reached.
           </li>
         </ol>
-        h<h3 id="criticism">Algorithm as described by the paper</h3>
+        <h3 id="criticism">Algorithm as described by the paper</h3>
         <p>
           As mentioned above, the algorithm described in the paper has some
           issues, which in effect make it <strong>very</strong> slow albeit
