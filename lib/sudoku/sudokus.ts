@@ -105,40 +105,33 @@ function dfs(
   return dfs([...newSudokus, ...rest], getNeighbours)
 }
 
-const getEmptyCoordinates = (sudoku: SudokuGrid): [number, number][] => {
-  const emptyCoordinates: [number, number][] = []
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      if (sudoku[i][j] === 0) {
-        emptyCoordinates.push([i, j])
-      }
-    }
-  }
-  return emptyCoordinates
-}
-
 export function minimumRemainingValueStrategy(
   sudoku: SudokuGrid,
 ): SudokuGrid[] {
-  const emptyCoordinates = getEmptyCoordinates(sudoku)
-
-  // For every coordinate, calculate the number of possibilities.
-  const possibilities = emptyCoordinates.map(([i, j]) => {
-    const row = sudoku[i]
-    const column = sudoku.map((row) => row[j])
-    const square = []
-    for (let k = 0; k < 3; k++) {
-      for (let l = 0; l < 3; l++) {
-        square.push(sudoku[i - (i % 3) + k][j - (j % 3) + l])
+  // For every empty coordinate, calculate the number of possible values that can be filled.
+  const emptyCoordinatesWithPossibleValues: [number, number, number][] = []
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (sudoku[i][j] === 0) {
+        const row = sudoku[i]
+        const column = sudoku.map((row) => row[j])
+        const square = []
+        for (let k = 0; k < 3; k++) {
+          for (let l = 0; l < 3; l++) {
+            square.push(sudoku[i - (i % 3) + k][j - (j % 3) + l])
+          }
+        }
+        const set = new Set([...row, ...column, ...square])
+        set.delete(0)
+        emptyCoordinatesWithPossibleValues.push([i, j, 9 - set.size])
       }
     }
-    const set = new Set([...row, ...column, ...square])
-    set.delete(0)
-    return [i, j, 9 - set.size]
-  })
+  }
 
   // Sort by the number of possibilities.
-  const sortedPossibilities = possibilities.sort((a, b) => a[2] - b[2])
+  const sortedPossibilities = emptyCoordinatesWithPossibleValues.sort(
+    (a, b) => a[2] - b[2],
+  )
 
   // We take the first coordinate with the least possibilities.
   const [i, j] = sortedPossibilities[0]

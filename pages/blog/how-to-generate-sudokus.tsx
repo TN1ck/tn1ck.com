@@ -12,7 +12,6 @@ import {
   withValidCheckStrategy,
 } from "../../lib/sudoku/sudokus"
 import {
-  DomainSudoku,
   SUDOKU_1,
   SUDOKU_2,
   SUDOKU_3,
@@ -21,7 +20,7 @@ import {
   toDomainSudoku,
   toSimpleSudoku,
 } from "../../lib/sudoku/common"
-import { AC3Strategy, ac3 } from "../../lib/sudoku/ac3"
+import { AC3Strategy, DomainSudoku, ac3 } from "../../lib/sudoku/ac3"
 import clsx from "clsx"
 
 export const METADATA = {
@@ -535,30 +534,9 @@ function minimumRemainingValueStrategy(
           really similar on how experts solve sudokus, which means that the
           iteration count should be very good indicator for the difficulty.
         </p>
-        <CodeBlock language="typescript">{`// If domain2 consists of only one number, remove it from domain1.
-//
-// This is an optimization of AC3:
-// AC3 checks if there is a value in domain1 that
-// does not comply the constraint with at least one value in domain2.
-// But because the constraint for sudoku is inequality, the case happens only
-// when the domain2 is just one variable. The <= is just a safe-check.
-function removeValuesFromDomain(
-  domain1: number[],
-  domain2: number[],
-): [number[], boolean] {
-  let change = false
-  if (domain2.length <= 1) {
-    const index = domain1.indexOf(domain2[0])
-    if (index !== -1) {
-      domain1 = domain1.slice()
-      domain1.splice(index, 1)
-      change = true
-    }
-  }
-  return [domain1, change]
-}
+        <CodeBlock language="typescript">{`export type DomainSudoku = number[][][]
 
-// AC3 algorithm. Returns the reduced domain sudoku and if it is valid.
+// AC3 algorithm. Returns the reduced domain sudoku and if it is solvable.
 export function ac3(sudoku: DomainSudoku): {
   sudoku: DomainSudoku
   solvable: boolean
@@ -582,20 +560,18 @@ export function ac3(sudoku: DomainSudoku): {
     // If the domain of any cell changed during this, we do this again for every cell,
     // as the change of one domain can lead to the change of another.
     for (let y = 0; y < 9; y++) {
-      const row = sudoku[y]
       for (let x = 0; x < 9; x++) {
-        let domainCell1 = row[x]
+        let domain1 = sudoku[y][x]
 
+        // The coordinates of the cells that have a constraint with the
+        // the current cell.
+        const coordinates: [number, number][] = []
         // Cells in the same row.
         for (let xx = 0; xx < 9; xx++) {
           if (xx === x) {
             continue
           }
-          const domainCell2 = row[xx]
-          const result = removeValuesFromDomain(domainCell1, domainCell2)
-          domainCell1 = result[0]
-          change = change || result[1]
-          row[x] = domainCell1
+          coordinates.push([y, xx])
         }
 
         // Cells in the same column.
@@ -603,11 +579,7 @@ export function ac3(sudoku: DomainSudoku): {
           if (yy === y) {
             continue
           }
-          const domainCell2 = sudoku[yy][x]
-          const result = removeValuesFromDomain(domainCell1, domainCell2)
-          domainCell1 = result[0]
-          change = change || result[1]
-          row[x] = domainCell1
+          coordinates.push([yy, x])
         }
 
         // Cells in the same square.
@@ -618,16 +590,35 @@ export function ac3(sudoku: DomainSudoku): {
           if (xx === x && yy === y) {
             continue
           }
-          const domainCell2 = sudoku[yy][xx]
-          const result = removeValuesFromDomain(domainCell1, domainCell2)
-          domainCell1 = result[0]
-          change = change || result[1]
-          row[x] = domainCell1
+          coordinates.push([yy, xx])
+        }
+
+        for (const [yy, xx] of coordinates) {
+          const domain2 = sudoku[yy][xx]
+
+          // If domain2 consists of only one number, remove it from domain1.
+          //
+          // This is an optimization of AC3:
+          // AC3 checks if there is a value in domain1 that
+          // does not comply the constraint with at least one value in domain2.
+          // But because the constraint for sudoku is inequality, the case happens only
+          // when the domain2 is just one variable.
+          let changed = false
+          if (domain2.length === 1) {
+            const index = domain1.indexOf(domain2[0])
+            if (index !== -1) {
+              domain1.splice(index, 1)
+              changed = true
+            }
+          }
+
+          change = change || changed
+          sudoku[y][x] = domain1
         }
 
         // A domain became empty (e.g. no value works for a cell), we can't solve this Sudoku,
         // continue with the next one.
-        if (domainCell1.length === 0) {
+        if (domain1.length === 0) {
           return { sudoku, solvable: false }
         }
       }
@@ -640,45 +631,37 @@ export function ac3(sudoku: DomainSudoku): {
   return { sudoku, solvable: true }
 }
 
-/**
- * For more information see the paper
- * Rating and Generating Sudoku Puzzles Based On Constraint Satisfaction Problems
- * by Bahare Fatemi, Seyed Mehran Kazemi, Nazanin Mehrasa
- */
+// Solve the sudoku by using a constraint using ac3 and minimum remaining value.
 export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
   const domainSudoku = toDomainSudoku(sudoku)
   const { solvable, sudoku: reducedDomainSudoku } = ac3(domainSudoku)
   if (!solvable) {
     return []
   }
-  // If we already solved the sudoku, return the sudoku.
+  // If we already solved the sudoku at this point, return it.
   const simpleSudoku = toSimpleSudoku(reducedDomainSudoku)
   if (isSudokuFilled(simpleSudoku) && isSudokuValid(simpleSudoku)) {
     return [simpleSudoku]
   }
 
   // No solution found yet. We create a list of all cells that have more than 1 solution as x/y coordinates.
-  const possibleRowAndCells = reducedDomainSudoku.reduce(
-    (current: Array<[number, number]>, row, index) => {
-      const possibleCells = row.reduce(
-        (currentCells: Array<[number, number]>, cells, cellIndex) => {
-          if (cells.length > 1) {
-            return currentCells.concat([[index, cellIndex]])
-          }
-          return currentCells
-        },
-        [],
-      )
-      return current.concat(possibleCells)
-    },
-    [],
-  )
+  const emptyCellCoordinates: [number, number][] = []
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (reducedDomainSudoku[i][j].length > 1) {
+        emptyCellCoordinates.push([i, j])
+      }
+    }
+  }
+
+  if (!emptyCellCoordinates) {
+    return []
+  }
 
   // We sort the possible cells to have the ones with the least possibilities be first.
-  // This is called "Minimum remaining value" and is a very good heuristic. It is similar to how
-  // humans solve sudokus.
+  // This is called "Minimum remaining value" and is a very good heuristic.
   const sortedPossibleRowAndCells = sortBy(
-    possibleRowAndCells,
+    emptyCellCoordinates,
     ([rowIndex, cellIndex]) => {
       return reducedDomainSudoku[rowIndex][cellIndex].length
     },

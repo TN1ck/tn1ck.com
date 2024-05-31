@@ -1,7 +1,7 @@
 import { flatten, groupBy, sortBy } from "lodash-es"
+import { DomainSudoku } from "./ac3"
 
 export type SudokuGrid = number[][]
-export type DomainSudoku = number[][][]
 
 export function toSimpleSudoku(grid: DomainSudoku): SudokuGrid {
   return grid.map((row) => {
