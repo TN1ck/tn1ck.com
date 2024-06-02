@@ -6,41 +6,29 @@ import { CodeBlock } from "../../components/code-block"
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
   bruteForceStrategy,
-  isSudokuFilled,
-  isSudokuValid,
   minimumRemainingValueStrategy,
   withValidCheckStrategy,
 } from "../../lib/sudoku/sudokus"
 import {
-  SUDOKU_1,
-  SUDOKU_2,
-  SUDOKU_3,
-  SUDOKU_UNSOLVABLE as SUDOKU_EVIL,
+  SUDOKU_EASY,
+  SUDOKU_EVIL,
+  SUDOKU_MEDIUM,
+  SUDOKU_EVIL_2,
   SudokuGrid,
+  isSudokuFilled,
+  isSudokuValid,
   toDomainSudoku,
-  toSimpleSudoku,
 } from "../../lib/sudoku/common"
 import { AC3Strategy, DomainSudoku, ac3 } from "../../lib/sudoku/ac3"
 import clsx from "clsx"
+import { runBenchmarks } from "../../lib/sudoku/benchmark"
+import { Accordion } from "../../components/accordion"
 
 export const METADATA = {
   title: "How to generate Sudokus & rate their difficulties (WIP)",
   date: "2024-04-27",
   slug: "how-to-generate-sudokus",
 }
-
-const NOTE_COORDINATES = [
-  [0, 0], // 0
-  [0, 0], // 1
-  [0, 1], // 2
-  [0, 2], // 3
-  [1, 0], // 4
-  [1, 1], // 5
-  [1, 2], // 6
-  [2, 0], // 7
-  [2, 1], // 8
-  [2, 2], // 9
-]
 
 const SudokuPreview = ({
   sudoku,
@@ -66,7 +54,7 @@ const SudokuPreview = ({
       <div>
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((y) => {
           // const hide = [0, 9].includes(i)
-          const makeBold = [3, 6].includes(y)
+          const makeBold = [0, 3, 6, 9].includes(y)
           return (
             <div
               style={{
@@ -83,7 +71,7 @@ const SudokuPreview = ({
         })}
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((x) => {
           // const hide = [0, 9].includes(i)
-          const makeBold = [3, 6].includes(x)
+          const makeBold = [0, 3, 6, 9].includes(x)
           return (
             <div
               key={x}
@@ -137,7 +125,7 @@ const SudokuPreview = ({
                           padding: "10%",
                         }}
                       >
-                        {cellNotes?.map((n) => {
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9]?.map((n) => {
                           return (
                             <div
                               className="flex items-center justify-center"
@@ -148,7 +136,7 @@ const SudokuPreview = ({
                                 width: "33.333%",
                               }}
                             >
-                              {cellNotes && cellNotes.includes(n) ? n : ""}
+                              {cellNotes && cellNotes.includes(n) ? n : " "}
                             </div>
                           )
                         })}
@@ -165,6 +153,72 @@ const SudokuPreview = ({
   )
 }
 
+const SudokuApplet = ({
+  strategy,
+  showNotes,
+  getNotes,
+}: {
+  strategy: (sudoku: SudokuGrid) => {
+    newSudokus: SudokuGrid[]
+    iterations: number
+  }
+  showNotes: boolean
+  getNotes?: (sudoku: SudokuGrid) => DomainSudoku
+}) => {
+  const SUDOKUS = [
+    {
+      name: "Easy sudoku",
+      sudoku: SUDOKU_EASY,
+    },
+    {
+      name: "Medium sudoku",
+      sudoku: SUDOKU_MEDIUM,
+    },
+    {
+      name: "Evil sudoku",
+      sudoku: SUDOKU_EVIL,
+    },
+  ]
+
+  const [selection, setSelection] = useState(SUDOKUS[0].name)
+  const selectedSudoku = SUDOKUS.find((s) => s.name === selection)!
+
+  return (
+    <div>
+      <div className="flex mb-4 border-b-2 border-b-gray-500">
+        {SUDOKUS.map((s, i) => {
+          return (
+            <button
+              className={clsx(
+                "py-2 px-4 hover:bg-blue-500 hover:text-white text-sm border-transparent",
+                {
+                  "rounded-r-none rounded-tl-md": i === 0,
+                  "rounded-l-none rounded-tr-md": i === SUDOKUS.length - 1,
+                  "border-r-black border": i !== SUDOKUS.length - 1,
+                  "bg-blue-500 text-white": s.name === selection,
+                  "bg-gray-200": s.name !== selection,
+                },
+              )}
+              key={s.name}
+              onClick={() => setSelection(s.name)}
+            >
+              {s.name}
+            </button>
+          )
+        })}
+      </div>
+      <div>
+        <SudokuSolverDomain
+          strategy={strategy}
+          showNotes={showNotes}
+          sudokuToSolve={selectedSudoku.sudoku}
+          getNotes={getNotes}
+        />
+      </div>
+    </div>
+  )
+}
+
 const SudokuSolverDomain = ({
   sudokuToSolve,
   strategy,
@@ -172,7 +226,10 @@ const SudokuSolverDomain = ({
   getNotes,
 }: {
   sudokuToSolve: SudokuGrid
-  strategy: (sudoku: SudokuGrid) => SudokuGrid[]
+  strategy: (sudoku: SudokuGrid) => {
+    newSudokus: SudokuGrid[]
+    iterations: number
+  }
   showNotes: boolean
   getNotes?: (sudoku: SudokuGrid) => DomainSudoku
 }) => {
@@ -183,6 +240,25 @@ const SudokuSolverDomain = ({
   const [iterations, setIterations] = useState<number>(0)
 
   const [running, setRunning] = useState(false)
+
+  const reset = useCallback(() => {
+    setRunning(false)
+    setIterations(0)
+    setHistory([])
+    setSudoku(sudokuToSolve)
+    setStack([sudokuToSolve])
+  }, [
+    setRunning,
+    setIterations,
+    setHistory,
+    setSudoku,
+    setStack,
+    sudokuToSolve,
+  ])
+
+  useEffect(() => {
+    reset()
+  }, [sudokuToSolve, reset])
 
   const step = useCallback(
     (timeout: number) => {
@@ -195,8 +271,8 @@ const SudokuSolverDomain = ({
         return
       }
       setTimeout(() => {
-        const newSudokus = strategy(current)
-        setIterations(iterations + 1)
+        const { newSudokus, iterations: strategyIterations } = strategy(current)
+        setIterations(iterations + strategyIterations)
         setStack([...newSudokus, ...rest])
       }, timeout)
     },
@@ -224,52 +300,59 @@ const SudokuSolverDomain = ({
 
   return (
     <div>
-      <SudokuPreview
-        sudoku={sudoku}
-        size={300}
-        notes={
-          showNotes && getNotes && history.length > 0
-            ? getNotes(history[0])
-            : undefined
-        }
-      />
-      <button
-        className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        onClick={() => {
-          setRunning(!running)
-        }}
-      >
-        {running ? "Pause" : "Solve"}
-      </button>
-      <button
-        className="py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600"
-        onClick={() => {
-          setRunning(false)
-          setIterations(0)
-          setHistory([])
-          setSudoku(sudokuToSolve)
-          setStack([sudokuToSolve])
-        }}
-      >
-        {"Reset"}
-      </button>
-      <button
-        className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        onClick={() => {
-          step(0)
-        }}
-      >
-        {"Step"}
-      </button>
-      <input
-        className="w-20 border border-gray-300 rounded-md p-1"
-        min={1}
-        max={1000}
-        value={timeoutValue}
-        onChange={(e) => setTimeoutValue(parseInt(e.target.value))}
-      />
-      <div>Iterations: {iterations}</div>
-      <div>Stack size: {stack.length}</div>
+      <div></div>
+      <div className="flex justify-between">
+        <div className="pr-4">
+          <div className="flex gap-2">
+            <button
+              className="w-24 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              onClick={() => {
+                setRunning(!running)
+              }}
+            >
+              {running ? "Pause" : "Solve"}
+            </button>
+            <button
+              className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-red-600"
+              onClick={reset}
+            >
+              {"Reset"}
+            </button>
+            <button
+              className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-blue-600"
+              onClick={() => {
+                step(0)
+              }}
+            >
+              {"Step"}
+            </button>
+          </div>
+          <div className="mt-4">
+            <label htmlFor="timeout">Time between each step (ms)</label>
+            <input
+              className="w-20 border border-gray-300 rounded-md p-1"
+              min={1}
+              id="timout"
+              max={1000}
+              value={timeoutValue}
+              onChange={(e) => setTimeoutValue(parseInt(e.target.value))}
+            />
+          </div>
+          <div className="mt-4">
+            <div>Iterations: {iterations}</div>
+            <div>Stack size: {stack.length}</div>
+          </div>
+        </div>
+        <SudokuPreview
+          sudoku={sudoku}
+          size={300}
+          notes={
+            showNotes && getNotes && history.length > 0
+              ? getNotes(history[0])
+              : undefined
+          }
+        />
+      </div>
     </div>
   )
 }
@@ -351,21 +434,15 @@ const Hashcode: NextPage = () => {
           Most sudoku solvers would be a terrible proxy for this though, as your
           standard depth-first brute force approach is not at all how a human
           solves a sudoku. The solver the paper proposes is in how it works,
-          much closer to a human. It formulates sudoku as a Constraint
-          Satisfaction Problems (short CSP) and uses Domain splitting and Arc
-          consistency. Sudoku formulated as an CSP sees every cell as a variable
-          where each variable can have any between 1 to 9, or mathematically
-          defined, any value of the the set{" "}
-          <code>{`{1, 2, 3, 4, 5, 6, 7, 8, 9}`}</code>, this set is also known
-          as its <i>domain</i>. The constraints are then derived from the
-          winning condition, no row, column or square can have any more than
+          much closer to a human and thus should theoretically be a decent
+          proxy. It formulates sudoku as a Constraint Satisfaction Problems
+          (short CSP) and uses Domain splitting and Arc consistency. Sudoku
+          formulated as an CSP sees every cell as a variable where each variable
+          can have any between 1 to 9, or mathematically defined, any value of
+          the the set <code>{`{1, 2, 3, 4, 5, 6, 7, 8, 9}`}</code>, this set is
+          also known as its <i>domain</i>. The constraints are then derived from
+          the winning condition, no row, column or square can have any more than
           once. So how we do solve this CSP?
-        </p>
-        <p>
-          We represent the Sudoku as an array of array of numbers, namely{" "}
-          <code>type SudokuGrid = number[][]</code> (We’ll use TypeScript for
-          the code examples). To simplify this constrain check, we can create a
-          function called `isSudokuSolved(sudoku: number[][])`.
         </p>
         <h2>Creating a sudoku solver</h2>
         Here is a step by step guide on how to create the solver we will use for
@@ -375,8 +452,9 @@ const Hashcode: NextPage = () => {
         function. We make it sudoku specific instead of completely generic for
         ease of use. Adding caching to prevent calculating the same branch
         multiple times is left as an exercise for the reader.
-        <CodeBlock language="typescript">
-          {`function dfs(
+        <Accordion title="Code of the depth first search">
+          <CodeBlock language="typescript">
+            {`function dfs(
   stack: SudokuGrid[],
   getNeighbours: (sudoku: SudokuGrid) => SudokuGrid[],
 ): [SudokuGrid | null, SudokuGrid[]] {
@@ -393,14 +471,17 @@ const Hashcode: NextPage = () => {
 
   return dfs([...newSudokus, ...rest], getNeighbours)
 }`}
-        </CodeBlock>
+          </CodeBlock>
+        </Accordion>
         <h3>Brute force version</h3>
         <p>
           This is the most simple strategy to solve the sudoku: We find an empty
           spot and fill in a number between 1 - 9. We don’t do anything else.
           This is horribly slow, do not try this at home.
         </p>
-        <CodeBlock language="typescript">{`function bruteForceStrategy(sudoku: SudokuGrid): SimpleSudoku[] {
+        <SudokuApplet showNotes={false} strategy={bruteForceStrategy} />
+        <Accordion title="Code of the brute force strategy">
+          <CodeBlock language="typescript">{`function bruteForceStrategy(sudoku: SudokuGrid): SimpleSudoku[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -417,18 +498,16 @@ const Hashcode: NextPage = () => {
 
   return []
 }`}</CodeBlock>
-        <SudokuSolverDomain
-          showNotes={false}
-          sudokuToSolve={SUDOKU_2}
-          strategy={bruteForceStrategy}
-        />
+        </Accordion>
         <h3>Skip on invalid sudokus</h3>
         <p>
           The simplest and most substantial change we can do, is not not waiting
           until the whole Sudoku is filled, but skipping on the Sudokus that are
           already invalid.
         </p>
-        <CodeBlock language="typescript">{`function withValidCheckStrategy(sudoku: SudokuGrid): SudokuGrid[] {
+        <SudokuApplet showNotes={false} strategy={withValidCheckStrategy} />
+        <Accordion title="Code of the improved brute force">
+          <CodeBlock language="typescript">{`function withValidCheckStrategy(sudoku: SudokuGrid): SudokuGrid[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -448,11 +527,7 @@ const Hashcode: NextPage = () => {
 
   return []
 }`}</CodeBlock>
-        <SudokuSolverDomain
-          showNotes={false}
-          sudokuToSolve={SUDOKU_2}
-          strategy={withValidCheckStrategy}
-        />
+        </Accordion>
         <h3>Minimum remaining value</h3>
         <p>
           "Minimum remaining value" is a heuristic we can use to not search
@@ -463,7 +538,12 @@ const Hashcode: NextPage = () => {
           pretty solid now as it can solve even the hardest sudokus in the
           millisecond range.
         </p>
-        <CodeBlock language="typescript">{`function getEmptyCoordinates(sudoku: SudokuGrid): [number, number][] {
+        <SudokuApplet
+          showNotes={false}
+          strategy={minimumRemainingValueStrategy}
+        />
+        <Accordion title="Code of the minimum remaining value strategy">
+          <CodeBlock language="typescript">{`function getEmptyCoordinates(sudoku: SudokuGrid): [number, number][] {
   const emptyCoordinates: [number, number][] = []
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
@@ -511,30 +591,34 @@ function minimumRemainingValueStrategy(
 
   return newSudokus
 }`}</CodeBlock>
-        <SudokuSolverDomain
-          showNotes={false}
-          sudokuToSolve={SUDOKU_2}
-          strategy={minimumRemainingValueStrategy}
-        />
-        <h3>AC 3</h3>
+        </Accordion>
+        <h3>Arc Consistency</h3>
         <p>
-          The intuitive way on how AC3 works is that for every cell in the
-          sudoku, we keep track of its possible values. We reduce the possible
-          values for every cell by checking the sudoku constraints e.g. remove
-          the numbers that are already have a value in the same row / column /
-          square. We do this as long until no domain is changing anymore. This
-          "reduction of domains using the constraints" is AC3. For very simple
-          sudokus, this is already enough to solve one, for harder ones, we are
-          left with multiple options for every unfilled cell. This means we have
-          to employ a search again. We use then the "Minimum remaining value"
-          strategy again to select the cell with the least options and fill it
-          with a value and execute the algorithm again. The number of iterations
+          The intuitive way on how Arc consistency works is that for every cell
+          in the sudoku, we keep track of its possible values. We reduce the
+          possible values for every cell by checking the sudoku constraints e.g.
+          remove the numbers that are already have a value in the same row /
+          column / square. We do this as long until no domain is changing
+          anymore. This "reduction of domains using the constraints" is arc
+          consistency. For very simple sudokus, this is already enough to solve
+          one, for harder ones, we are left with multiple options for every
+          unfilled cell. This means we have to employ a search again. We use
+          then the "Minimum remaining value" strategy again to select the cell
+          with the least options and create a new versions of the sudoku with
+          that cell filled with the possible values. This is called "domain
+          splitting" in fancy computer science terms. The number of iterations
           we count here are the times we executed the whole AC3 algorithm i.e.
           reduce the amount of possibilities as long as nothing changes. This is
           really similar on how experts solve sudokus, which means that the
           iteration count should be very good indicator for the difficulty.
         </p>
-        <CodeBlock language="typescript">{`export type DomainSudoku = number[][][]
+        <p>
+          The applet shows the domains of the applied ac3 algorithm in unfilled
+          cells. If a sudoku can not be solved, one domain will become empty,
+          which is shown as red, then the algorithm will backtrack.
+        </p>
+        <Accordion title="Code of the Arc consistency strategy">
+          <CodeBlock language="typescript">{`export type DomainSudoku = number[][][]
 
 // AC3 algorithm. Returns the reduced domain sudoku and if it is solvable.
 export function ac3(sudoku: DomainSudoku): {
@@ -679,15 +763,15 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
 
   return newGrids
 }`}</CodeBlock>
-        <SudokuSolverDomain
+        </Accordion>
+        <SudokuApplet
           showNotes={true}
-          sudokuToSolve={SUDOKU_2}
           strategy={AC3Strategy}
           getNotes={(sudoku: SudokuGrid) => {
             return ac3(toDomainSudoku(sudoku)).sudoku
           }}
         />
-        <h3>How to generate sudokus</h3>
+        <h3>Rating the difficulty of sudokus</h3>
         <p>
           We define the difficulty of a sudoku based on the iterations the
           algorithm needs to solve it e.g. 200 - 300 for difficulty "hard". In
@@ -696,6 +780,11 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           their algorithm on it. They then took the average of each category and
           so they got an iteration to difficulty mapping.
         </p>
+        <p>
+          We do the same and I downloaded 100 sudokus for each difficulty
+          section and run our algorithms on them.
+        </p>
+        <h3>How to generate sudokus</h3>
         <p>
           To now generate a sudoku of a specific difficulty, we do the
           following:
@@ -715,7 +804,21 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
             To generate a sudoku of a wanted difficulty, we either remove
             numbers or add numbers until the reached difficulty is reached.
           </li>
+          <li>
+            If we cannot delete any more numbers without making it non unique,
+            meaning we reached max difficulty, but the difficulty is below the
+            requested one, start at 1. again.
+          </li>
+          <li>
+            If the call count is close to the requested value, return the
+            sudoku.
+          </li>
         </ol>
+        <p>
+          As 4. points out, generating very difficult sudokus can take quite
+          some time as any generation method will struggle with the uniqueness
+          constraint and has to randomly alter the sudoku.
+        </p>
         <h3 id="criticism">Algorithm as described by the paper</h3>
         <p>
           As mentioned above, the algorithm described in the paper has some
