@@ -365,93 +365,31 @@ const Hashcode: NextPage = () => {
         <Author date={METADATA.date} />
         <p>
           Writing a Sudoku Solver is a fun challenge for every CS graduate or
-          prime ministers, as{" "}
+          politicians, as{" "}
           <a href="https://www.bbc.com/news/technology-32591984">
             Singapurs prime minister famously wrote one in C++
           </a>
           . In this article we go a few steps beyond: Writing a program to
-          generate Sudokus.
-        </p>
-        <p>
-          The main problem that one faces when generating a sudoku is to assign
-          the difficulty rating for a human solver. As we don’t want to manually
-          verify every Sudoku we generate, we need an automatic way for us to
-          group a newly generated Sudoku according to its difficulty. The
-          "standard" Sudoku solver one writes, uses the most of the time a depth
-          first search to brute force the Sudoku. One could think that e.g. the
-          number of iterations needed might be a valid metric for difficultyness
-          here, but it is not when we simply try it out. I have a list of 200?
-          Sudokus with already grouped difficulties, let’s see how well the
-          metric performs. TODO: Add cool algorithm TODO: Rate the difficulty.
-        </p>
-        <ul>
-          <li>
-            Fill the Sudoku grid with random numbers and empty fields, bias
-            towards empty fields
-          </li>
-          <li>
-            Remove any numbers that do not fulfil the Sudoku criteria. This is
-            now a solveable Sudoku, but not a unique one.
-          </li>
-          <li>
-            Make the Sudoku unique: As long the Sudoku is not unique, we can
-            find an empty spot and fill it with two different numbers, we still
-            find a solution. We improve the uniqueness by filling spots like
-            this with a random choice of either number that lead still to a
-            solution.
-          </li>
-          <li>We have a new Sudoku!</li>
-        </ul>
-        <p>
-          At this point we already generated a new Sudoku, the only thing we can
-          now is trying to adjust the difficulty. We can make it easier by
-          filling some spots and make it harder by removing a number and have it
-          still solvable (if possible). This step is only necessary if you aim
-          for a certain difficulty grade. But this approach doesn’t guarantee
-          that every sudoku will abide to a certain difficulty.
-        </p>
-        <h3>Generating a Sudoku with a specific difficulties</h3>
-        So we generated a Sudoku, but how can we programmitically find out how
-        difficult it is to solve? We want a function, that given a Sudoku will
-        return us a difficulty rating. I rely here on the paper "Rating and
-        generating Sudoku puzzles based on constraint satisfaction problems." by
-        Fatemi, Bahare, Seyed Mehran Kazemi, and Nazanin Mehrasa.{" "}
-        <a href="#footnotes">
-          <sup>1</sup>
-        </a>
-        <p>
-          (They also describe a method for generation, but it has multiple
-          issues which I address <a href="#criticism">below</a>). Their
-          technique simplified is to count the number of times the algorithm has
-          recursively descend and proxy that number to the difficulty. To know
-          the appropriate values for each difficulty level, they manually solve
-          Sudokus and give them a difficulty rating to then count how many calls
-          each difficulty group took on average. The paper closes by showing
-          that their generated Sudokus are rated by humans with the desired
-          difficulty class, at least on average.
-        </p>
-        <p>
-          Most sudoku solvers would be a terrible proxy for this though, as your
-          standard depth-first brute force approach is not at all how a human
-          solves a sudoku. The solver the paper proposes is in how it works,
-          much closer to a human and thus should theoretically be a decent
-          proxy. It formulates sudoku as a Constraint Satisfaction Problems
-          (short CSP) and uses Domain splitting and Arc consistency. Sudoku
-          formulated as an CSP sees every cell as a variable where each variable
-          can have any between 1 to 9, or mathematically defined, any value of
-          the the set <code>{`{1, 2, 3, 4, 5, 6, 7, 8, 9}`}</code>, this set is
-          also known as its <i>domain</i>. The constraints are then derived from
-          the winning condition, no row, column or square can have any more than
-          once. So how we do solve this CSP?
+          generate Sudokus of any difficulty.
         </p>
         <h2>Creating a sudoku solver</h2>
-        Here is a step by step guide on how to create the solver we will use for
-        sudoku generation. We start with the most basic brute force algorithm
-        and end up with the final one. We use a depth first search (short DFS)
-        for all our different strategies here, we abstract this by the following
-        function. We make it sudoku specific instead of completely generic for
-        ease of use. Adding caching to prevent calculating the same branch
-        multiple times is left as an exercise for the reader.
+        <p>
+          First things first, to generate a sudoku, we first have to solve one.
+          And the solver plays an integral part into the generation part as we
+          will use the iterations it needed to solve a sudoku to measure the
+          difficulty.
+        </p>
+        <p>
+          Here is a step by step guide on how to create the solver we will use
+          for sudoku generation. We start with the most basic brute force
+          algorithm and end up with the final one, based on seeing the sudoku as
+          a Constraint Satisfaction Problems (short CSP). We use a depth first
+          search (short DFS) for all our different strategies here, we abstract
+          this by the following function. We make it sudoku specific instead of
+          completely generic for ease of use. Adding caching to prevent
+          calculating the same branch multiple times is left as an exercise for
+          the reader.
+        </p>
         <Accordion title="Code of the depth first search">
           <CodeBlock language="typescript">
             {`function dfs(
@@ -773,18 +711,30 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
         />
         <h3>Rating the difficulty of sudokus</h3>
         <p>
-          We define the difficulty of a sudoku based on the iterations the
-          algorithm needs to solve it e.g. 200 - 300 for difficulty "hard". In
-          the paper, they download sudokus of each difficulty section from
+          The main problem that one faces when generating a sudoku is to assign
+          the difficulty rating for a human solver. As we don’t want to manually
+          verify every Sudoku we generate, we need an automatic way for us to
+          group a newly generated Sudoku according to its difficulty. All our
+          sudoku solvers yield an iteration count, which we will use as our cost
+          function. I'm relying here on the paper "Rating and generating Sudoku
+          puzzles based on constraint satisfaction problems." by Fatemi, Bahare,
+          Seyed Mehran Kazemi, and Nazanin Mehrasa.{" "}
+          <a href="#footnotes">
+            <sup>1</sup>
+          </a>
+          In the paper, they download sudokus of each difficulty section from
           websudoku.com, solve them by <s> students</s> volunteers and then ran
           their algorithm on it. They then took the average of each category and
           so they got an iteration to difficulty mapping.
         </p>
         <p>
-          We do the same and I downloaded 100 sudokus for each difficulty
-          section and run our algorithms on them.
+          We will do basically the same, but actually publishing the data and
+          also trying out how the "lesser" strategies work here for rating the
+          difficulty. I fetched 100 sudokus from websudoku.com for each of its
+          difficulty classes as well as from sudoku.com.
         </p>
-        <h3>How to generate sudokus</h3>
+        <ul></ul>
+        <h3>Generating a Sudoku with a specific difficulties</h3>
         <p>
           To now generate a sudoku of a specific difficulty, we do the
           following:
@@ -819,7 +769,7 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           some time as any generation method will struggle with the uniqueness
           constraint and has to randomly alter the sudoku.
         </p>
-        <h3 id="criticism">Algorithm as described by the paper</h3>
+        <h3 id="criticism">Generation algorithm as described by the paper</h3>
         <p>
           As mentioned above, the algorithm described in the paper has some
           issues, which in effect make it <strong>very</strong> slow albeit
