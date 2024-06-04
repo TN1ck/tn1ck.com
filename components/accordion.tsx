@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { ReactNode, useState } from "react"
 
 export const Accordion = ({
@@ -12,12 +13,20 @@ export const Accordion = ({
   const [open, setOpen] = useState(initialOpen)
 
   return (
-    <div className="my-2 bg-gray-100 p-4 shadow-sm hover:cursor-pointer hover:bg-gray-200">
-      <div onClick={() => setOpen(!open)} className="flex text-lg">
+    <div className="bg-gray-100 shadow-sm my-4">
+      <div
+        onClick={() => setOpen(!open)}
+        className={clsx(
+          "flex text-lg hover:cursor-pointer hover:bg-gray-200 p-4",
+          {
+            "pb-8": open,
+          },
+        )}
+      >
         <div className="mr-2">{open ? "▼" : "▶"}</div>
         {title}
       </div>
-      {open && <div className="-m-4 mt-4">{children}</div>}
+      {open && <div>{children}</div>}
     </div>
   )
 }

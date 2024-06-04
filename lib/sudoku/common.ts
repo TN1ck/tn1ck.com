@@ -33,15 +33,27 @@ export const SUDOKU_EASY: SudokuGrid = [
 
 // Medium sudoku
 export const SUDOKU_MEDIUM: SudokuGrid = [
-  [6, 3, 0, 0, 0, 0, 0, 5, 0],
-  [2, 0, 5, 3, 4, 0, 0, 0, 0],
+  [3, 0, 6, 0, 0, 4, 5, 0, 0],
+  [0, 0, 4, 3, 2, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 7, 0, 0, 0],
+  [0, 8, 0, 0, 0, 0, 0, 5, 2],
+  [2, 0, 3, 0, 8, 0, 0, 4, 6],
+  [9, 6, 0, 2, 0, 0, 0, 0, 3],
+  [5, 0, 0, 4, 0, 0, 0, 0, 0],
+  [0, 0, 2, 0, 0, 0, 0, 0, 4],
+  [0, 0, 0, 0, 1, 0, 3, 0, 0],
+]
+
+export const SUDOKU_HARD: SudokuGrid = [
+  [8, 0, 0, 0, 3, 0, 0, 0, 0],
+  [0, 4, 0, 5, 2, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 6, 9, 0, 0],
-  [0, 7, 0, 6, 9, 0, 5, 0, 0],
-  [0, 0, 0, 0, 1, 3, 7, 4, 0],
-  [0, 0, 2, 0, 0, 0, 0, 3, 0],
-  [3, 1, 0, 9, 8, 4, 0, 7, 5],
-  [7, 2, 9, 0, 3, 5, 0, 8, 6],
-  [0, 0, 4, 0, 0, 0, 0, 9, 1],
+  [0, 0, 0, 0, 6, 5, 0, 0, 0],
+  [0, 0, 0, 0, 4, 0, 2, 0, 0],
+  [4, 0, 0, 8, 0, 0, 0, 0, 7],
+  [0, 3, 0, 0, 0, 9, 4, 2, 0],
+  [0, 6, 0, 2, 0, 0, 0, 0, 0],
+  [0, 1, 0, 4, 0, 7, 0, 6, 9],
 ]
 
 // Evil sudoku
@@ -151,29 +163,41 @@ export const isSudokuValid = (sudoku: SudokuGrid): boolean => {
 }
 
 export function parseSudoku(sudoku: string): SudokuGrid {
+  if (sudoku.length !== 9 * 9) {
+    throw new Error("Wrong number of characters")
+  }
+
   // check if the input-data is correct
   const inputDataIsCorrectDomain = sudoku.split("").every((char) => {
-    return (
-      ["\n", "_"].concat(SUDOKU_NUMBERS.map((n) => String(n))).indexOf(char) >=
-      0
-    )
+    return ["_"].concat(SUDOKU_NUMBERS.map((n) => String(n))).indexOf(char) >= 0
   })
 
   if (!inputDataIsCorrectDomain) {
-    throw new Error("The input data is incorrect, only _, \n and 1...9 allowed")
+    throw new Error("The input data is incorrect, only _, and 1...9 allowed")
   }
 
-  const lines = sudoku.split("\n")
+  // Split at every 9 characters.
+  const lines = []
+  let currentString = ""
+  for (let i = 0; i < sudoku.length; i++) {
+    currentString += sudoku[i]
+    if ((i + 1) % 9 === 0) {
+      lines.push(currentString)
+      currentString = ""
+    }
+  }
 
   if (lines.length !== 9) {
-    throw new Error(`Wrong number of lines! Only 9 allowed: ${sudoku}`)
+    throw new Error(
+      `Wrong number of lines! Only 9 allowed: ${lines.length} != 9`,
+    )
   }
 
   return lines.map((line) => {
     const characters = line.split("")
     if (characters.length !== 9) {
       throw new Error(
-        `Wrong number of characters in line! Only 9 allowed: ${line} - ${sudoku}`,
+        `Wrong number of characters in line! Only 9 allowed: ${line} - ${line.length} != 9`,
       )
     }
     return characters.map((c) => {
@@ -188,5 +212,5 @@ export function stringifySudoku(grid: SudokuGrid) {
     .map((row) => {
       return row.map((c) => (c === 0 ? "_" : "" + c)).join("")
     })
-    .join("\n")
+    .join("")
 }

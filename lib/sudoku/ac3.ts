@@ -32,7 +32,7 @@ export function ac3(sudoku: DomainSudoku): {
   // We then check the squares and see that 5 is taken, so we end up with 2 and 6.
   //
   // If the domain of a cell changed during this, we put it back into the queue.
-  // We use a list instead of a set to keep it deterministic.
+  // We use a unique list instead of a set to keep it deterministic.
   let coordinatesQueue: [number, number][] = []
   for (let y = 0; y < 9; y++) {
     for (let x = 0; x < 9; x++) {
@@ -118,10 +118,7 @@ export function ac3(sudoku: DomainSudoku): {
 }
 
 // Solve the sudoku by using a constraint using ac3 and minimum remaining value.
-export function AC3Strategy(sudoku: SudokuGrid): {
-  newSudokus: SudokuGrid[]
-  iterations: number
-} {
+export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
   const domainSudoku = toDomainSudoku(sudoku)
   const {
     solvable,
@@ -129,12 +126,12 @@ export function AC3Strategy(sudoku: SudokuGrid): {
     iterations,
   } = ac3(domainSudoku)
   if (!solvable) {
-    return { newSudokus: [], iterations }
+    return []
   }
   // If we already solved the sudoku at this point, return it.
   const simpleSudoku = toSimpleSudoku(reducedDomainSudoku)
   if (isSudokuFilled(simpleSudoku) && isSudokuValid(simpleSudoku)) {
-    return { newSudokus: [simpleSudoku], iterations }
+    return [simpleSudoku]
   }
 
   // No solution found yet. We create a list of all cells that have more than 1 solution as x/y coordinates.
@@ -148,7 +145,7 @@ export function AC3Strategy(sudoku: SudokuGrid): {
   }
 
   if (!emptyCellCoordinates) {
-    return { newSudokus: [], iterations }
+    return []
   }
 
   // We sort the possible cells to have the ones with the least possibilities be first.
@@ -161,7 +158,7 @@ export function AC3Strategy(sudoku: SudokuGrid): {
   )
 
   // Take the best cell and create a new grid for every possibility the cell has.
-  // This is called "Domain splitting" in computer science terms.
+  // This is called "Domain splitting" in computer science.
   const [rowIndex, cellIndex] = sortedPossibleRowAndCells[0]
   const cell = reducedDomainSudoku[rowIndex][cellIndex]
   const newSudokus = cell.map((n) => {
@@ -171,5 +168,5 @@ export function AC3Strategy(sudoku: SudokuGrid): {
     return sudokuCopy as SudokuGrid
   })
 
-  return { newSudokus, iterations }
+  return newSudokus
 }

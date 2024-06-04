@@ -2,10 +2,7 @@ import { sortBy, groupBy, flatten } from "lodash-es"
 import { SudokuGrid, isSudokuFilled, isSudokuValid } from "./common"
 
 // Most simple solver. Basically a brute force.
-export function bruteForceStrategy(sudoku: SudokuGrid): {
-  newSudokus: SudokuGrid[]
-  iterations: number
-} {
+export function bruteForceStrategy(sudoku: SudokuGrid): SudokuGrid[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -16,19 +13,16 @@ export function bruteForceStrategy(sudoku: SudokuGrid): {
           newSudoku[i][j] = k
           newSudokus.push(newSudoku)
         }
-        return { newSudokus, iterations: 1 }
+        return newSudokus
       }
     }
   }
 
-  return { newSudokus: [], iterations: 1 }
+  return []
 }
 
 // Slightly better, we skip the invalid sudokus.
-export function withValidCheckStrategy(sudoku: SudokuGrid): {
-  newSudokus: SudokuGrid[]
-  iterations: number
-} {
+export function withValidCheckStrategy(sudoku: SudokuGrid): SudokuGrid[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -41,12 +35,12 @@ export function withValidCheckStrategy(sudoku: SudokuGrid): {
             newSudokus.push(newSudoku)
           }
         }
-        return { newSudokus, iterations: 1 }
+        return newSudokus
       }
     }
   }
 
-  return { newSudokus: [], iterations: 1 }
+  return []
 }
 
 export function dfs(
@@ -86,10 +80,7 @@ export function dfs(
 
 export function dfsLoop(
   stack: SudokuGrid[],
-  getNeighbours: (sudoku: SudokuGrid) => {
-    newSudokus: SudokuGrid[]
-    iterations: number
-  },
+  getNeighbours: (sudoku: SudokuGrid) => SudokuGrid[],
   iterations: number,
 ): { solvedSudoku: SudokuGrid | null; iterations: number } {
   while (stack.length > 0) {
@@ -104,10 +95,9 @@ export function dfsLoop(
         iterations,
       }
 
-    const { newSudokus, iterations: getNeighboursIterations } =
-      getNeighbours(sudoku)
+    const newSudokus = getNeighbours(sudoku)
 
-    iterations += getNeighboursIterations
+    iterations += 1
     stack = [...newSudokus, ...rest]
   }
 
@@ -117,10 +107,9 @@ export function dfsLoop(
   }
 }
 
-export function minimumRemainingValueStrategy(sudoku: SudokuGrid): {
-  newSudokus: SudokuGrid[]
-  iterations: number
-} {
+export function minimumRemainingValueStrategy(
+  sudoku: SudokuGrid,
+): SudokuGrid[] {
   // For every empty coordinate, calculate the number of possible values that can be filled.
   const emptyCoordinatesWithPossibleValues: [number, number, number][] = []
   for (let i = 0; i < 9; i++) {
@@ -157,5 +146,5 @@ export function minimumRemainingValueStrategy(sudoku: SudokuGrid): {
     }
   }
 
-  return { newSudokus, iterations: 1 }
+  return newSudokus
 }

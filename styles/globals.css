@@ -63,3 +63,8 @@ address {
 .blog blockquote {
   @apply border-l-4 border-yellow-400 pl-4 my-4;
 }
+
+.hljs {
+  font-size: 12px;
+  line-height: 15px;
+}
