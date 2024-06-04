@@ -3,9 +3,10 @@ import { NextPage } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   bruteForceStrategy,
+  dfsLoop,
   minimumRemainingValueStrategy,
   withValidCheckStrategy,
 } from "../../lib/sudoku/sudokus"
@@ -24,6 +25,13 @@ import { AC3Strategy, DomainSudoku, ac3 } from "../../lib/sudoku/ac3"
 import clsx from "clsx"
 import { Accordion } from "../../components/accordion"
 import Link from "next/link"
+import {
+  createSolvableSudoku,
+  increaseDifficultyOfSudoku,
+  makeSudokuUnique,
+  simplifySudoku,
+} from "../../lib/sudoku/generate"
+import { createSeededRandom } from "../../lib/sudoku/seededRandom"
 
 export const METADATA = {
   title: "How to generate Sudokus & rate their difficulties (WIP)",
@@ -154,73 +162,6 @@ const SudokuPreview = ({
   )
 }
 
-const SudokuApplet = ({
-  strategy,
-  showNotes,
-  getNotes,
-}: {
-  strategy: (sudoku: SudokuGrid) => SudokuGrid[]
-  showNotes: boolean
-  getNotes?: (sudoku: SudokuGrid) => DomainSudoku
-}) => {
-  const SUDOKUS = [
-    {
-      name: "Easy sudoku",
-      sudoku: SUDOKU_EASY,
-    },
-    {
-      name: "Medium sudoku",
-      sudoku: SUDOKU_MEDIUM,
-    },
-    {
-      name: "Hard sudoku",
-      sudoku: SUDOKU_HARD,
-    },
-    {
-      name: "Evil sudoku",
-      sudoku: SUDOKU_EVIL,
-    },
-  ]
-
-  const [selection, setSelection] = useState(SUDOKUS[0].name)
-  const selectedSudoku = SUDOKUS.find((s) => s.name === selection)!
-
-  return (
-    <div>
-      <div className="flex mb-4 border-b-2 border-b-gray-500">
-        {SUDOKUS.map((s, i) => {
-          return (
-            <button
-              className={clsx(
-                "py-2 px-4 hover:bg-blue-500 hover:text-white text-sm border-transparent",
-                {
-                  "rounded-r-none rounded-tl-md": i === 0,
-                  "rounded-l-none rounded-tr-md": i === SUDOKUS.length - 1,
-                  "border-r-black border": i !== SUDOKUS.length - 1,
-                  "bg-blue-500 text-white": s.name === selection,
-                  "bg-gray-200": s.name !== selection,
-                },
-              )}
-              key={s.name}
-              onClick={() => setSelection(s.name)}
-            >
-              {s.name}
-            </button>
-          )
-        })}
-      </div>
-      <div>
-        <SudokuSolverDomain
-          strategy={strategy}
-          showNotes={showNotes}
-          sudokuToSolve={selectedSudoku.sudoku}
-          getNotes={getNotes}
-        />
-      </div>
-    </div>
-  )
-}
-
 const SudokuSolverDomain = ({
   sudokuToSolve,
   strategy,
@@ -343,15 +284,223 @@ const SudokuSolverDomain = ({
             <div>Stack size: {stack.length}</div>
           </div>
         </div>
-        <SudokuPreview
-          sudoku={sudoku}
-          size={300}
-          notes={
-            showNotes && getNotes && history.length > 0
-              ? getNotes(history[0])
-              : undefined
-          }
+        <div className="flex-shrink-0">
+          <SudokuPreview
+            sudoku={sudoku}
+            size={300}
+            notes={
+              showNotes && getNotes && history.length > 0
+                ? getNotes(history[0])
+                : undefined
+            }
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const SudokuApplet = ({
+  strategy,
+  showNotes,
+  getNotes,
+}: {
+  strategy: (sudoku: SudokuGrid) => SudokuGrid[]
+  showNotes: boolean
+  getNotes?: (sudoku: SudokuGrid) => DomainSudoku
+}) => {
+  const SUDOKUS = [
+    {
+      name: "Easy sudoku",
+      sudoku: SUDOKU_EASY,
+    },
+    {
+      name: "Medium sudoku",
+      sudoku: SUDOKU_MEDIUM,
+    },
+    {
+      name: "Hard sudoku",
+      sudoku: SUDOKU_HARD,
+    },
+    {
+      name: "Evil sudoku",
+      sudoku: SUDOKU_EVIL,
+    },
+  ]
+
+  const [selection, setSelection] = useState(SUDOKUS[0].name)
+  const selectedSudoku = SUDOKUS.find((s) => s.name === selection)!
+
+  return (
+    <div>
+      <div className="flex mb-4 border-b-2 border-b-gray-500">
+        {SUDOKUS.map((s, i) => {
+          return (
+            <button
+              className={clsx(
+                "py-2 px-4 hover:bg-blue-500 hover:text-white text-sm border-transparent",
+                {
+                  "rounded-r-none rounded-tl-md": i === 0,
+                  "rounded-l-none rounded-tr-md": i === SUDOKUS.length - 1,
+                  "border-r-black border": i !== SUDOKUS.length - 1,
+                  "bg-blue-500 text-white": s.name === selection,
+                  "bg-gray-200": s.name !== selection,
+                },
+              )}
+              key={s.name}
+              onClick={() => setSelection(s.name)}
+            >
+              {s.name}
+            </button>
+          )
+        })}
+      </div>
+      <div>
+        <SudokuSolverDomain
+          strategy={strategy}
+          showNotes={showNotes}
+          sudokuToSolve={selectedSudoku.sudoku}
+          getNotes={getNotes}
         />
+      </div>
+    </div>
+  )
+}
+
+const SudokuGenerator = ({
+  strategy,
+}: {
+  strategy: (sudoku: SudokuGrid) => SudokuGrid[]
+}) => {
+  const [seed, setSeed] = useState(0)
+  const [sudoku, setSudoku] = useState<SudokuGrid>([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ])
+
+  const solveSudoku = useCallback(
+    (sudoku: SudokuGrid) => {
+      return dfsLoop([sudoku], strategy, 0)
+    },
+    [strategy],
+  )
+
+  const { iterations, solvedSudoku } = solveSudoku(sudoku)
+
+  const RELATIVE_DRIFT = 20
+  const ABSOLUTE_DRIFT = 3
+
+  const createValidAndUnique = (randomFn: () => number): SudokuGrid => {
+    let unique = false
+    let sudoku: SudokuGrid = []
+    while (!unique) {
+      // 1. create a random, solvable sudoku.
+      sudoku = createSolvableSudoku(randomFn)
+      // 2. make it unique.
+      ;[sudoku, unique] = makeSudokuUnique(sudoku, randomFn)
+    }
+    return sudoku
+  }
+
+  const iterationGoal = 50
+
+  const validIterations = useCallback((cost: number): boolean => {
+    const rateIterationsRelative = (cost: number): number => {
+      if (cost === Infinity) {
+        return cost
+      }
+      return Math.abs(cost / iterationGoal - 1) * 100
+    }
+
+    const rateCostsAbsolute = (cost: number): number => {
+      return Math.abs(cost - iterationGoal)
+    }
+
+    return (
+      rateIterationsRelative(cost) < RELATIVE_DRIFT ||
+      rateCostsAbsolute(cost) < ABSOLUTE_DRIFT
+    )
+  }, [])
+
+  const nearToTheDifficulty = (sudoku: SudokuGrid): SudokuGrid => {
+    let currentIterations = solveSudoku(sudoku).iterations
+    while (!validIterations(currentIterations)) {
+      let newSudoku: SudokuGrid = []
+      // Too difficult, make it easier.
+      if (currentIterations > iterationGoal) {
+        newSudoku = simplifySudoku(sudoku, randomFn)
+      }
+      // Too easy, make it more difficult.
+      if (currentIterations < iterationGoal) {
+        newSudoku = increaseDifficultyOfSudoku(sudoku, randomFn)
+      }
+      const newIterations = solveSudoku(newSudoku).iterations
+      if (currentIterations === newIterations) {
+        console.log("Reached maximum simplicity / difficulty with this sudoku.")
+        break
+      }
+      sudoku = newSudoku
+      currentIterations = newIterations
+    }
+
+    return sudoku
+  }
+
+  const randomFn = useMemo(() => {
+    return createSeededRandom(seed)
+  }, [seed])
+
+  return (
+    <div>
+      <div className="block sm:flex justify-between">
+        <div className="pr-4">
+          <div className="grid gap-2">
+            <button
+              className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              onClick={() => {
+                const sudoku = createValidAndUnique(randomFn)
+                setSudoku(sudoku)
+              }}
+            >
+              {"1 - 2. Create valid and unique sudoku"}
+            </button>
+            <button
+              className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-blue-600"
+              onClick={() => {
+                const newSudoku = nearToTheDifficulty(sudoku)
+                setSudoku(newSudoku)
+              }}
+            >
+              {"3 - 5. decrease / increase difficulty as much as possible"}
+            </button>
+          </div>
+          <div className="mt-4">
+            <label className="block" htmlFor="timeout">
+              Seed
+            </label>
+            <input
+              className="w-20 border border-gray-300 rounded-md p-1"
+              min={1}
+              id="seed"
+              max={1000}
+              value={seed}
+              onChange={(e) => setSeed(parseInt(e.target.value))}
+            />
+          </div>
+          <div className="mt-4">
+            <div>Iterations: {iterations}</div>
+          </div>
+        </div>
+        <div className="flex-shrink-0">
+          <SudokuPreview sudoku={sudoku} size={300} notes={undefined} />
+        </div>
       </div>
     </div>
   )
@@ -366,12 +515,12 @@ const Hashcode: NextPage = () => {
         <p>
           Once upon a time I decided to create a complete sudoku application as
           my grandma wanted to play some sudokus on her computer and I wasn't
-          satisfied with the free offers available . The project went on for
-          some years and finally lead to{" "}
+          satisfied with the free offers available. The project went on for some
+          years and finally lead to{" "}
           <a href="https://sudoku.tn1ck.com">sudoku.tn1ck.com</a>. While working
           on it, I went down the rabbit hole of generating sudokus of a
           specified "human perceived" difficulty and created accidentally one of
-          the most thorough analysis of it.
+          the a quite thorough analysis of it.
         </p>
         <h2>Creating a sudoku solver</h2>
         {/* While writing a Sudoku Solver is a
@@ -452,7 +601,9 @@ const Hashcode: NextPage = () => {
         <p>
           The simplest and most substantial change we can do, is not not waiting
           until the whole Sudoku is filled, but skipping on the Sudokus that are
-          already invalid.
+          already invalid. This solver will solve even the hardest sudokus in
+          adequate time, but it still wastes a lot of cycles as it is not
+          choosing the cell to fill with a value with any strategy.
         </p>
         <SudokuApplet showNotes={false} strategy={withValidCheckStrategy} />
         <Accordion title="Code of the improved brute force">
@@ -761,7 +912,7 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
             <sup>1</sup>
           </a>
           In the paper, they download sudokus of each difficulty section from
-          websudoku.com, solve them by <s> students</s> volunteers and then ran
+          websudoku.com, solve them by <s> students</s> volunteers and then run
           their algorithm on it. They then took the average of each category and
           so they got an iteration to difficulty mapping.
         </p>
@@ -783,7 +934,15 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           First let's draw a histogram of each strategy and each bucket to get
           an idea of the distribution. From that we can see that they are not
           completely random, but do cluster at certain iterations depending on
-          the difficulty. TODO: Add histograms.
+          the difficulty. The simple brute force algorithm shows a perfect
+          correlation and normal distribution when applying the logarithm, which
+          to me implies that this is exactly how both websites rate the
+          difficulty of their sudokus - how long it takes for a simple brute
+          force algorithm to solve it.
+          <br />
+          Both the minimum remaining value and arc consistency algorithm look
+          the same, but only for the more difficult levels as for the easy ones,
+          they always need the same number of iterations. TODO: Add histograms.
         </p>
 
         <p>
@@ -850,6 +1009,9 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           some time as any generation method will struggle with the uniqueness
           constraint and has to randomly alter the sudoku.
         </p>
+
+        <SudokuGenerator strategy={AC3Strategy} />
+
         <h3 id="criticism">Generation algorithm as described by the paper</h3>
         <p>
           As mentioned above, the algorithm described in the paper has some
