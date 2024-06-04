@@ -1161,6 +1161,7 @@ function benchmarkSudokus(
   strategy: (sudoku: SudokuGrid) => SudokuGrid[],
 ): SudokusBenchmark[] {
   const solvedSudokus = sudokus.map((sudoku, i) => {
+    console.log("solving sudoku " + i)
     return { ...dfsLoop([sudoku], strategy, 0), index: i, sudoku: sudoku }
   })
 

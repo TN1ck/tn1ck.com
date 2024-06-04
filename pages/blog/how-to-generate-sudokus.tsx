@@ -22,8 +22,8 @@ import {
 } from "../../lib/sudoku/common"
 import { AC3Strategy, DomainSudoku, ac3 } from "../../lib/sudoku/ac3"
 import clsx from "clsx"
-import { runBenchmarks } from "../../lib/sudoku/benchmark"
 import { Accordion } from "../../components/accordion"
+import Link from "next/link"
 
 export const METADATA = {
   title: "How to generate Sudokus & rate their difficulties (WIP)",
@@ -299,8 +299,7 @@ const SudokuSolverDomain = ({
 
   return (
     <div>
-      <div></div>
-      <div className="flex justify-between">
+      <div className="block sm:flex justify-between">
         <div className="pr-4">
           <div className="flex gap-2">
             <button
@@ -327,7 +326,9 @@ const SudokuSolverDomain = ({
             </button>
           </div>
           <div className="mt-4">
-            <label htmlFor="timeout">Time between each step (ms)</label>
+            <label className="block" htmlFor="timeout">
+              Time between each step (ms)
+            </label>
             <input
               className="w-20 border border-gray-300 rounded-md p-1"
               min={1}
@@ -363,29 +364,37 @@ const Hashcode: NextPage = () => {
         <h1>{METADATA.title}</h1>
         <Author date={METADATA.date} />
         <p>
-          Writing a Sudoku Solver is a fun challenge for every CS graduate or
-          politicians, as{" "}
+          Once upon a time I decided to create a complete sudoku application as
+          my grandma wanted to play some sudokus on her computer and I wasn't
+          satisfied with the free offers available . The project went on for
+          some years and finally lead to{" "}
+          <a href="https://sudoku.tn1ck.com">sudoku.tn1ck.com</a>. While working
+          on it, I went down the rabbit hole of generating sudokus of a
+          specified "human perceived" difficulty and created accidentally one of
+          the most thorough analysis of it.
+        </p>
+        <h2>Creating a sudoku solver</h2>
+        {/* While writing a Sudoku Solver is a
+          fun challenge for every CS graduate or politicians, as{" "}
           <a href="https://www.bbc.com/news/technology-32591984">
             Singapurs prime minister famously wrote one in C++
           </a>
-          . In this article we go a few steps beyond: Writing a program to
-          generate Sudokus of any difficulty.
-        </p>
-        <h2>Creating a sudoku solver</h2>
+          . */}
         <p>
           First things first, to generate a sudoku, we first have to solve one.
-          And the solver plays an integral part into the generation part as we
-          will use the iterations it needed to solve a sudoku to measure the
+          The solver plays an integral part into the generation part as we will
+          use the iterations it needed to solve a sudoku to measure the
           difficulty.
         </p>
         <p>
-          Here is a step by step guide on how to create the solver we will use
-          for sudoku generation. We start with the most basic brute force
-          algorithm and end up with the final one, based on seeing the sudoku as
-          a Constraint Satisfaction Problems (short CSP). We use a depth first
-          search (short DFS) for all our different strategies here, we abstract
-          this by the following function. We make it sudoku specific instead of
-          completely generic for ease of use.
+          We will explore multiple algorithms and benchmark them against each
+          other in how well we can use them to measure the difficulty of a
+          sudoku. We start with the most basic brute force algorithm and end up
+          with the final one, based on seeing the sudoku as a Constraint
+          Satisfaction Problems (short CSP). We use a depth first search (short
+          DFS) for all our different strategies here, we abstract this by the
+          following function. We make it sudoku specific instead of completely
+          generic for ease of use.
           <br />
           Adding caching to prevent calculating the same branch multiple times
           as well as making it stack based instead of recursive (JavaScript
@@ -762,6 +771,49 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           difficulty. I fetched 100 sudokus from websudoku.com for each of its
           difficulty classes as well as from sudoku.com.
         </p>
+
+        <h3>How well do the solver measure human difficulty?</h3>
+        <p>
+          This is the raw data on how many iterations each solver took to solve
+          the sudokus. You can also execute it yourself{" "}
+          <Link href="/apps/benchmark-sudokus">here </Link> or look at the
+          source <a href="TODO">here</a>.
+        </p>
+        <p>
+          First let's draw a histogram of each strategy and each bucket to get
+          an idea of the distribution. From that we can see that they are not
+          completely random, but do cluster at certain iterations depending on
+          the difficulty. TODO: Add histograms.
+        </p>
+
+        <p>
+          Then we look at the QQ plots for each strategy/source/level
+          combination. QQ plots are super cool to get an intuitive understanding
+          on how the values are distributed. A perfect normal distribution would
+          be a straight line, ours look much more like an exponential one, which
+          is not surprising as solving Sudokus is famously NP hard. Any
+          currently known algorithms to solve an NP hard problem takes
+          exponential time. If you happen to make this line straight, you are
+          welcomed to collect a million dollar as you probably just proved that
+          P = NP. TODO: Add qq plots.
+        </p>
+
+        <p>
+          We can already see that these graphs all look somewhat alike, even the
+          second most basic brute force looks decently similar to our fancy CSP
+          algorithm. But do the numbers agree? How much do the iterations
+          correlate with the level? TODO: Add correlations.
+        </p>
+
+        <p>
+          As we can see, they all correlate all somewhat similar. Now we should
+          question how the sudokus for websudoku.com or sudoku.com are
+          generated. It's most likely something similar what we are trying to do
+          here. To make sure that our sources resemble solving sudokus, I tasked
+          a friend to solve some sudokus of different difficulties for me and
+          measure the time. TODO: Actually do this.
+        </p>
+
         <ul></ul>
         <h3>Generating a Sudoku with a specific difficulties</h3>
         <p>
