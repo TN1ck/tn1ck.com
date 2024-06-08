@@ -373,6 +373,7 @@ const SudokuGenerator = ({
   strategy: (sudoku: SudokuGrid) => SudokuGrid[]
 }) => {
   const [seed, setSeed] = useState(0)
+  const [iterationGoal, setIterationGoal] = useState(50)
   const [sudoku, setSudoku] = useState<SudokuGrid>([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -408,8 +409,6 @@ const SudokuGenerator = ({
     }
     return sudoku
   }
-
-  const iterationGoal = 50
 
   const validIterations = useCallback((cost: number): boolean => {
     const rateIterationsRelative = (cost: number): number => {
@@ -495,6 +494,19 @@ const SudokuGenerator = ({
             />
           </div>
           <div className="mt-4">
+            <label className="block" htmlFor="timeout">
+              Iteration goal (difficulty)
+            </label>
+            <input
+              className="w-20 border border-gray-300 rounded-md p-1"
+              min={1}
+              id="iterationGoal"
+              max={1000}
+              value={iterationGoal}
+              onChange={(e) => setIterationGoal(parseInt(e.target.value))}
+            />
+          </div>
+          <div className="mt-4">
             <div>Iterations: {iterations}</div>
           </div>
         </div>
@@ -545,10 +557,10 @@ const Hashcode: NextPage = () => {
           following function. We make it sudoku specific instead of completely
           generic for ease of use.
           <br />
-          Adding caching to prevent calculating the same branch multiple times
-          as well as making it stack based instead of recursive (JavaScript
-          sadly has no tail call optimization) is left as an exercise for the
-          reader.
+          Footnote: Adding caching to prevent calculating the same branch
+          multiple times as well as making it stack based instead of recursive
+          (JavaScript sadly has no tail call optimization) is left as an
+          exercise for the reader.
         </p>
         <Accordion title="Code of the depth first search">
           <CodeBlock language="typescript">
@@ -695,31 +707,62 @@ function minimumRemainingValueStrategy(
         <h3>Arc Consistency</h3>
         <p>
           We now embark on a different way to solve the sudoku, namely framing
-          it as a Constraint Satisfaction Problem to solve it and specifically
-          we use Arc consistency to make solving it fast.
-          <br />
+          it as a Constraint Satisfaction Problem to solve it and then use Arc
+          Consistency to simplify the problem. A quick primer on some computer
+          science terms.
+        </p>
+        <ul>
+          <li>
+            <strong>Domain</strong> - A domain is the set of possible values for
+            a variable. For a sudoku, this is the numbers 1 - 9.
+          </li>
+          <li>
+            <strong>CSP</strong> - A constraint satisfaction problem (CSP) is a
+            problem defined by a set of variables, a set of domains, and a set
+            of constraints. The goal is to assign a value to each variable such
+            that the constraints are satisfied. For a sudoku, the variables are
+            the cells, the domains are the numbers 1 - 9 and the constraints are
+            that every row, column and square has to have unique numbers.
+          </li>
+          <li>
+            <strong>Arc consistency</strong> - A variable is arc-consistent with
+            another variable if every value in the domain of the first variable
+            has a possible value in the domain of the second variable that
+            satisfies the constraint between the two variables.
+            <br />
+            In the sudoku example, if we have two cells in the same row, one
+            with the domain [1, 2, 3] and the other with the domain [2], this is
+            not arc consistent as 2 is in the domain of the first cell. If we
+            remove the 2 from the domain of the first cell, it becomes arc
+            consistent.
+          </li>
+          <li>
+            <strong>AC3</strong> - The AC3 algorithm is an algorithm to create
+            arc consistency. The main difference from the complete naive way to
+            achieve arc consistency is that we do not loop over all constraints
+            again when a domain of a variable changes, but only the relevant
+            variables that have a constraint with it (in sudoku the cells in the
+            same row / column / square).
+          </li>
+        </ul>
+        <p>
           For every cell in the sudoku, we keep track of its possible values. We
           reduce the possible values for every cell by checking the sudoku
           constraints e.g. remove the numbers that are already have a value in
           the same row / column / square. We do this as long until no domain is
           changing anymore. This "reduction of domains using the constraints" is
-          arc consistency. For very simple sudokus, this is already enough to
-          solve one, for harder ones, we are left with multiple options for
+          arc consistency.
+        </p>
+
+        <p>
+          For very simple sudokus, this is already enough to solve one (see the
+          applet below), for harder ones, we are left with multiple options for
           every unfilled cell. This means we have to employ a search again. We
           use then the "Minimum remaining value" strategy again to select the
           cell with the least options and create a new versions of the sudoku
           with that cell filled with the possible values. This is called "domain
-          splitting" in fancy computer science terms. The number of iterations
-          we count here are the times we executed the "arc consistency"
-          algorithm. This is decently similar on how experts solve sudokus,
-          which means that the iteration count should be very good indicator for
-          the difficulty.
-          <br />
-          We specifically implement the "AC3" algorithm to create arc
-          consistency, the main difference from the complete naive way to
-          achieve arc consistency is that we do not loop over all constraints
-          again when a domain of a cell changes, but only the relevant cells
-          that have a constraint with it (e.g. in the same row)
+          splitting" in fancy computer science terms. We again count the number
+          of iterations needed to solve the sudoku.
         </p>
         <p>
           The applet shows the domains of the applied ac3 algorithm in unfilled
@@ -928,7 +971,8 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           This is the raw data on how many iterations each solver took to solve
           the sudokus. You can also execute it yourself{" "}
           <Link href="/apps/benchmark-sudokus">here </Link> or look at the
-          source <a href="TODO">here</a>.
+          source <a href="TODO">here</a>. I skipped the most simple brute force,
+          as it would take ages to compute for even medium difficult sudokus.
         </p>
         <p>
           First let's draw a histogram of each strategy and each bucket to get
@@ -1019,41 +1063,56 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           still valid. Here is how they describe the algorithm:
         </p>
         <blockquote>
-          We use hill climbing to generate new puzzles having a call count close
-          to the call count we need. In this method, first of all, we generate
-          an initial puzzle with some random numbers inside it and calculate its
-          cost function. Then in each iteration, we randomly change one element
-          of this solution by adding, deleting, or changing a single number and
-          calculate the cost function again. After this, we check the new value
-          of the cost function for this new puzzle and compare it to the
-          previous one. If the cost is reduced, we accept the second puzzle as
-          the new solution and otherwise we undo the change. We do this process
-          until meeting the stopping criterion. The cost function for a given
-          puzzle is infinity for puzzles with none or more than one solutions.
-          For other puzzles, the cost is the absolute value of the current
-          puzzle’s call count minus the average call count of the given
-          difficulty level. For example if we want to generate an easy puzzle
-          and we want to consider the values demonstrated in Table I, then the
-          cost function for a puzzle having a unique solution is the absolute
-          value of its call count minus 6.234043. We stop the algorithm when we
-          have puzzles with costs close to zero. Depending on the level of
-          accuracy we need and the number of difficulty levels we have, we can
-          define the closeness of the cost function to zero.
+          "We use hill climbing to generate new puzzles having a call count
+          close to the call count we need. In this method, first of all, we
+          generate an initial puzzle with some random numbers inside it and
+          calculate its cost function. Then in each iteration, we randomly
+          change one element of this solution by adding, deleting, or changing a
+          single number and calculate the cost function again.
+          <br />
+          After this, we check the new value of the cost function for this new
+          puzzle and compare it to the previous one. If the cost is reduced, we
+          accept the second puzzle as the new solution and otherwise we undo the
+          change. We do this process until meeting the stopping criterion.
+          <br />
+          The cost function for a given puzzle is infinity for puzzles with none
+          or more than one solutions. For other puzzles, the cost is the
+          absolute value of the current puzzle’s call count minus the average
+          call count of the given difficulty level. For example if we want to
+          generate an easy puzzle and we want to consider the values
+          demonstrated in Table I, then the cost function for a puzzle having a
+          unique solution is the absolute value of its call count minus
+          6.234043.
+          <br />
+          We stop the algorithm when we have puzzles with costs close to zero.
+          Depending on the level of accuracy we need and the number of
+          difficulty levels we have, we can define the closeness of the cost
+          function to zero."
         </blockquote>
         <p>
           When I first read it, I thought "we generate an initial puzzle with
-          some random numbers inside it" would mean that I could start with a
-          Sudoku grid and put random numbers in it. But one needs an already
-          valid sudoku as else the hill climbing will not work as the cost
-          function for an invalid configuration should return infinite. While
-          theoretically it still works, it takes far too long to stumble upon a
-          valid configuration like this. I’m not entirely sure if they meant to
-          start with a valid Sudoku, but "initial puzzle with some random
-          numbers" does not sound like it. Furthermore, "just adding, deleting
-          or changing a single number" is not efficient, as again they, this can
-          lead to an invalid configuration quickly, albeit the hill climbing
-          will now be a bit faster, although we can easily guide the algorithm
-          more here.
+          some random numbers inside it" would mean that I could literally start
+          with a Sudoku grid and put random numbers in it.
+          <br />
+          But one needs an already valid sudoku as else the hill climbing will
+          not work as the cost function for an invalid configuration should
+          return infinite. While theoretically it still works, it takes far too
+          long to stumble upon a valid configuration like this.
+        </p>
+        <p>
+          I’m not entirely sure if they meant to start with a valid Sudoku, but
+          "initial puzzle with some random numbers" does not sound like it.
+          Furthermore, "just adding, deleting or changing a single number" is
+          not efficient, as again they, this can lead to an invalid
+          configuration quickly, albeit the hill climbing will now be a bit
+          faster, although we can easily guide the algorithm more here.
+        </p>
+        <p>
+          I find my algorithm to be more efficient and elegant as it is guided
+          by the sudokus constraints, namely we first search for a solvable
+          sudoku and then for a unique one, making the hill climbing afterwards
+          easier as our cost function will not return infinity. Their algorithm
+          will spend most of their time trying to stumble upon a valid sudoku.
         </p>
         <h3>Footnotes</h3>
         <blockquote>

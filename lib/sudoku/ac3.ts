@@ -9,6 +9,7 @@ import {
   toSimpleSudoku,
 } from "./common"
 
+// We track the possible values (its domain) for each cell.
 export type DomainSudoku = number[][][]
 
 // AC3 algorithm. Returns the reduced domain sudoku and if it is solvable.
