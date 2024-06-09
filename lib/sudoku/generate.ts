@@ -50,14 +50,17 @@ export function checkForUniqueness(sudoku: SudokuGrid): boolean {
         for (const num of SUDOKU_NUMBERS) {
           const newSudoku = cloneSudoku(sudoku)
           newSudoku[rowIndex][colIndex] = num
+          if (!isSudokuValid(newSudoku)) {
+            continue
+          }
 
           const { solvedSudoku } = sudokuSolver(newSudoku)
           if (solvedSudoku !== null) {
             timesSolved++
           }
-        }
-        if (timesSolved > 1) {
-          return false
+          if (timesSolved > 1) {
+            return false
+          }
         }
       }
       colIndex++
@@ -75,7 +78,7 @@ export function checkForUniqueness(sudoku: SudokuGrid): boolean {
  *
  * When uniqueness could not be increased, returns the same sudoku.
  */
-function enhanceUniqueness(
+export function enhanceUniqueness(
   sudoku: SudokuGrid,
   randomFn: () => number,
 ): SudokuGrid {
@@ -197,7 +200,7 @@ function fixGrid(sudoku: SudokuGrid, randomFn: () => number) {
   }
 }
 
-function fixSudoku(sudoku: SudokuGrid, randomFn: () => number) {
+export function fixSudoku(sudoku: SudokuGrid, randomFn: () => number) {
   fixGrid(sudoku, randomFn)
   fixColumns(sudoku, randomFn)
   fixRows(sudoku, randomFn)
@@ -206,7 +209,7 @@ function fixSudoku(sudoku: SudokuGrid, randomFn: () => number) {
 /**
  * Generate a random sudoku.
  */
-function generateRandomSudoku(randomFn: () => number): SudokuGrid {
+export function generateRandomSudoku(randomFn: () => number): SudokuGrid {
   const randomSudoku = SUDOKU_NUMBERS.map(() => {
     return shuffle(
       SUDOKU_NUMBERS.map((n) => {
@@ -219,7 +222,7 @@ function generateRandomSudoku(randomFn: () => number): SudokuGrid {
   return randomSudoku
 }
 
-function cloneSudoku(sudoku: SudokuGrid): SudokuGrid {
+export function cloneSudoku(sudoku: SudokuGrid): SudokuGrid {
   return [...sudoku.map((r) => [...r])]
 }
 
@@ -248,9 +251,11 @@ export function increaseDifficultyOfSudoku(
   return sudoku
 }
 
-export function createSolvableSudoku(randomFn: () => number): SudokuGrid {
-  let sudoku = generateRandomSudoku(randomFn)
-
+export function makeSudokuSolvable(
+  sudoku: SudokuGrid,
+  randomFn: () => number,
+): SudokuGrid {
+  sudoku = cloneSudoku(sudoku)
   while (sudokuSolver(sudoku).solvedSudoku === null) {
     const randomX = sample(SUDOKU_COORDINATES, randomFn)
     const randomY = sample(SUDOKU_COORDINATES, randomFn)
@@ -258,8 +263,12 @@ export function createSolvableSudoku(randomFn: () => number): SudokuGrid {
       randomFn() > 0.8 ? sample(SUDOKU_NUMBERS, randomFn) : 0
     fixSudoku(sudoku, randomFn)
   }
-
   return sudoku
+}
+
+export function createSolvableSudoku(randomFn: () => number): SudokuGrid {
+  let sudoku = generateRandomSudoku(randomFn)
+  return makeSudokuSolvable(sudoku, randomFn)
 }
 
 export function makeSudokuUnique(
