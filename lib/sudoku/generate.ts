@@ -7,7 +7,7 @@ import {
 } from "./common"
 import { flatten } from "lodash-es"
 import { sample, shuffle } from "./seededRandom"
-import { dfsLoop } from "./sudokus"
+import { dfsLoop, minimumRemainingValueStrategy } from "./sudokus"
 import { AC3Strategy } from "./ac3"
 
 export enum DIFFICULTY {
@@ -32,13 +32,22 @@ const sudokuSolver = (
   return dfsLoop([sudoku], AC3Strategy, 0)
 }
 
+export const sudokuSolverMRV = (
+  sudoku: SudokuGrid,
+): { solvedSudoku: SudokuGrid | null; iterations: number } => {
+  return dfsLoop([sudoku], minimumRemainingValueStrategy, 0)
+}
+
 /**
  * Checks that there is only one solution for the sudoku.
  *
  * This works by iterating over all cells and if an empty one is encountered,
  * we set numbers from 1-9 and make sure that only one yields a solution.
  */
-export function checkForUniqueness(sudoku: SudokuGrid): boolean {
+export function checkForUniqueness(
+  sudoku: SudokuGrid,
+  solver = sudokuSolver,
+): boolean {
   let rowIndex = 0
   for (const row of sudoku) {
     let colIndex = 0
@@ -54,7 +63,7 @@ export function checkForUniqueness(sudoku: SudokuGrid): boolean {
             continue
           }
 
-          const { solvedSudoku } = sudokuSolver(newSudoku)
+          const { solvedSudoku } = solver(newSudoku)
           if (solvedSudoku !== null) {
             timesSolved++
           }
@@ -244,7 +253,7 @@ export function increaseDifficultyOfSudoku(
     const newSudoku = cloneSudoku(sudoku)
     newSudoku[x][y] = 0
     const newCosts = sudokuSolver(newSudoku).iterations
-    if (newCosts > costs && checkForUniqueness(newSudoku)) {
+    if (newCosts >= costs && checkForUniqueness(newSudoku)) {
       return newSudoku
     }
   }
