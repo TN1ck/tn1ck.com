@@ -360,7 +360,11 @@ const SudokuSolverDomain = ({
               id="timout"
               max={1000}
               value={timeoutValue}
-              onChange={(e) => setTimeoutValue(parseInt(e.target.value))}
+              onChange={(e) =>
+                setTimeoutValue(
+                  e.target.value !== "" ? parseInt(e.target.value) : 0,
+                )
+              }
             />
           </div>
           <div className="mt-4">
@@ -719,7 +723,9 @@ const SudokuGenerator2 = ({
               id="seed"
               max={1000}
               value={seed}
-              onChange={(e) => setSeed(parseInt(e.target.value))}
+              onChange={(e) =>
+                setSeed(e.target.value !== "" ? parseInt(e.target.value) : 0)
+              }
             />
           </div>
           <div className="mt-4">
@@ -732,7 +738,11 @@ const SudokuGenerator2 = ({
               id="iterationGoal"
               max={1000}
               value={iterationGoal}
-              onChange={(e) => setIterationGoal(parseInt(e.target.value))}
+              onChange={(e) =>
+                setIterationGoal(
+                  e.target.value !== "" ? parseInt(e.target.value) : 0,
+                )
+              }
             />
           </div>
           <div className="mt-4">
@@ -766,8 +776,8 @@ const Hashcode: NextPage = () => {
           years and finally lead to{" "}
           <a href="https://sudoku.tn1ck.com">sudoku.tn1ck.com</a>. While working
           on it, I went down the rabbit hole of generating sudokus of a
-          specified "human perceived" difficulty and created accidentally one of
-          the a quite thorough analysis of it.
+          specified "human perceived" difficulty and created accidentally a
+          quite thorough analysis of it.
         </p>
         <h2>Creating a sudoku solver</h2>
         {/* While writing a Sudoku Solver is a
