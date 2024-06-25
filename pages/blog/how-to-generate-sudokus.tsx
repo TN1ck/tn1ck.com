@@ -62,7 +62,7 @@ export const METADATA = {
 
 const dataAnalysis = [
   {
-    name: "Brute Force",
+    name: "Brute Force w. skip",
     histogram:
       "/how-to-generate-sudokus/benchmark_bruteForceWithValidCheck.csv_histograms.png",
     qqPlot:
