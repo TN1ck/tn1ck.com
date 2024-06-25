@@ -393,224 +393,6 @@ const EMPTY_SUDOKU = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-const SudokuGenerator = ({
-  strategy,
-}: {
-  strategy: (sudoku: SudokuGrid) => SudokuGrid[]
-}) => {
-  const [seed, setSeed] = useState(0)
-  const [iterationGoal, setIterationGoal] = useState(50)
-  const [sudoku, setSudoku] = useState<SudokuGrid>(EMPTY_SUDOKU)
-
-  const solveSudoku = useCallback(
-    (sudoku: SudokuGrid) => {
-      return dfsLoop([sudoku], strategy, 0)
-    },
-    [strategy],
-  )
-
-  const { iterations, solvedSudoku } = solveSudoku(sudoku)
-  const isUnique = checkForUniqueness(sudoku)
-
-  const RELATIVE_DRIFT = 20
-  const ABSOLUTE_DRIFT = 3
-
-  // const step = (sudoku: SudokuGrid, randomFn: () => number) => {
-  //   // We need a valid sudoku.
-  //   if (solveSudoku(sudoku).solvedSudoku !== null) {
-  //     const randomX = sample(SUDOKU_COORDINATES, randomFn)
-  //     const randomY = sample(SUDOKU_COORDINATES, randomFn)
-  //     sudoku[randomX][randomY] =
-  //       randomFn() > 0.8 ? sample(SUDOKU_NUMBERS, randomFn) : 0
-  //     fixSudoku(sudoku, randomFn)
-  //   }
-  //   if (!checkForUniqueness(sudoku)) {
-
-  //   }
-  //   else {
-  //     // 1. create a random, solvable sudoku.
-  //     sudoku = generateRandomSudoku(randomFn)
-
-  //     while (solveSudoku(sudoku).solvedSudoku === null) {
-  //       const randomX = sample(SUDOKU_COORDINATES, randomFn)
-  //       const randomY = sample(SUDOKU_COORDINATES, randomFn)
-  //       sudoku[randomX][randomY] =
-  //         randomFn() > 0.8 ? sample(SUDOKU_NUMBERS, randomFn) : 0
-  //       fixSudoku(sudoku, randomFn)
-  //     }
-
-  //     // 2. make it unique.
-  //     while (!checkForUniqueness(sudoku)) {
-  //       const newBestSudoku = enhanceUniqueness(sudoku, randomFn)
-  //       if (newBestSudoku === sudoku) {
-  //         console.log("Max uniqueness reached")
-  //         break
-  //       }
-  //       sudoku = newBestSudoku
-  //     }
-  //   }
-  // }
-
-  const randomFn = useMemo(() => {
-    return createSeededRandom(seed)
-  }, [seed])
-
-  const createValidAndUnique = (randomFn: () => number): SudokuGrid => {
-    let sudoku: SudokuGrid = cloneSudoku(EMPTY_SUDOKU)
-    while (!checkForUniqueness(sudoku)) {
-      // 1. create a random, solvable sudoku.
-      sudoku = generateRandomSudoku(randomFn)
-
-      while (solveSudoku(sudoku).solvedSudoku === null) {
-        const randomX = sample(SUDOKU_COORDINATES, randomFn)
-        const randomY = sample(SUDOKU_COORDINATES, randomFn)
-        sudoku[randomX][randomY] =
-          randomFn() > 0.8 ? sample(SUDOKU_NUMBERS, randomFn) : 0
-        fixSudoku(sudoku, randomFn)
-      }
-
-      // 2. make it unique.
-      while (!checkForUniqueness(sudoku)) {
-        const newBestSudoku = enhanceUniqueness(sudoku, randomFn)
-        if (newBestSudoku === sudoku) {
-          console.log("Max uniqueness reached")
-          break
-        }
-        sudoku = newBestSudoku
-      }
-    }
-    return sudoku
-  }
-
-  const validIterations = useCallback(
-    (cost: number): boolean => {
-      const rateIterationsRelative = (cost: number): number => {
-        if (cost === Infinity) {
-          return cost
-        }
-        return Math.abs(cost / iterationGoal - 1) * 100
-      }
-
-      const rateCostsAbsolute = (cost: number): number => {
-        return Math.abs(cost - iterationGoal)
-      }
-
-      return (
-        rateIterationsRelative(cost) < RELATIVE_DRIFT ||
-        rateCostsAbsolute(cost) < ABSOLUTE_DRIFT
-      )
-    },
-    [iterationGoal],
-  )
-
-  const nearToTheDifficulty = (sudoku: SudokuGrid): SudokuGrid => {
-    let currentIterations = solveSudoku(sudoku).iterations
-    while (!validIterations(currentIterations)) {
-      let newSudoku: SudokuGrid = []
-      // Too difficult, make it easier.
-      if (currentIterations > iterationGoal) {
-        newSudoku = simplifySudoku(sudoku, randomFn)
-      }
-      // Too easy, make it more difficult.
-      if (currentIterations < iterationGoal) {
-        newSudoku = increaseDifficultyOfSudoku(sudoku, randomFn)
-      }
-      const newIterations = solveSudoku(newSudoku).iterations
-      if (currentIterations === newIterations) {
-        console.log("Reached maximum simplicity / difficulty with this sudoku.")
-        break
-      }
-      sudoku = newSudoku
-      currentIterations = newIterations
-    }
-
-    return sudoku
-  }
-
-  return (
-    <div>
-      <div className="block sm:flex justify-between">
-        <div className="pr-4">
-          <div className="grid gap-2">
-            <button
-              className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              onClick={() => {
-                const sudoku = generateRandomSudoku(randomFn)
-                setSudoku(sudoku)
-              }}
-            >
-              {"1. Create random sudoku that adheres to the sudoku constraints"}
-            </button>
-            <button
-              className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              onClick={() => {
-                const newSudoku = makeSudokuSolvable(sudoku, randomFn)
-                setSudoku(newSudoku)
-              }}
-            >
-              {"2. Make it solvable"}
-            </button>
-            <button
-              className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              onClick={() => {
-                const sudoku = createValidAndUnique(randomFn)
-                setSudoku(sudoku)
-              }}
-            >
-              {"3. Make it unique"}
-            </button>
-            <button
-              className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-blue-600"
-              onClick={() => {
-                const newSudoku = nearToTheDifficulty(sudoku)
-                setSudoku(newSudoku)
-              }}
-            >
-              {"4 - 5. decrease / increase difficulty as much as possible"}
-            </button>
-          </div>
-          <div className="mt-4">
-            <label className="block" htmlFor="timeout">
-              Seed
-            </label>
-            <input
-              className="w-20 border border-gray-300 rounded-md p-1"
-              min={1}
-              id="seed"
-              max={1000}
-              value={seed}
-              onChange={(e) => setSeed(parseInt(e.target.value))}
-            />
-          </div>
-          <div className="mt-4">
-            <label className="block" htmlFor="timeout">
-              Iteration goal (difficulty)
-            </label>
-            <input
-              className="w-20 border border-gray-300 rounded-md p-1"
-              min={1}
-              id="iterationGoal"
-              max={1000}
-              value={iterationGoal}
-              onChange={(e) => setIterationGoal(parseInt(e.target.value))}
-            />
-          </div>
-          <div className="mt-4">
-            <div>
-              Solvable:{" "}
-              {solvedSudoku !== null ? `Yes (${iterations} iterations)` : "No"}
-            </div>
-            <div>Unique: {isUnique ? "Yes" : "No"}</div>
-          </div>
-        </div>
-        <div className="flex-shrink-0">
-          <SudokuPreview sudoku={sudoku} size={300} notes={undefined} />
-        </div>
-      </div>
-    </div>
-  )
-}
-
 const SudokuGenerator2 = ({
   strategy,
 }: {
@@ -786,9 +568,15 @@ const SudokuGenerator2 = ({
                 {uniqueAndSolved ? "Step (done)" : "Step"}
               </button>
             </div>
-            {"2. decrease / increase difficulty as much as possible"}
+            {"2. decrease / increase difficulty as much as possible. "}
+            {!uniqueAndSolved && (
+              <span className="text-gray-500">
+                {"Disabled: Sudoku is not unique and solvable yet."}
+              </span>
+            )}
             <div className="flex gap-2">
               <button
+                disabled={!uniqueAndSolved}
                 className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-blue-600"
                 onClick={async () => {
                   let sudoku = stack[0]
@@ -824,6 +612,7 @@ const SudokuGenerator2 = ({
                 {maxReached ? "Solve (done)" : "Solve"}
               </button>
               <button
+                disabled={!uniqueAndSolved}
                 className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-blue-600"
                 onClick={() => {
                   const newSudoku = nearToTheDifficultyStep(sudoku)
@@ -1356,9 +1145,9 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           completely random, but do cluster at certain iterations depending on
           the difficulty. The simple brute force algorithm shows a perfect
           correlation and normal distribution when applying the logarithm, which
-          to me implies that this is exactly how both websites rate the
-          difficulty of their sudokus - how long it takes for a simple brute
-          force algorithm to solve it.
+          to me implies that this is how both websites rate the difficulty of
+          their sudokus - how long it takes for a simple brute force algorithm
+          to solve it.
           <br />
           Both the minimum remaining value and arc consistency algorithm look
           the same, but only for the more difficult levels as for the easy ones,
@@ -1401,14 +1190,13 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
         </p>
         <ol>
           <li>
-            We generate a random _valid_ Sudoku. We do this by assigning
-            randomly filling the coordinates of the Sudoku and removing any
-            numbers that are in conflict.
-          </li>
-          <li>
-            If the sudoku is already unique, meaning there can only be one
-            solution we continue, if not we add numbers as long until it is
-            unique. If we could not make it unique, go back to step 1.
+            Start with an empty grid and fill it with random numbers until it is
+            a valid (and unique sudoku). We backtrack when the added number will
+            lead to a non solvable sudoku. Note: The uniqueness constraint comes
+            automatically as we continue to fill the sudoku with numbers.
+            Instead of stopping when it is unique, we could also stop when it is
+            fully filled, but that wouldn't be helpful as we would have to
+            delete numbers again in the next step.
           </li>
           <li>
             To generate a sudoku of a wanted difficulty, we either remove
@@ -1417,7 +1205,11 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           <li>
             If we cannot delete any more numbers without making it non unique,
             meaning we reached max difficulty, but the difficulty is below the
-            requested one, start at 1. again.
+            requested one, start at 1. again. Note: We could also backtrack or
+            add numbers again, but for my personal use I found it better to save
+            the sudoku with the maximum achieved difficulty and start over, but
+            by adding and removing numbers, one could theoretically reach the
+            requested difficulty.
           </li>
           <li>
             If the call count is close to the requested value, return the
@@ -1425,12 +1217,17 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           </li>
         </ol>
         <p>
-          As 4. points out, generating very difficult sudokus can take quite
+          As 3. points out, generating very difficult sudokus can take quite
           some time as any generation method will struggle with the uniqueness
-          constraint and has to randomly alter the sudoku.
+          constraint and has to randomly alter the sudoku generation steps. Here
+          is an applet for you to interactively run the sudoku. The code is not
+          crazy optimized and we do have to do some heavy calculations,{" "}
+          <strong>
+            so be wary that your browser might freeze for a bit if you click
+            solve
+          </strong>
+          .
         </p>
-
-        <SudokuGenerator strategy={AC3Strategy} />
 
         <SudokuGenerator2 strategy={AC3Strategy} />
 
@@ -1487,10 +1284,10 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
         </p>
         <p>
           I find my algorithm to be more efficient and elegant as it is guided
-          by the sudokus constraints, namely we first search for a solvable
-          sudoku and then for a unique one, making the hill climbing afterwards
-          easier as our cost function will not return infinity. Their algorithm
-          will spend most of their time trying to stumble upon a valid sudoku.
+          by the sudokus constraints, namely we first create a solvable and
+          unique sudoku, making the hill climbing afterwards easier as our cost
+          function will not return infinity. Their algorithm will spend most of
+          their time trying to stumble upon a valid sudoku.
         </p>
         <h3>Footnotes</h3>
         <blockquote>
