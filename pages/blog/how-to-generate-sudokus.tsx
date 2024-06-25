@@ -3,7 +3,14 @@ import { NextPage } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 import {
   bruteForceStrategy,
   dfsLoop,
@@ -48,9 +55,72 @@ import {
 } from "../../lib/sudoku/seededRandom"
 
 export const METADATA = {
-  title: "How to generate Sudokus & rate their difficulties (WIP)",
-  date: "2024-04-27",
+  title: "How to generate Sudokus of any difficulty",
+  date: "2024-06-25",
   slug: "how-to-generate-sudokus",
+}
+
+const dataAnalysis = [
+  {
+    name: "Brute Force",
+    histogram:
+      "/how-to-generate-sudokus/benchmark_bruteForceWithValidCheck.csv_histograms.png",
+    qqPlot:
+      "/how-to-generate-sudokus/benchmark_bruteForceWithValidCheck.csv_qq_plots.png",
+    correlation:
+      "/how-to-generate-sudokus/benchmark_bruteForceWithValidCheck.csv_correlation.png",
+    csv: "/how-to-generate-sudokus/benchmark_bruteForceWithValidCheck.csv",
+  },
+  {
+    name: "Minimum Remaining Value",
+    histogram:
+      "/how-to-generate-sudokus/benchmark_minimumRemainingValue.csv_histograms.png",
+    qqPlot:
+      "/how-to-generate-sudokus/benchmark_minimumRemainingValue.csv_qq_plots.png",
+    correlation:
+      "/how-to-generate-sudokus/benchmark_minimumRemainingValue.csv_correlation.png",
+    csv: "/how-to-generate-sudokus/benchmark_minimumRemainingValue.csv",
+  },
+  {
+    name: "Arc Consistency",
+    histogram: "/how-to-generate-sudokus/benchmark_ac3.csv_histograms.png",
+    qqPlot: "/how-to-generate-sudokus/benchmark_ac3.csv_qq_plots.png",
+    correlation: "/how-to-generate-sudokus/benchmark_ac3.csv_correlation.png",
+    csv: "/how-to-generate-sudokus/benchmark_ac3.csv",
+  },
+]
+
+const TabComponent = ({
+  tabs,
+  content,
+}: {
+  tabs: ReactNode[]
+  content: ReactNode[]
+}) => {
+  const [activeTab, setActiveTab] = useState(0)
+
+  return (
+    <div>
+      <div className="flex gap-2">
+        {tabs.map((tab, i) => (
+          <button
+            key={i}
+            className={clsx(
+              "py-2 px-4  text-white rounded-md hover:bg-blue-600",
+              {
+                "bg-blue-500": i === activeTab,
+                "bg-gray-500": i !== activeTab,
+              },
+            )}
+            onClick={() => setActiveTab(i)}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+      <div>{content[activeTab]}</div>
+    </div>
+  )
 }
 
 const SudokuPreview = ({
@@ -1127,59 +1197,102 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
         <p>
           We will do basically the same, but actually publishing the data and
           also trying out how the "lesser" strategies work here for rating the
-          difficulty. I fetched 100 sudokus from websudoku.com for each of its
-          difficulty classes as well as from sudoku.com.
+          difficulty. I fetched 100 sudokus from websudoku.com (easy, medium,
+          hard, evil) for each of its difficulty classes as well as from
+          sudoku.com (easy, medium, hard, expert, master, extreme).
         </p>
 
         <h3>How well do the solver measure human difficulty?</h3>
         <p>
+          I'm not a data scientist, so take this analysis with a grain of salt
+          and I'm happy for any comments / proposals on how to improve it. As I
+          don't have comments here yet, you can open an issue at{" "}
+          <a target="_blank" href="https://github.com/TN1ck/sudoku-analysis">
+            the GitHub repository of this analysis
+          </a>{" "}
+          instead.
+        </p>
+        <p>
           This is the raw data on how many iterations each solver took to solve
           the sudokus. You can also execute it yourself{" "}
           <Link href="/apps/benchmark-sudokus">here </Link> or look at the
-          source <a href="TODO">here</a>. I skipped the most simple brute force,
-          as it would take ages to compute for even medium difficult sudokus.
+          source{" "}
+          <a href="https://github.com/TN1ck/tn1ck.com/blob/main/pages/apps/benchmark-sudokus.tsx">
+            at GitHub
+          </a>
+          . I skipped the most simple brute force, as it would take ages to
+          compute for even medium difficult sudokus.
         </p>
         <p>
-          First let's draw a histogram of each strategy and each bucket to get
-          an idea of the distribution. From that we can see that they are not
-          completely random, but do cluster at certain iterations depending on
-          the difficulty. The simple brute force algorithm shows a perfect
-          correlation and normal distribution when applying the logarithm, which
-          to me implies that this is how both websites rate the difficulty of
-          their sudokus - how long it takes for a simple brute force algorithm
-          to solve it.
+          <strong>
+            For all the charts I used the logarithm on the iterations as
+            especially the qq plot made it very obvious that the iterations
+            count is exponential to the difficulty.
+          </strong>{" "}
+          Which is not surprising as solving Sudokus is famously NP hard. Any
+          currently known algorithms to solve an NP hard problem takes
+          exponential time.
+        </p>
+        <h4>Histograms</h4>
+        <p>
+          First let's draw a histogram of each strategy and each dataset to get
+          an idea of the distribution. From that we can see that they seem to be
+          more or less normally distributed (with the applied logarithm),
+          especially the brute force algorithm.
           <br />
           Both the minimum remaining value and arc consistency algorithm look
           the same, but only for the more difficult levels as for the easy ones,
-          they always need the same number of iterations. TODO: Add histograms.
+          they always need the same number of iterations.
         </p>
+        <TabComponent
+          tabs={dataAnalysis.map((d) => d.name)}
+          content={dataAnalysis.map((d) => (
+            <img key={d.name} src={d.histogram} />
+          ))}
+        />
 
+        <h4>QQ plots</h4>
         <p>
           Then we look at the QQ plots for each strategy/source/level
           combination. QQ plots are super cool to get an intuitive understanding
           on how the values are distributed. A perfect normal distribution would
-          be a straight line, ours look much more like an exponential one, which
-          is not surprising as solving Sudokus is famously NP hard. Any
-          currently known algorithms to solve an NP hard problem takes
-          exponential time. If you happen to make this line straight, you are
-          welcomed to collect a million dollar as you probably just proved that
-          P = NP. TODO: Add qq plots.
+          be a straight line. These lines also look pretty straight, but only
+          because we used the logarithm on the iterations count already. For the
+          minimum remaining value and Arc consistency, the lower difficulty
+          levels look much less like a straight line, but the higher difficulty
+          levels look very much like it. This is explained with their very low
+          iteration count for the easy sudokus.
         </p>
+
+        <TabComponent
+          tabs={dataAnalysis.map((d) => d.name)}
+          content={dataAnalysis.map((d) => (
+            <img key={d.name} src={d.qqPlot} />
+          ))}
+        />
 
         <p>
           We can already see that these graphs all look somewhat alike, even the
           second most basic brute force looks decently similar to our fancy CSP
           algorithm. But do the numbers agree? How much do the iterations
-          correlate with the level? TODO: Add correlations.
+          correlate with the level?
         </p>
+        <TabComponent
+          tabs={dataAnalysis.map((d) => d.name)}
+          content={dataAnalysis.map((d) => (
+            <img key={d.name} src={d.correlation} />
+          ))}
+        />
 
         <p>
-          As we can see, they all correlate all somewhat similar. Now we should
-          question how the sudokus for websudoku.com or sudoku.com are
-          generated. It's most likely something similar what we are trying to do
-          here. To make sure that our sources resemble solving sudokus, I tasked
-          a friend to solve some sudokus of different difficulties for me and
-          measure the time. TODO: Actually do this.
+          As we can see, they all correlate almost perfectly with the brute
+          having a perfect 1.0 correlation, making it highly likely that the
+          websites use the iteration count as well for their Level determination
+          - and this makes the whole analysis problematic, as we still don't
+          know if this is actually a good difficulty indicator for how a human
+          perceives the difficulty. Actually solving sudokus by a human and
+          rating them by the time to get a ground truth is left as an exercise
+          by the reader (Sorry I'm not paid for this.)
         </p>
 
         <ul></ul>

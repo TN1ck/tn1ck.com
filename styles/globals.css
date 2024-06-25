@@ -52,6 +52,10 @@ address {
   @apply text-2xl mb-4 mt-8;
 }
 
+.blog h4 {
+  @apply text-xl mb-4 mt-8;
+}
+
 .blog ul {
   @apply my-4 ml-4 list-outside list-disc;
 }

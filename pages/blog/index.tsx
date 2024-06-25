@@ -6,8 +6,10 @@ import { METADATA as miuMetadata } from "./miu"
 import { METADATA as numbersGameMetadata } from "./numbers-game"
 import { METADATA as dropboxMetadata } from "./dropbox-header"
 import { METADATA as hashCodeMetadata } from "./hashcode"
+import { METADATA as howToGenerateSudokusMetadata } from "./how-to-generate-sudokus"
 
 const BLOG_ENTRIES = [
+  howToGenerateSudokusMetadata,
   updatePlansMetadata,
   dropboxMetadata,
   numbersGameMetadata,
