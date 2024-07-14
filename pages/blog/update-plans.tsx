@@ -208,7 +208,7 @@ pepper,100
                 onClick={handleApply}
                 disabled={!updatePlan}
               >
-                Apply
+                Execute
               </button>
             </div>
           </Card>
@@ -273,7 +273,7 @@ pepper,100
 }
 
 export const METADATA = {
-  title: "Safeguarding changes using update plans",
+  title: "Safeguarding changes using the plan-execute pattern",
   date: "2024-02-26",
   slug: "update-plans",
 }
@@ -288,20 +288,22 @@ const UpdatePlans: NextPage = () => {
           imports that are business-critical, e.g., a customer-provided CSV file
           that we want to import into our database and that affects business
           operations. A simple pattern I came to love to make this process fast
-          & safe is using update plans.
+          & safe is using the plan-execute pattern.
         </p>
-        <h3>What are update plans?</h3>
+        <h3>What is the plan-execute pattern?</h3>
         <p>
-          Update plans are a way to preview changes before they are applied.
+          The plan-execute pattern (or plan-apply pattern) is a way to preview
+          changes before they are applied.
         </p>
         <p>
           If you know <a href="https://www.terraform.io/">Terraform</a>, you
-          already know update plans. Terraform is a tool that is used to manage
-          infrastructure using a declarative programming language. Changing
-          infrastructure is extremely delicate, remove one line of code, and the
-          production server could be deleted, increasing the avg. heart rate of
-          the team by 50 BPM. To safeguard our servers and heart rates, an
-          infrastructure update is typically done with the following steps:
+          already know the plan-execute pattern. Terraform is a tool that is
+          used to manage infrastructure using a declarative programming
+          language. Changing infrastructure is extremely delicate, remove one
+          line of code, and the production server could be deleted, increasing
+          the avg. heart rate of the team by 50 BPM. To safeguard our servers
+          and heart rates, an infrastructure update is typically done with the
+          following steps:
         </p>
         <ol>
           <li>
@@ -315,16 +317,16 @@ const UpdatePlans: NextPage = () => {
           </li>
           <li>The developer verifies that the changes look sound.</li>
           <li>
-            The developer executes "terraform apply" to actually apply the
+            The developer executes "terraform apply" to actually execute the
             changes.
           </li>
         </ol>
         <p>
-          The key safeguard is that Terraform doesn’t directly apply the changes
-          but first creates a plan to transition the current state to the
-          desired one, allowing the user to review and approve the plan. This
-          ensures that the developer can verify the changes are as intended,
-          catching any undesired effects early.
+          The key safeguard is that Terraform doesn’t directly execute the
+          changes but first creates a plan to transition the current state to
+          the desired one, allowing the user to review and approve the plan.
+          This ensures that the developer can verify the changes are as
+          intended, catching any undesired effects early.
           <a href="#footnotes">
             <sup>1</sup>
           </a>
@@ -332,25 +334,25 @@ const UpdatePlans: NextPage = () => {
         <p>Some more examples:</p>
         <ul>
           <li>
-            Checkout pages are basically an update plan - they show you what
+            Checkout pages use the plan-execute pattern - they show you what
             you’ll buy, the amount of money to be deducted, where to send it,
             etc. One can read through all this before hitting the "buy" (or
-            rather "apply") button.
+            rather "execute") button.
           </li>
           <li>
-            A git diff is an update plan - it shows you the changes that you are
-            about to commit.
+            A git diff is a plan-execute pattern - it shows you the changes that
+            you are about to commit.
           </li>
           <li>
-            A file deletion dialog is an update plan - it often shows how many
-            files will be deleted and asks you to confirm.
+            A file deletion dialog is a plan-execute pattern - it often shows
+            how many files will be deleted and asks you to confirm.
           </li>
         </ul>
-        <h3>Update plans for database changes</h3>
+        <h3>Plan-execute pattern for database changes</h3>
         <p>
           Not every update is as important as updating your infrastructure and
-          needs an explicit plan & apply step. But the pattern to split
-          important changes into a plan & apply step is useful not only in
+          needs an explicit plan & execute step. But the pattern to split
+          important changes into a plan & execute step is useful not only in
           infrastructure management but in all cases where one can preview what
           the final changes will look like. Database updates fit this very well,
           and I will show you how this can look like.
@@ -363,9 +365,8 @@ const UpdatePlans: NextPage = () => {
           manual way as the supermarkets’ fast paced environment never allowed
           them to address tech debt. To update the prices, someone has to upload
           a CSV file with two columns: product_id, price. Let’s model this with
-          an update plan to make sure that the price for frozen pizza is always
-          correct. I’ll use Go in the following example, because it's a great
-          language.
+          a plan-execute pattern to make sure that the price for frozen pizza is
+          always correct. I’ll use Go in the following code examples.
         </p>
         <p>
           First, we define our product data model: a simple ID & price
@@ -390,20 +391,20 @@ type Product struct {
         </p>
         <ul>
           <li>
-            Added - products that are only in the new dataset and thus will be
-            added.
+            <strong>Added</strong> - products that are only in the new dataset
+            and thus will be added.
           </li>
           <li>
-            NoChanges - products that are both in the old and new datasets, but
-            the price did not change.
+            <strong>NoChanges</strong> - products that are both in the old and
+            new datasets, but the price did not change.
           </li>
           <li>
-            Updated - products that are both in the old and new datasets, but
-            the price changed.
+            <strong>Updated</strong> - products that are both in the old and new
+            datasets, but the price changed.
           </li>
           <li>
-            Removed - products that are only in the old dataset and thus will be
-            removed.
+            <strong>Removed</strong> - products that are only in the old dataset
+            and thus will be removed.
           </li>
         </ul>
         <CodeBlock language="go" className="-mx-8">
@@ -464,7 +465,7 @@ func CreatePlan(
 `}
         </CodeBlock>
         <p>
-          To actually apply these changes, we define an interface that will
+          To actually execute these changes, we define an interface that will
           represent the database. We keep it simple and do not use any batch
           updates/inserts here.
         </p>
@@ -478,7 +479,7 @@ type Repo interface {
 	Transaction(func(repo Repo) error) error
 }
 
-func (pup ProductUpdatePlan) Apply(repo Repo) error {
+func (pup ProductUpdatePlan) Execute(repo Repo) error {
 	return repo.Transaction(func(repo Repo) error {
 		for _, product := range pup.Added {
 			err := repo.InsertProduct(product)
@@ -527,7 +528,7 @@ func UpdateProducts(
 		return plan, nil
 	}
 
-	return plan, plan.Apply(repo)
+	return plan, plan.Execute(repo)
 }
 `}
         </CodeBlock>
@@ -541,15 +542,15 @@ func UpdateProducts(
           To have an excuse for building this blog with React.js, here is an
           interactive toy example of how this could look. You can change the
           provided CSV data, click "Preview changes" and see the update plan.
-          You can then apply the update plan to the database by clicking "Apply
-          changes". The products and CSV data are seeded with some sensible
-          data. There is no error handling, you have to rely on the update plan
-          for the safe guarding ;).
+          You can then execute the update plan to the database by clicking
+          "Execute changes". The products and CSV data are seeded with some
+          sensible data. There is no error handling, you have to rely on the
+          plan-execute pattern for the safeguarding ;).
         </p>
         <div className="p-4 bg-gray-200 -mx-8">
           <StoreExample />
         </div>
-        <h3>When should one use update plans?</h3>
+        <h3>When should one use the plan-execute pattern?</h3>
         <p>
           This pattern does not make sense for most data updates; as this
           entails more work and complexity. It makes sense when:
@@ -569,10 +570,10 @@ func UpdateProducts(
         </ul>
         <h3>Snapshots & undo</h3>
         <p>
-          Update plans do not prevent a faulty update from being applied, so it
-          is important as well that there is an undo option. Sometimes this is
-          not completely possible - e.g., when Terraform deletes your production
-          database, you can’t just "undo" that.
+          The plan-execute pattern does not prevent a faulty update from being
+          applied, so it is important as well that there is an undo option.
+          Sometimes this is not completely possible - e.g., when Terraform
+          deletes your production database, you can’t just "undo" that.
           <a href="#footnotes">
             <sup>3</sup>
           </a>{" "}
@@ -587,7 +588,7 @@ func UpdateProducts(
             <sup>4</sup>
           </a>{" "}
           This works only so long as <i>all</i> changes to the system are made
-          through the update plan, so for most systems, this is not feasible.
+          through the update plans, so for most systems, this is not feasible.
         </p>
         <h3>Why is this not a database feature already?</h3>
         <p>
