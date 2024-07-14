@@ -61,6 +61,10 @@ address {
   @apply text-lg mt-8 font-bold;
 }
 
+.blog h4 {
+  @apply text-lg mt-8 font-bold;
+}
+
 .blog ul {
   @apply my-4 ml-4 list-outside list-disc;
 }
@@ -70,7 +74,7 @@ address {
 }
 
 .blog blockquote {
-  @apply border-l-4 border-orange-600 pl-4 my-4;
+  @apply border-l-4 border-black pl-4 my-4;
 }
 
 .hljs {

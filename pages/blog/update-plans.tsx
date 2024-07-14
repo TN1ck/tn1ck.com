@@ -5,6 +5,7 @@ import { CodeBlock } from "../../components/code-block"
 
 import React, { useState } from "react"
 import { Author, BlogContent } from "../../components/blog"
+import { Card } from "../../components/card"
 
 /* eslint-disable react/no-unescaped-entities */
 
@@ -173,95 +174,98 @@ pepper,100
     <div className="grid sm:grid-cols-2 gap-4 grid-cols-1">
       <div>
         <div>
-          <h3 className="text-lg mb-2">Products in the database</h3>
-          <div className="p-4 bg-gray-300 text-black h-72 overflow-scroll rounded-md">
-            <div className="flex">
-              <div className="w-40">ID</div>
-              <div>Price</div>
+          <Card title="Products in the database" bgColor="bg-gray-200">
+            <div className="p-4 bg-gray-200 text-black h-72 overflow-scroll">
+              <div className="flex">
+                <div className="w-40">ID</div>
+                <div>Price</div>
+              </div>
+              {database.map((product) => (
+                <ProductDetails key={product.ID} product={product} />
+              ))}
             </div>
-            {database.map((product) => (
-              <ProductDetails key={product.ID} product={product} />
-            ))}
-          </div>
+          </Card>
         </div>
         <div className="mt-4">
-          <h4 className="text-lg mb-2">CSV Data (you can change me!)</h4>
-          <textarea
-            className="bg-white text-black p-4 h-72 rounded-md"
-            value={csvData}
-            onChange={(e) => setCsvData(e.target.value)}
-            placeholder="Enter CSV data here"
-            rows={10}
-            style={{ width: "100%" }}
-          />
-          <div className="flex justify-between">
-            <button
-              className="bg-yellow-400 px-4 py-2 rounded-md"
-              onClick={handlePreview}
-            >
-              Preview changes
-            </button>
-            <button
-              className="bg-yellow-400 px-4 py-2 disabled:bg-gray-300 rounded-md"
-              onClick={handleApply}
-              disabled={!updatePlan}
-            >
-              Apply changes
-            </button>
-          </div>
+          <Card title="CSV Data (you can change me!)" bgColor="bg-gray-200">
+            <textarea
+              className="bg-white text-black p-4 h-72"
+              value={csvData}
+              onChange={(e) => setCsvData(e.target.value)}
+              placeholder="Enter CSV data here"
+              rows={10}
+              style={{ width: "100%" }}
+            />
+            <div className="flex justify-between mt-2">
+              <button
+                className="bg-orange-400 px-4 py-2 rounded-md"
+                onClick={handlePreview}
+              >
+                Preview
+              </button>
+              <button
+                className="bg-orange-400 px-4 py-2 disabled:bg-gray-300 rounded-md"
+                onClick={handleApply}
+                disabled={!updatePlan}
+              >
+                Apply
+              </button>
+            </div>
+          </Card>
         </div>
       </div>
       <div>
         <div>
-          <h4 className="text-lg">Update Plan</h4>
-          {!updatePlan && (
-            <div className="text-gray-600">No update plan available.</div>
-          )}
-          {updatePlan && (
-            <div className="mt-2">
-              <div className="p-4 bg-gray-300 text-black rounded-md">
-                <div>
-                  <strong>Added: </strong>
-                  <div className="ml-4">
-                    {updatePlan.Added.map((product) => (
-                      <ProductDetails key={product.ID} product={product} />
-                    ))}
-                    {updatePlan.Added.length === 0 && "None"}
+          <Card title="Update Plan" bgColor="bg-gray-200">
+            {!updatePlan && (
+              <div className="text-gray-600">No update plan available.</div>
+            )}
+            {updatePlan && (
+              <div className="mt-2">
+                <div className="p-4 bg-gray-300 text-black">
+                  <div>
+                    <strong>Added: </strong>
+                    <div className="ml-4">
+                      {updatePlan.Added.map((product) => (
+                        <ProductDetails key={product.ID} product={product} />
+                      ))}
+                      {updatePlan.Added.length === 0 && "None"}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <strong>No Changes: </strong>
-                  <div className="ml-4">
-                    {updatePlan.NoChanges.map((product) => (
-                      <ProductDetails key={product.ID} product={product} />
-                    ))}
-                    {updatePlan.NoChanges.length === 0 && "None"}
+                  <div>
+                    <strong>No Changes: </strong>
+                    <div className="ml-4">
+                      {updatePlan.NoChanges.map((product) => (
+                        <ProductDetails key={product.ID} product={product} />
+                      ))}
+                      {updatePlan.NoChanges.length === 0 && "None"}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <strong>Updated: </strong>
-                  <div className="ml-4">
-                    {updatePlan.Updated.map((pair) => (
-                      <UpdatedProductDetails
-                        key={pair.NewProduct.ID}
-                        pair={pair}
-                      />
-                    ))}
-                    {updatePlan.Updated.length === 0 && "None"}
+                  <div>
+                    <strong>Updated: </strong>
+                    <div className="ml-4">
+                      {updatePlan.Updated.map((pair) => (
+                        <UpdatedProductDetails
+                          key={pair.NewProduct.ID}
+                          pair={pair}
+                        />
+                      ))}
+                      {updatePlan.Updated.length === 0 && "None"}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <strong>Deleted: </strong>
-                  <div className="ml-4">
-                    {updatePlan.Deleted.map((product) => (
-                      <ProductDetails key={product.ID} product={product} />
-                    ))}
-                    {updatePlan.Deleted.length === 0 && "None"}
+                  <div>
+                    <strong>Deleted: </strong>
+                    <div className="ml-4">
+                      {updatePlan.Deleted.map((product) => (
+                        <ProductDetails key={product.ID} product={product} />
+                      ))}
+                      {updatePlan.Deleted.length === 0 && "None"}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </Card>
         </div>
       </div>
     </div>
@@ -542,11 +546,9 @@ func UpdateProducts(
           data. There is no error handling, you have to rely on the update plan
           for the safe guarding ;).
         </p>
-      </BlogContent>
-      <div className="p-4 bg-gray-200 rounded-md">
-        <StoreExample />
-      </div>
-      <BlogContent hideBackButton>
+        <div className="p-4 bg-gray-200 -mx-8">
+          <StoreExample />
+        </div>
         <h3>When should one use update plans?</h3>
         <p>
           This pattern does not make sense for most data updates; as this

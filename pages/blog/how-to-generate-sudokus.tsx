@@ -53,6 +53,8 @@ import {
   sample,
   shuffle,
 } from "../../lib/sudoku/seededRandom"
+import { Card } from "../../components/card"
+import { TabComponent } from "../../components/tab"
 
 export const METADATA = {
   title: "How to generate Sudokus of any difficulty",
@@ -89,39 +91,6 @@ const dataAnalysis = [
     csv: "/how-to-generate-sudokus/benchmark_ac3.csv",
   },
 ]
-
-const TabComponent = ({
-  tabs,
-  content,
-}: {
-  tabs: ReactNode[]
-  content: ReactNode[]
-}) => {
-  const [activeTab, setActiveTab] = useState(0)
-
-  return (
-    <div>
-      <div className="flex gap-2">
-        {tabs.map((tab, i) => (
-          <button
-            key={i}
-            className={clsx(
-              "py-2 px-4  text-white rounded-md hover:bg-blue-600",
-              {
-                "bg-blue-500": i === activeTab,
-                "bg-gray-500": i !== activeTab,
-              },
-            )}
-            onClick={() => setActiveTab(i)}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-      <div>{content[activeTab]}</div>
-    </div>
-  )
-}
 
 const SudokuPreview = ({
   sudoku,
@@ -328,7 +297,7 @@ const SudokuSolverDomain = ({
         <div className="pr-4">
           <div className="flex gap-2">
             <button
-              className="w-24 py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              className="w-24 py-2 px-4 bg-orange-300 text-black border border-black rounded-md hover:bg-orange-400"
               onClick={() => {
                 setRunning(!running)
               }}
@@ -336,13 +305,13 @@ const SudokuSolverDomain = ({
               {running ? "Pause" : "Solve"}
             </button>
             <button
-              className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-red-600"
+              className="py-2 px-4 bg-slate-200 text-black border border-black rounded-md hover:bg-red-600"
               onClick={reset}
             >
               {"Reset"}
             </button>
             <button
-              className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-blue-600"
+              className="py-2 px-4 bg-slate-200 text-black border border-black rounded-md hover:bg-slate-300"
               onClick={() => {
                 step(0)
               }}
@@ -355,7 +324,7 @@ const SudokuSolverDomain = ({
               Time between each step (ms)
             </label>
             <input
-              className="w-20 border border-gray-300 rounded-md p-1"
+              className="w-20 border border-black rounded-md p-1"
               min={1}
               id="timout"
               max={1000}
@@ -421,21 +390,15 @@ const SudokuApplet = ({
 
   return (
     <div>
-      <div className="flex mb-4 border-b-2 border-b-gray-500">
+      <div className="flex gap-2 flex-col md:flex-row border border-black border-2 p-2">
         {SUDOKUS.map((s, i) => {
           return (
             <button
-              className={clsx(
-                "py-2 px-4 hover:bg-blue-500 hover:text-white text-sm border-transparent",
-                {
-                  "rounded-r-none rounded-tl-md": i === 0,
-                  "rounded-l-none rounded-tr-md": i === SUDOKUS.length - 1,
-                  "border-r-black border": i !== SUDOKUS.length - 1,
-                  "bg-blue-500 text-white": s.name === selection,
-                  "bg-gray-200": s.name !== selection,
-                },
-              )}
               key={s.name}
+              className={clsx("py-2 px-4 text-sm hover:cursor-pointer", {
+                "bg-black text-white": s.name === selection,
+                "bg-transparent text-black": s.name !== selection,
+              })}
               onClick={() => setSelection(s.name)}
             >
               {s.name}
@@ -443,7 +406,7 @@ const SudokuApplet = ({
           )
         })}
       </div>
-      <div>
+      <div className="mt-8">
         <SudokuSolverDomain
           strategy={strategy}
           showNotes={showNotes}
@@ -595,7 +558,7 @@ const SudokuGenerator2 = ({
             <div className="flex gap-2">
               <button
                 disabled={uniqueAndSolved}
-                className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-500"
+                className="py-2 px-4 bg-orange-200 border border-black text-black rounded-md hover:bg-orange-300 disabled:bg-gray-500"
                 onClick={async () => {
                   let localStack = stack
                   let localUniqueAndSolved = false
@@ -622,14 +585,14 @@ const SudokuGenerator2 = ({
                 {uniqueAndSolved ? "Solve (done)" : "Solve"}
               </button>
               <button
-                className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="py-2 px-4 bg-orange-200 border border-black text-black rounded-md hover:bg-orange-300"
                 onClick={reset}
               >
                 {"Reset"}
               </button>
               <button
                 disabled={uniqueAndSolved}
-                className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-500"
+                className="py-2 px-4 bg-orange-200 border border-black text-black rounded-md hover:bg-orange-300 disabled:bg-gray-500"
                 onClick={() => {
                   if (stack.length === 0) {
                     return
@@ -651,7 +614,7 @@ const SudokuGenerator2 = ({
             <div className="flex gap-2">
               <button
                 disabled={!uniqueAndSolved}
-                className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-blue-600"
+                className="py-2 px-4 bg-slate-200 text-black border border-black  rounded-md hover:bg-slate-300 hover:cursor-pointer"
                 onClick={async () => {
                   let sudoku = stack[0]
                   while (true) {
@@ -687,7 +650,7 @@ const SudokuGenerator2 = ({
               </button>
               <button
                 disabled={!uniqueAndSolved}
-                className="py-2 px-4 bg-gray-500 text-white rounded-md hover:bg-blue-600"
+                className="py-2 px-4 bg-slate-200 border border-black rounded-md hover:bg-slate-300 hover:cursor-pointer"
                 onClick={() => {
                   const newSudoku = nearToTheDifficultyStep(sudoku)
 
@@ -718,7 +681,7 @@ const SudokuGenerator2 = ({
               Seed
             </label>
             <input
-              className="w-20 border border-gray-300 rounded-md p-1"
+              className="w-20 border border-black rounded-md p-1"
               min={1}
               id="seed"
               max={1000}
@@ -733,7 +696,7 @@ const SudokuGenerator2 = ({
               Iteration goal (difficulty)
             </label>
             <input
-              className="w-20 border border-gray-300 rounded-md p-1"
+              className="w-20 border border-black rounded-md p-1"
               min={1}
               id="iterationGoal"
               max={1000}
@@ -826,43 +789,48 @@ const Hashcode: NextPage = () => {
 }`}
           </CodeBlock>
         </Accordion>
-        <h3>Brute force version</h3>
-        <p>
-          This is the most simple strategy to solve the sudoku: We find an empty
-          spot and fill in a number between 1 - 9. We don’t do anything else.
-          This is horribly slow, do not try this at home.
-        </p>
-        <SudokuApplet showNotes={false} strategy={bruteForceStrategy} />
-        <Accordion title="Code of the brute force strategy">
-          <CodeBlock language="typescript">{`function bruteForceStrategy(sudoku: SudokuGrid): SimpleSudoku[] {
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      if (sudoku[i][j] === 0) {
-        const newSudokus = []
-        for (let k = 1; k <= 9; k++) {
-          const newSudoku = sudoku.map((row) => row.slice())
-          newSudoku[i][j] = k
-          newSudokus.push(newSudoku)
+        <div className="mt-8">
+          <Card title="Brute force version">
+            <div className="mb-8">
+              This is the most simple strategy to solve the sudoku: We find an
+              empty spot and fill in a number between 1 - 9. We don’t do
+              anything else. This is horribly slow, do not try this at home.
+            </div>
+            <SudokuApplet showNotes={false} strategy={bruteForceStrategy} />
+            <Accordion title="Code of the brute force strategy">
+              <CodeBlock language="typescript">{`function bruteForceStrategy(sudoku: SudokuGrid): SimpleSudoku[] {
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (sudoku[i][j] === 0) {
+          const newSudokus = []
+          for (let k = 1; k <= 9; k++) {
+            const newSudoku = sudoku.map((row) => row.slice())
+            newSudoku[i][j] = k
+            newSudokus.push(newSudoku)
+          }
+          return newSudokus
         }
-        return newSudokus
       }
     }
-  }
 
-  return []
-}`}</CodeBlock>
-        </Accordion>
-        <h3>Skip on invalid sudokus</h3>
-        <p>
-          The simplest and most substantial change we can do, is not not waiting
-          until the whole Sudoku is filled, but skipping on the Sudokus that are
-          already invalid. This solver will solve even the hardest sudokus in
-          adequate time, but it still wastes a lot of cycles as it is not
-          choosing the cell to fill with a value with any strategy.
-        </p>
-        <SudokuApplet showNotes={false} strategy={withValidCheckStrategy} />
-        <Accordion title="Code of the improved brute force">
-          <CodeBlock language="typescript">{`function withValidCheckStrategy(sudoku: SudokuGrid): SudokuGrid[] {
+    return []
+  }`}</CodeBlock>
+            </Accordion>
+          </Card>
+        </div>
+        <div>
+          <Card title="Skip on invalid sudokus">
+            <div className="mb-8">
+              The simplest and most substantial change we can do, is not not
+              waiting until the whole Sudoku is filled, but skipping on the
+              Sudokus that are already invalid. This solver will solve even the
+              hardest sudokus in adequate time, but it still wastes a lot of
+              cycles as it is not choosing the cell to fill with a value with
+              any strategy.
+            </div>
+            <SudokuApplet showNotes={false} strategy={withValidCheckStrategy} />
+            <Accordion title="Code of the improved brute force">
+              <CodeBlock language="typescript">{`function withValidCheckStrategy(sudoku: SudokuGrid): SudokuGrid[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -882,23 +850,25 @@ const Hashcode: NextPage = () => {
 
   return []
 }`}</CodeBlock>
-        </Accordion>
-        <h3>Minimum remaining value</h3>
-        <p>
-          "Minimum remaining value" is a heuristic we can use to not search
-          blindly, but to select the cell next with the least amount of
-          possibilities. This is something a human would do as well - fill or
-          work on the cells with least options. This greatly reduces the number
-          of iterations needed for the difficult sudoku. This algorithm is
-          pretty solid now as it can solve even the hardest sudokus in the
-          millisecond range.
-        </p>
-        <SudokuApplet
-          showNotes={false}
-          strategy={minimumRemainingValueStrategy}
-        />
-        <Accordion title="Code of the minimum remaining value strategy">
-          <CodeBlock language="typescript">{`function getEmptyCoordinates(sudoku: SudokuGrid): [number, number][] {
+            </Accordion>
+          </Card>
+        </div>
+        <Card title="Minimum remaining value">
+          <div className="mb-8">
+            "Minimum remaining value" is a heuristic we can use to not search
+            blindly, but to select the cell next with the least amount of
+            possibilities. This is something a human would do as well - fill or
+            work on the cells with least options. This greatly reduces the
+            number of iterations needed for the difficult sudoku. This algorithm
+            is pretty solid now as it can solve even the hardest sudokus in the
+            millisecond range.
+          </div>
+          <SudokuApplet
+            showNotes={false}
+            strategy={minimumRemainingValueStrategy}
+          />
+          <Accordion title="Code of the minimum remaining value strategy">
+            <CodeBlock language="typescript">{`function getEmptyCoordinates(sudoku: SudokuGrid): [number, number][] {
   const emptyCoordinates: [number, number][] = []
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
@@ -946,74 +916,85 @@ function minimumRemainingValueStrategy(
 
   return newSudokus
 }`}</CodeBlock>
-        </Accordion>
-        <h3>Arc Consistency</h3>
-        <p>
-          We now embark on a different way to solve the sudoku, namely framing
-          it as a Constraint Satisfaction Problem to solve it and then use Arc
-          Consistency to simplify the problem. A quick primer on some computer
-          science terms.
-        </p>
-        <ul>
-          <li>
-            <strong>Domain</strong> - A domain is the set of possible values for
-            a variable. For a sudoku, this is the numbers 1 - 9.
-          </li>
-          <li>
-            <strong>CSP</strong> - A constraint satisfaction problem (CSP) is a
-            problem defined by a set of variables, a set of domains, and a set
-            of constraints. The goal is to assign a value to each variable such
-            that the constraints are satisfied. For a sudoku, the variables are
-            the cells, the domains are the numbers 1 - 9 and the constraints are
-            that every row, column and square has to have unique numbers.
-          </li>
-          <li>
-            <strong>Arc consistency</strong> - A variable is arc-consistent with
-            another variable if every value in the domain of the first variable
-            has a possible value in the domain of the second variable that
-            satisfies the constraint between the two variables.
-            <br />
-            In the sudoku example, if we have two cells in the same row, one
-            with the domain [1, 2, 3] and the other with the domain [2], this is
-            not arc consistent as 2 is in the domain of the first cell. If we
-            remove the 2 from the domain of the first cell, it becomes arc
-            consistent.
-          </li>
-          <li>
-            <strong>AC3</strong> - The AC3 algorithm is an algorithm to create
-            arc consistency. The main difference from the complete naive way to
-            achieve arc consistency is that we do not loop over all constraints
-            again when a domain of a variable changes, but only the relevant
-            variables that have a constraint with it (in sudoku the cells in the
-            same row / column / square).
-          </li>
-        </ul>
-        <p>
-          For every cell in the sudoku, we keep track of its possible values. We
-          reduce the possible values for every cell by checking the sudoku
-          constraints e.g. remove the numbers that are already have a value in
-          the same row / column / square. We do this as long until no domain is
-          changing anymore. This "reduction of domains using the constraints" is
-          arc consistency.
-        </p>
+          </Accordion>
+        </Card>
+        <Card title={"Arc Consistency"}>
+          <p>
+            We now embark on a different way to solve the sudoku, namely framing
+            it as a Constraint Satisfaction Problem to solve it and then use Arc
+            Consistency to simplify the problem. A quick primer on some computer
+            science terms.
+          </p>
+          <ul>
+            <li>
+              <strong>Domain</strong> - A domain is the set of possible values
+              for a variable. For a sudoku, this is the numbers 1 - 9.
+            </li>
+            <li>
+              <strong>CSP</strong> - A constraint satisfaction problem (CSP) is
+              a problem defined by a set of variables, a set of domains, and a
+              set of constraints. The goal is to assign a value to each variable
+              such that the constraints are satisfied. For a sudoku, the
+              variables are the cells, the domains are the numbers 1 - 9 and the
+              constraints are that every row, column and square has to have
+              unique numbers.
+            </li>
+            <li>
+              <strong>Arc consistency</strong> - A variable is arc-consistent
+              with another variable if every value in the domain of the first
+              variable has a possible value in the domain of the second variable
+              that satisfies the constraint between the two variables.
+              <br />
+              In the sudoku example, if we have two cells in the same row, one
+              with the domain [1, 2, 3] and the other with the domain [2], this
+              is not arc consistent as 2 is in the domain of the first cell. If
+              we remove the 2 from the domain of the first cell, it becomes arc
+              consistent.
+            </li>
+            <li>
+              <strong>AC3</strong> - The AC3 algorithm is an algorithm to create
+              arc consistency. The main difference from the complete naive way
+              to achieve arc consistency is that we do not loop over all
+              constraints again when a domain of a variable changes, but only
+              the relevant variables that have a constraint with it (in sudoku
+              the cells in the same row / column / square).
+            </li>
+          </ul>
+          <p>
+            For every cell in the sudoku, we keep track of its possible values.
+            We reduce the possible values for every cell by checking the sudoku
+            constraints e.g. remove the numbers that are already have a value in
+            the same row / column / square. We do this as long until no domain
+            is changing anymore. This "reduction of domains using the
+            constraints" is arc consistency.
+          </p>
 
-        <p>
-          For very simple sudokus, this is already enough to solve one (see the
-          applet below), for harder ones, we are left with multiple options for
-          every unfilled cell. This means we have to employ a search again. We
-          use then the "Minimum remaining value" strategy again to select the
-          cell with the least options and create a new versions of the sudoku
-          with that cell filled with the possible values. This is called "domain
-          splitting" in fancy computer science terms. We again count the number
-          of iterations needed to solve the sudoku.
-        </p>
-        <p>
-          The applet shows the domains of the applied ac3 algorithm in unfilled
-          cells. If a sudoku can not be solved, one domain will become empty,
-          which is shown as red, then the algorithm will backtrack.
-        </p>
-        <Accordion title="Code of the Arc consistency strategy">
-          <CodeBlock language="typescript">{`// We track the possible values (its domain) for each cell.
+          <p>
+            For very simple sudokus, this is already enough to solve one (see
+            the applet below), for harder ones, we are left with multiple
+            options for every unfilled cell. This means we have to employ a
+            search again. We use then the "Minimum remaining value" strategy
+            again to select the cell with the least options and create a new
+            versions of the sudoku with that cell filled with the possible
+            values. This is called "domain splitting" in fancy computer science
+            terms. We again count the number of iterations needed to solve the
+            sudoku.
+          </p>
+          <p>
+            The applet shows the domains of the applied ac3 algorithm in
+            unfilled cells. If a sudoku can not be solved, one domain will
+            become empty, which is shown as red, then the algorithm will
+            backtrack.
+          </p>
+          <SudokuApplet
+            showNotes={true}
+            strategy={AC3Strategy}
+            getNotes={(sudoku: SudokuGrid) => {
+              return ac3(toDomainSudoku(sudoku)).sudoku
+            }}
+          />
+          <Accordion title="Code of the Arc consistency strategy">
+            <CodeBlock language="typescript">{`// We track the possible values (its domain) for each cell.
 export type DomainSudoku = number[][][]
 
 // AC3 algorithm. Returns the reduced domain sudoku and if it is solvable.
@@ -1176,14 +1157,8 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
   return newSudokus
 }
 `}</CodeBlock>
-        </Accordion>
-        <SudokuApplet
-          showNotes={true}
-          strategy={AC3Strategy}
-          getNotes={(sudoku: SudokuGrid) => {
-            return ac3(toDomainSudoku(sudoku)).sudoku
-          }}
-        />
+          </Accordion>
+        </Card>
         <h3>Rating the difficulty of sudokus</h3>
         <p>
           The main problem that one faces when generating a sudoku is to assign
@@ -1241,116 +1216,120 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           currently known algorithms to solve an NP hard problem takes
           exponential time.
         </p>
-        <h4>Histograms</h4>
-        <p>
-          First let's draw a histogram of each strategy and each dataset to get
-          an idea of the distribution. From that we can see that they seem to be
-          more or less normally distributed (with the applied logarithm),
-          especially the brute force algorithm.
-          <br />
-          Both the minimum remaining value and arc consistency algorithm look
-          the same, but only for the more difficult levels as for the easy ones,
-          they always need the same number of iterations.
-        </p>
-        <TabComponent
-          tabs={dataAnalysis.map((d) => d.name)}
-          content={dataAnalysis.map((d) => (
-            <img key={d.name} src={d.histogram} />
-          ))}
-        />
+        <Card title={"Histograms"}>
+          <p>
+            First let's draw a histogram of each strategy and each dataset to
+            get an idea of the distribution. From that we can see that they seem
+            to be more or less normally distributed (with the applied
+            logarithm), especially the brute force algorithm.
+            <br />
+            Both the minimum remaining value and arc consistency algorithm look
+            the same, but only for the more difficult levels as for the easy
+            ones, they always need the same number of iterations.
+          </p>
+          <TabComponent
+            tabs={dataAnalysis.map((d) => d.name)}
+            content={dataAnalysis.map((d) => (
+              <img className="mt-4" key={d.name} src={d.histogram} />
+            ))}
+          />
+        </Card>
 
-        <h4>QQ plots</h4>
-        <p>
-          Then we look at the QQ plots for each strategy/source/level
-          combination. QQ plots are super cool to get an intuitive understanding
-          on how the values are distributed. A perfect normal distribution would
-          be a straight line. These lines also look pretty straight, but only
-          because we used the logarithm on the iterations count already. For the
-          minimum remaining value and Arc consistency, the lower difficulty
-          levels look much less like a straight line, but the higher difficulty
-          levels look very much like it. This is explained with their very low
-          iteration count for the easy sudokus.
-        </p>
+        <Card title={"QQ plots"}>
+          <p>
+            Then we look at the QQ plots for each strategy/source/level
+            combination. QQ plots are super cool to get an intuitive
+            understanding on how the values are distributed. A perfect normal
+            distribution would be a straight line. These lines also look pretty
+            straight, but only because we used the logarithm on the iterations
+            count already. For the minimum remaining value and Arc consistency,
+            the lower difficulty levels look much less like a straight line, but
+            the higher difficulty levels look very much like it. This is
+            explained with their very low iteration count for the easy sudokus.
+          </p>
 
-        <TabComponent
-          tabs={dataAnalysis.map((d) => d.name)}
-          content={dataAnalysis.map((d) => (
-            <img key={d.name} src={d.qqPlot} />
-          ))}
-        />
+          <TabComponent
+            tabs={dataAnalysis.map((d) => d.name)}
+            content={dataAnalysis.map((d) => (
+              <img className="mt-4" key={d.name} src={d.qqPlot} />
+            ))}
+          />
+        </Card>
 
-        <p>
-          We can already see that these graphs all look somewhat alike, even the
-          second most basic brute force looks decently similar to our fancy CSP
-          algorithm. But do the numbers agree? How much do the iterations
-          correlate with the level?
-        </p>
-        <TabComponent
-          tabs={dataAnalysis.map((d) => d.name)}
-          content={dataAnalysis.map((d) => (
-            <img key={d.name} src={d.correlation} />
-          ))}
-        />
+        <Card title="Correlation">
+          <p>
+            We can already see that these graphs all look somewhat alike, even
+            the second most basic brute force looks decently similar to our
+            fancy CSP algorithm. But do the numbers agree? How much do the
+            iterations correlate with the level?
+          </p>
+          <TabComponent
+            tabs={dataAnalysis.map((d) => d.name)}
+            content={dataAnalysis.map((d) => (
+              <img className="mt-4" key={d.name} src={d.correlation} />
+            ))}
+          />
 
-        <p>
-          As we can see, they all correlate almost perfectly with the brute
-          having a perfect 1.0 correlation, making it highly likely that the
-          websites use the iteration count as well for their Level determination
-          - and this makes the whole analysis problematic, as we still don't
-          know if this is actually a good difficulty indicator for how a human
-          perceives the difficulty. Actually solving sudokus by a human and
-          rating them by the time to get a ground truth is left as an exercise
-          by the reader (Sorry I'm not paid for this.)
-        </p>
+          <p>
+            As we can see, they all correlate almost perfectly with the brute
+            having a perfect 1.0 correlation, making it highly likely that the
+            websites use the iteration count as well for their Level
+            determination - and this makes the whole analysis problematic, as we
+            still don't know if this is actually a good difficulty indicator for
+            how a human perceives the difficulty. Actually solving sudokus by a
+            human and rating them by the time to get a ground truth is left as
+            an exercise by the reader (Sorry I'm not paid for this.)
+          </p>
+        </Card>
 
-        <ul></ul>
-        <h3>Generating a Sudoku with a specific difficulty</h3>
-        <p>
-          To now generate a sudoku of a specific difficulty, we do the
-          following:
-        </p>
-        <ol>
-          <li>
-            Start with an empty grid and fill it with random numbers until it is
-            a valid (and unique sudoku). We backtrack when the added number will
-            lead to a non solvable sudoku. Note: The uniqueness constraint comes
-            automatically as we continue to fill the sudoku with numbers.
-            Instead of stopping when it is unique, we could also stop when it is
-            fully filled, but that wouldn't be helpful as we would have to
-            delete numbers again in the next step.
-          </li>
-          <li>
-            To generate a sudoku of a wanted difficulty, we either remove
-            numbers or add numbers until the reached difficulty is reached.
-          </li>
-          <li>
-            If we cannot delete any more numbers without making it non unique,
-            meaning we reached max difficulty, but the difficulty is below the
-            requested one, start at 1. again. Note: We could also backtrack or
-            add numbers again, but for my personal use I found it better to save
-            the sudoku with the maximum achieved difficulty and start over, but
-            by adding and removing numbers, one could theoretically reach the
-            requested difficulty.
-          </li>
-          <li>
-            If the call count is close to the requested value, return the
-            sudoku.
-          </li>
-        </ol>
-        <p>
-          As 3. points out, generating very difficult sudokus can take quite
-          some time as any generation method will struggle with the uniqueness
-          constraint and has to randomly alter the sudoku generation steps. Here
-          is an applet for you to interactively run the sudoku. The code is not
-          crazy optimized and we do have to do some heavy calculations,{" "}
-          <strong>
-            so be wary that your browser might freeze for a bit if you click
-            solve
-          </strong>
-          .
-        </p>
+        <Card title="Generating a Sudoku with a specific difficulty">
+          <div>
+            To now generate a sudoku of a specific difficulty, we do the
+            following:
+          </div>
+          <ol>
+            <li>
+              Start with an empty grid and fill it with random numbers until it
+              is a valid (and unique sudoku). We backtrack when the added number
+              will lead to a non solvable sudoku. Note: The uniqueness
+              constraint comes automatically as we continue to fill the sudoku
+              with numbers. Instead of stopping when it is unique, we could also
+              stop when it is fully filled, but that wouldn't be helpful as we
+              would have to delete numbers again in the next step.
+            </li>
+            <li>
+              To generate a sudoku of a wanted difficulty, we either remove
+              numbers or add numbers until the reached difficulty is reached.
+            </li>
+            <li>
+              If we cannot delete any more numbers without making it non unique,
+              meaning we reached max difficulty, but the difficulty is below the
+              requested one, start at 1. again. Note: We could also backtrack or
+              add numbers again, but for my personal use I found it better to
+              save the sudoku with the maximum achieved difficulty and start
+              over, but by adding and removing numbers, one could theoretically
+              reach the requested difficulty.
+            </li>
+            <li>
+              If the call count is close to the requested value, return the
+              sudoku.
+            </li>
+          </ol>
+          <p>
+            As 3. points out, generating very difficult sudokus can take quite
+            some time as any generation method will struggle with the uniqueness
+            constraint and has to randomly alter the sudoku generation steps.
+            Here is an applet for you to interactively run the sudoku. The code
+            is not crazy optimized and we do have to do some heavy calculations,{" "}
+            <strong>
+              so be wary that your browser might freeze for a bit if you click
+              solve
+            </strong>
+            .
+          </p>
 
-        <SudokuGenerator2 strategy={AC3Strategy} />
+          <SudokuGenerator2 strategy={AC3Strategy} />
+        </Card>
 
         <h3 id="criticism">Generation algorithm as described by the paper</h3>
         <p>

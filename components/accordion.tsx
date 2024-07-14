@@ -17,7 +17,7 @@ export const Accordion = ({
       className={clsx(
         "flex flex-col relative bg-slate-50 border-2 border-transparent border-slate-900 mt-8",
         {
-          "p-6 py-8 border-black": open,
+          "py-8 border-black": open,
         },
       )}
     >
