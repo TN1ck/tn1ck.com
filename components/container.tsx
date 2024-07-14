@@ -2,9 +2,9 @@ import Link from "next/link"
 import React from "react"
 
 const LINKS = [
-  { title: "About", id: "about", link: "/" },
-  { title: "Projects", id: "projects", link: "/projects" },
-  { title: "Blog", id: "blog", link: "/blog" },
+  { title: "about", id: "about", link: "/" },
+  { title: "projects", id: "projects", link: "/projects" },
+  { title: "blog", id: "blog", link: "/blog" },
 ]
 
 const Navigation = ({ activeId }: { activeId: string }) => {
@@ -16,8 +16,8 @@ const Navigation = ({ activeId }: { activeId: string }) => {
           href={link.link}
           className={
             activeId === link.id
-              ? "pt-4 pb-2 mr-4 border-b-4 border-black"
-              : "pt-4 pb-2 mr-4"
+              ? "pt-4 pb-1 mr-4 border-b-2 border-black font-bold"
+              : "pt-4 pb-1 mr-4"
           }
         >
           {link.title}

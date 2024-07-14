@@ -12,9 +12,7 @@ export const METADATA = {
 const Hashcode: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent>
-        <h1>{METADATA.title}</h1>
-        <Author date={METADATA.date} />
+      <BlogContent metadata={METADATA}>
         <p>
           Hashcode is an international programming competition where teams, with
           a maximum of 4 people, have to solve a complex problem in under 4

@@ -277,9 +277,7 @@ export const METADATA = {
 const UpdatePlans: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent>
-        <h1>{METADATA.title}</h1>
-        <Author date={METADATA.date} />
+      <BlogContent metadata={METADATA}>
         <p className="my-4">
           At the company I’m currently working at, a.k.a.{" "}
           <a href="https://re-cap.com">re:cap</a>, we have some manual data
@@ -548,7 +546,7 @@ func UpdateProducts(
       <div className="p-4 bg-gray-200 rounded-md">
         <StoreExample />
       </div>
-      <BlogContent>
+      <BlogContent hideBackButton>
         <h3>When should one use update plans?</h3>
         <p>
           This pattern does not make sense for most data updates; as this

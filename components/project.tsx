@@ -15,15 +15,20 @@ const ProjectComponent = ({
   project: Project
   children: React.ReactNode
 }) => (
-  <div className="p-4 bg-white shadow-lg rounded-sm">
-    {/* {showYear ? <h2>{project.attributes.year}</h2> : null} */}
-    <div className="post">
-      <video className="w-full" loop muted poster={project.preview} controls>
-        <source type="video/mp4" src={project.video} />
-      </video>
-      <h3 className="text-lg font-bold mt-8 mb-2">{project.title}</h3>
-      <div className="leading-7">{children}</div>
+  <div className="flex flex-col relative bg-slate-50 border-2 border-slate-900 p-6 py-8 mt-8">
+    <div className="absolute -top-6 left-4 bg-slate-50 p-2 font-black">
+      {project.title}
     </div>
+    <video
+      className="w-full border border-black border-2"
+      loop
+      muted
+      poster={project.preview}
+      controls
+    >
+      <source type="video/mp4" src={project.video} />
+    </video>
+    <div className="mt-4">{children}</div>
   </div>
 )
 

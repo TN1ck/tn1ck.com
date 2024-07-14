@@ -7,8 +7,9 @@ import { METADATA as numbersGameMetadata } from "./numbers-game"
 import { METADATA as dropboxMetadata } from "./dropbox-header"
 import { METADATA as hashCodeMetadata } from "./hashcode"
 import { METADATA as howToGenerateSudokusMetadata } from "./how-to-generate-sudokus"
+import { BlogMetadata } from "../../components/blog"
 
-const BLOG_ENTRIES = [
+const BLOG_ENTRIES: BlogMetadata[] = [
   howToGenerateSudokusMetadata,
   updatePlansMetadata,
   dropboxMetadata,
@@ -20,18 +21,24 @@ const BLOG_ENTRIES = [
 const Home: NextPage = () => {
   return (
     <Container activeId="blog">
-      <h2 className="text-3xl mb-4">{"Blog index"}</h2>
-      <ul className="">
-        {BLOG_ENTRIES.map((metadata) => (
-          <li key={metadata.title} className="mb-2">
-            <Link className="link" href={`/blog/${metadata.slug}`}>
-              {metadata.title}
-            </Link>
-            {" - "}
-            {metadata.date}
-          </li>
-        ))}
-      </ul>
+      <div className="flex flex-col relative bg-slate-50 border-2 border-slate-900 p-6 py-8 mt-16">
+        <div className="absolute -top-6 left-4 bg-slate-50 p-2 font-black">
+          Blog
+        </div>
+        <ul>
+          {BLOG_ENTRIES.map((metadata) => (
+            <li key={metadata.title} className="mb-4">
+              <Link
+                className="font-bold hover:underline"
+                href={`/blog/${metadata.slug}`}
+              >
+                {metadata.title}
+              </Link>
+              <div className="text-sm">{metadata.date}</div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </Container>
   )
 }

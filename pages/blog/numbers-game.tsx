@@ -99,10 +99,7 @@ const StepsSlider = () => {
 const NumbersGame: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent>
-        <h1>{METADATA.title}</h1>
-        <Author date={METADATA.date} />
-
+      <BlogContent metadata={METADATA}>
         <p>
           One of the games bored students play is the &quot;Numbers Game,&quot;
           also known as &quot;Take Tens&quot; or in German,

@@ -13,17 +13,19 @@ export const Accordion = ({
   const [open, setOpen] = useState(initialOpen)
 
   return (
-    <div className="bg-gray-100 shadow-sm my-4">
+    <div
+      className={clsx(
+        "flex flex-col relative bg-slate-50 border-2 border-transparent border-slate-900 mt-8",
+        {
+          "p-6 py-8 border-black": open,
+        },
+      )}
+    >
       <div
         onClick={() => setOpen(!open)}
-        className={clsx(
-          "flex text-lg hover:cursor-pointer hover:bg-gray-200 p-4",
-          {
-            "pb-8": open,
-          },
-        )}
+        className="absolute -top-6 -left-4 bg-slate-50 p-2 font-black flex hover:underline hover:cursor-pointer"
       >
-        <div className="mr-2">{open ? "▼" : "▶"}</div>
+        {open ? "- " : "+ "}
         {title}
       </div>
       {open && <div>{children}</div>}

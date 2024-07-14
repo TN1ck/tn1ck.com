@@ -12,9 +12,7 @@ export const METADATA = {
 const Dropbox: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent>
-        <h1>{METADATA.title}</h1>
-        <Author date={METADATA.date} />
+      <BlogContent metadata={METADATA}>
         <p>
           Dropbox just revamped their branding - and their website. The new
           header uses a cool clipping effect, which we’ll recreate.

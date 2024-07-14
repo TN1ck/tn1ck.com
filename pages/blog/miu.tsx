@@ -11,9 +11,7 @@ export const METADATA = {
 const Miu: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent>
-        <h1>{METADATA.title}</h1>
-        <Author date={METADATA.date} />
+      <BlogContent metadata={METADATA}>
         <p>
           The first exercise introduced in{" "}
           <a href="https://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach">

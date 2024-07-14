@@ -5,31 +5,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900; /* Assuming the variable font supports a range from 100 to 900 */
+}
+
+
 body {
-  @apply bg-gray-100 p-4 leading-7;
+  font-family: 'JetBrains Mono', monospace;
+  @apply bg-slate-50 p-4 leading-7;
 }
 
 .link {
-  color: black;
-  text-decoration: none;
-  transition: all 0.1s ease;
-  box-shadow: 0 4px 0px 0 rgb(253 224 71), inset 0 0px 0 0 rgb(253 224 71);
+  @apply text-orange-600 underline;
 }
 
 .link:visited {
-  @apply text-gray-500;
+  @apply text-orange-600;
 }
 
 .link:hover {
-  box-shadow: 0 4px 0px 0 rgb(253 224 71), inset 0 -20px 0 0 rgb(253 224 71);
+  @apply text-orange-800;
 }
 
 address {
   font-style: normal;
-}
-
-.blog h1 {
-  @apply text-4xl mb-4;
 }
 
 .blog p {
@@ -44,16 +45,20 @@ address {
   @apply .link:hover;
 } */
 
+.blog h1 {
+  @apply text-2xl mb-4 font-bold;
+}
+
 .blog h2 {
-  @apply text-3xl mb-4 mt-8;
+  @apply text-xl mt-8 font-bold;
 }
 
 .blog h3 {
-  @apply text-2xl mb-4 mt-8;
+  @apply text-xl mt-8 font-bold;
 }
 
-.blog h4 {
-  @apply text-xl mb-4 mt-8;
+.blog h3 {
+  @apply text-lg mt-8 font-bold;
 }
 
 .blog ul {
@@ -65,10 +70,22 @@ address {
 }
 
 .blog blockquote {
-  @apply border-l-4 border-yellow-400 pl-4 my-4;
+  @apply border-l-4 border-orange-600 pl-4 my-4;
 }
 
 .hljs {
   font-size: 12px;
   line-height: 15px;
+}
+
+.dot-shadow {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% + 5px);
+  width: calc(100% + 5px);
+  background-repeat: repeat;
+  z-index: -1;
+  opacity: .6;
 }
