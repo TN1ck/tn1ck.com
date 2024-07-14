@@ -294,7 +294,7 @@ const SudokuSolverDomain = ({
   return (
     <div>
       <div className="block sm:flex justify-between">
-        <div className="pr-4">
+        <div className="sm:pr-4">
           <div className="flex gap-2">
             <button
               className="w-24 py-2 px-4 bg-orange-200 text-black border border-black rounded-md hover:bg-orange-300"
@@ -341,7 +341,7 @@ const SudokuSolverDomain = ({
             <div>Stack size: {stack.length}</div>
           </div>
         </div>
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 mt-4 sm:mt-0 -mx-4 sm:mx-0 flex justify-center">
           <SudokuPreview
             sudoku={sudoku}
             size={300}
