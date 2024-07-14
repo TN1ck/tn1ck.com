@@ -56,7 +56,7 @@ const StepsSlider = () => {
       <div className="flex gap-4 mb-4">
         <div className="flex-shrink-0 mt-4 gap-2 flex">
           <button
-            className="rounded-md px-4 py-2 bg-orange-400 text-black border border-black"
+            className="rounded-md px-4 py-2 bg-orange-200 hover:bg-orange-300 text-black border border-black"
             onClick={() => setStep(step - 1)}
             disabled={step === 0}
           >
@@ -65,7 +65,7 @@ const StepsSlider = () => {
           <button
             onClick={() => setStep(step + 1)}
             disabled={step === MINIMAL_SOLUTION_STEPS.length - 1}
-            className="rounded-md px-4 py-2 bg-orange-400 text-black border border-black"
+            className="rounded-md px-4 py-2 bg-orange-200 hover:bg-orange-300 text-black border border-black"
           >
             {"next"}
           </button>

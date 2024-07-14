@@ -32,14 +32,14 @@ const workData = [
     time: "2013 - 2014",
     title: "Working Student @ 42reports",
     description:
-      'The startup 42reports gave brick and mortar stores realtime analytics using wlan fingerprinting. 42reports provided devices that were easy to setup, a realtime dashboard and the ability to track complete shopping malls using a mesh of routers. 42reports was acquired by <a className="link" rel="noreferrer" target="_blank" href="https://www.dilax.com/">Dilax</a>.',
+      'The startup 42reports gave brick and mortar stores realtime analytics using wifi fingerprinting. 42reports provided devices that were easy to setup, a realtime dashboard and the ability to track complete shopping malls using a mesh of routers. 42reports was acquired by <a className="link" rel="noreferrer" target="_blank" href="https://www.dilax.com/">Dilax</a>.',
   },
 ]
 
 const Home: NextPage = () => {
   return (
     <Container activeId="about">
-      <div className="flex gap-4 sm:gap-8 sm:items-center">
+      <div className="flex gap-4 sm:gap-8 sm:items-center mt-16">
         {/* <img
           src="/tom.jpg"
           alt="An image of Tom Nick"

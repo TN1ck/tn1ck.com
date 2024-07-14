@@ -297,7 +297,7 @@ const SudokuSolverDomain = ({
         <div className="pr-4">
           <div className="flex gap-2">
             <button
-              className="w-24 py-2 px-4 bg-orange-300 text-black border border-black rounded-md hover:bg-orange-400"
+              className="w-24 py-2 px-4 bg-orange-200 text-black border border-black rounded-md hover:bg-orange-300"
               onClick={() => {
                 setRunning(!running)
               }}

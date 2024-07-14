@@ -26,7 +26,7 @@ export const BlogContent = ({
   hideBackButton?: boolean
 }) => {
   return (
-    <article className="blog flex flex-col relative bg-slate-50 border-2 border-slate-900 p-8">
+    <article className="blog flex flex-col relative bg-slate-50 border-2 border-slate-900 p-8 mt-16">
       {!hideBackButton && (
         <Link
           className="absolute -top-2.5 -left-2.5 w-[19px] h-[19px] bg-white border-2 border-slate-900 cursor-pointer flex justify-center items-center"
