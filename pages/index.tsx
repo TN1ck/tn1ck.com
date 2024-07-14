@@ -47,7 +47,7 @@ const Home: NextPage = () => {
         /> */}
         <div>
           <h2 className="text-2xl font-bold mb-4">{"Hi, I'm Tom"}</h2>
-          <p className="leading-7">
+          <p>
             {
               "I'm passionate about technology and love to create products. I work occasionally on personal "
             }
