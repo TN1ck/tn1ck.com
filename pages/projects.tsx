@@ -1,10 +1,18 @@
 import type { NextPage } from "next"
 import Container from "../components/container"
 import ProjectComponent from "../components/project"
+import Head from "next/head"
 
 const Projects: NextPage = () => {
   return (
     <Container activeId="projects">
+      <Head>
+        <title>{"tn1ck.com | projects"}</title>
+        <meta
+          name="description"
+          content="Personal projects by Tom Nick, including sudoku.tn1ck.com, mastersfordesigners.com, anagrams.io, and more."
+        />
+      </Head>
       <div className="mt-16 mb-8">
         <h2 className="text-2xl font-bold mb-4">{"Personal Projects"}</h2>
         <div>

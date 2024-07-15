@@ -2,15 +2,12 @@ import { NextPage, Metadata } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
+import Head from "next/head"
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Recreating the New Dropbox Header Animation",
   description:
     "Dropbox just revamped their branding - and their website. The new header uses a cool clipping effect, which we’ll recreate.",
-}
-
-export const METADATA = {
-  title: "Recreating the New Dropbox Header Animation",
   date: "2017-11-20",
   slug: "dropbox-header",
 }
@@ -18,7 +15,11 @@ export const METADATA = {
 const Dropbox: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent metadata={METADATA}>
+      <Head>
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+      </Head>
+      <BlogContent metadata={metadata}>
         <p>
           Dropbox just revamped their branding - and their website. The new
           header uses a cool clipping effect, which we’ll recreate.

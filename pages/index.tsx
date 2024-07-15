@@ -2,6 +2,7 @@ import type { NextPage, Metadata } from "next"
 import Link from "next/link"
 import Container from "../components/container"
 import WorkSection from "../components/work"
+import Head from "next/head"
 
 export const metadata: Metadata = {
   title: "Tn1ck.com - Personal Website of Tom Nick",
@@ -46,6 +47,13 @@ const Home: NextPage = () => {
   return (
     <Container activeId="about">
       <div className="flex gap-4 sm:gap-8 sm:items-center mt-16">
+        <Head>
+          <title>tn1ck.com | about</title>
+          <meta
+            name="description"
+            content="Tom Nick's personal website and blog"
+          />
+        </Head>
         {/* <img
           src="/tom.jpg"
           alt="An image of Tom Nick"

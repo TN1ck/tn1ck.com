@@ -56,14 +56,11 @@ import {
 import { Card } from "../../components/card"
 import { TabComponent } from "../../components/tab"
 import { Footnote } from "../../components/footnote"
+import Head from "next/head"
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Generating sudokus for fun and no profit",
   description: "A guide on how to generate sudokus of any difficulty.",
-}
-
-export const METADATA = {
-  title: "Generating sudokus for fun and no profit",
   date: "2024-06-25",
   slug: "how-to-generate-sudokus",
 }
@@ -753,7 +750,11 @@ const SudokuGenerator2 = ({
 const Hashcode: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent metadata={METADATA}>
+      <Head>
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+      </Head>
+      <BlogContent metadata={metadata}>
         <p>
           Once upon a time I decided to create a complete sudoku application as
           my grandma wanted to play some sudokus on her computer and I wasn't

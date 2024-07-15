@@ -1,15 +1,12 @@
 import { NextPage, Metadata } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
+import Head from "next/head"
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "The MIU System",
   description:
     "The first exercise introduced in Gödel, Escher, Bach is the MIU System. This post describes the system and how to solve it.",
-}
-
-export const METADATA = {
-  title: "The MIU System",
   date: "2017-09-07",
   slug: "miu",
 }
@@ -17,7 +14,11 @@ export const METADATA = {
 const Miu: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent metadata={METADATA}>
+      <Head>
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+      </Head>
+      <BlogContent metadata={metadata}>
         <p>
           The first exercise introduced in{" "}
           <a href="https://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach">

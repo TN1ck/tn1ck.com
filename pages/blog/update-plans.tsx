@@ -7,11 +7,14 @@ import React, { useState } from "react"
 import { Author, BlogContent } from "../../components/blog"
 import { Card } from "../../components/card"
 import { Footnote } from "../../components/footnote"
+import Head from "next/head"
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Safeguarding changes using the plan-execute pattern",
   description:
     "The plan-execute pattern is a way to preview changes before they are applied. This blog post shows how to use this pattern for database updates.",
+  date: "2024-02-26",
+  slug: "update-plans",
 }
 
 /* eslint-disable react/no-unescaped-entities */
@@ -279,16 +282,14 @@ pepper,100
   )
 }
 
-export const METADATA = {
-  title: "Safeguarding changes using the plan-execute pattern",
-  date: "2024-02-26",
-  slug: "update-plans",
-}
-
 const UpdatePlans: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent metadata={METADATA}>
+      <Head>
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+      </Head>
+      <BlogContent metadata={metadata}>
         <p className="my-4">
           At the company I’m currently working at, a.k.a.{" "}
           <a href="https://re-cap.com">re:cap</a>, we have some manual data

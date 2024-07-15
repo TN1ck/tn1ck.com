@@ -1,3 +1,4 @@
+import Head from "next/head"
 import Link from "next/link"
 import React from "react"
 
@@ -38,6 +39,15 @@ const Container = ({
 }) => {
   return (
     <div>
+      <Head>
+        <meta name="author" content="Tom Nick" />
+        <meta
+          name="description"
+          content="Tom Nick's personal website and blog"
+        />
+        <title>tn1ck.com</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <main className="max-w-screen-md m-auto mt-8 mb-16">
         <Navigation activeId={activeId} />
         <div className={className}>{children}</div>

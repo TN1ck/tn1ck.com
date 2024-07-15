@@ -1,13 +1,14 @@
 import type { NextPage } from "next"
 import Link from "next/link"
 import Container from "../../components/container"
-import { METADATA as updatePlansMetadata } from "./update-plans"
-import { METADATA as miuMetadata } from "./miu"
-import { METADATA as numbersGameMetadata } from "./numbers-game"
-import { METADATA as dropboxMetadata } from "./dropbox-header"
-import { METADATA as hashCodeMetadata } from "./hashcode"
-import { METADATA as howToGenerateSudokusMetadata } from "./how-to-generate-sudokus"
+import { metadata as updatePlansMetadata } from "./update-plans"
+import { metadata as miuMetadata } from "./miu"
+import { metadata as numbersGameMetadata } from "./numbers-game"
+import { metadata as dropboxMetadata } from "./dropbox-header"
+import { metadata as hashCodeMetadata } from "./hashcode"
+import { metadata as howToGenerateSudokusMetadata } from "./how-to-generate-sudokus"
 import { BlogMetadata } from "../../components/blog"
+import Head from "next/head"
 
 const BLOG_ENTRIES: BlogMetadata[] = [
   howToGenerateSudokusMetadata,
@@ -21,6 +22,14 @@ const BLOG_ENTRIES: BlogMetadata[] = [
 const Home: NextPage = () => {
   return (
     <Container activeId="blog">
+      <Head>
+        <title>tn1ck.com | blog</title>
+        <meta
+          name="description"
+          content="Blog posts by Tom Nick about programming, design, and other topics."
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="flex flex-col relative bg-slate-50 border-2 border-slate-900 p-6 py-8 mt-16">
         <div className="absolute -top-6 left-4 bg-slate-50 p-2 font-black">
           Blog

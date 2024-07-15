@@ -3,15 +3,12 @@ import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
 import { Fragment, useState } from "react"
+import Head from "next/head"
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Finding the optimal solution for the numbers game",
   description:
     "One of the games bored students play is the 'Numbers Game,' also known as 'Take Tens' or in German, 'Zahlenspiel.' I once implemented it and wrote a solver to find the minimum number of steps required to solve the game. Here is the solution.",
-}
-
-export const METADATA = {
-  title: "Finding the optimal solution for the numbers game",
   date: "2017-10-31",
   slug: "numbers-game",
 }
@@ -105,7 +102,11 @@ const StepsSlider = () => {
 const NumbersGame: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent metadata={METADATA}>
+      <Head>
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+      </Head>
+      <BlogContent metadata={metadata}>
         <p>
           One of the games bored students play is the &quot;Numbers Game,&quot;
           also known as &quot;Take Tens&quot; or in German,
