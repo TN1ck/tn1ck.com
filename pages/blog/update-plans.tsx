@@ -1,4 +1,4 @@
-import type { NextPage } from "next"
+import type { NextPage, Metadata } from "next"
 import Link from "next/link"
 import Container from "../../components/container"
 import { CodeBlock } from "../../components/code-block"
@@ -7,6 +7,12 @@ import React, { useState } from "react"
 import { Author, BlogContent } from "../../components/blog"
 import { Card } from "../../components/card"
 import { Footnote } from "../../components/footnote"
+
+export const metadata: Metadata = {
+  title: "Safeguarding changes using the plan-execute pattern",
+  description:
+    "The plan-execute pattern is a way to preview changes before they are applied. This blog post shows how to use this pattern for database updates.",
+}
 
 /* eslint-disable react/no-unescaped-entities */
 

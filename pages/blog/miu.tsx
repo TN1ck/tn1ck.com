@@ -1,6 +1,12 @@
-import { NextPage } from "next"
+import { NextPage, Metadata } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
+
+export const metadata: Metadata = {
+  title: "The MIU System",
+  description:
+    "The first exercise introduced in Gödel, Escher, Bach is the MIU System. This post describes the system and how to solve it.",
+}
 
 export const METADATA = {
   title: "The MIU System",

@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { NextPage } from "next"
+import { NextPage, Metadata } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
@@ -57,8 +57,13 @@ import { Card } from "../../components/card"
 import { TabComponent } from "../../components/tab"
 import { Footnote } from "../../components/footnote"
 
+export const metadata: Metadata = {
+  title: "Generating sudokus for fun and no profit",
+  description: "A guide on how to generate sudokus of any difficulty.",
+}
+
 export const METADATA = {
-  title: "How to generate Sudokus of any difficulty",
+  title: "Generating sudokus for fun and no profit",
   date: "2024-06-25",
   slug: "how-to-generate-sudokus",
 }

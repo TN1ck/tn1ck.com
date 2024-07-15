@@ -1,8 +1,14 @@
-import { NextPage } from "next"
+import { NextPage, Metadata } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
 import { Fragment, useState } from "react"
+
+export const metadata: Metadata = {
+  title: "Finding the optimal solution for the numbers game",
+  description:
+    "One of the games bored students play is the 'Numbers Game,' also known as 'Take Tens' or in German, 'Zahlenspiel.' I once implemented it and wrote a solver to find the minimum number of steps required to solve the game. Here is the solution.",
+}
 
 export const METADATA = {
   title: "Finding the optimal solution for the numbers game",

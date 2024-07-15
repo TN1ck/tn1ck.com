@@ -1,7 +1,13 @@
-import type { NextPage } from "next"
+import type { NextPage, Metadata } from "next"
 import Link from "next/link"
 import Container from "../components/container"
 import WorkSection from "../components/work"
+
+export const metadata: Metadata = {
+  title: "Tn1ck.com - Personal Website of Tom Nick",
+  description:
+    "Personal website of Tom Nick. Mostly about technology and personal projects.",
+}
 
 const workData = [
   {

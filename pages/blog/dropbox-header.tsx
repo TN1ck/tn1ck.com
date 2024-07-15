@@ -1,7 +1,13 @@
-import { NextPage } from "next"
+import { NextPage, Metadata } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
+
+export const metadata: Metadata = {
+  title: "Recreating the New Dropbox Header Animation",
+  description:
+    "Dropbox just revamped their branding - and their website. The new header uses a cool clipping effect, which we’ll recreate.",
+}
 
 export const METADATA = {
   title: "Recreating the New Dropbox Header Animation",
