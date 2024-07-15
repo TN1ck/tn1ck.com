@@ -55,6 +55,7 @@ import {
 } from "../../lib/sudoku/seededRandom"
 import { Card } from "../../components/card"
 import { TabComponent } from "../../components/tab"
+import { Footnote } from "../../components/footnote"
 
 export const METADATA = {
   title: "How to generate Sudokus of any difficulty",
@@ -776,15 +777,16 @@ const Hashcode: NextPage = () => {
           other in how well we can use them to measure the difficulty of a
           sudoku. We start with the most basic brute force algorithm and end up
           with the final one, based on seeing the sudoku as a Constraint
-          Satisfaction Problems (short CSP). We use a depth first search (short
+          Satisfaction Problem (short CSP). We use a depth first search (short
           DFS) for all our different strategies here, we abstract this by the
           following function. We make it sudoku specific instead of completely
           generic for ease of use.
-          <br />
-          Footnote: Adding caching to prevent calculating the same branch
-          multiple times as well as making it stack based instead of recursive
-          (JavaScript sadly has no tail call optimization) is left as an
-          exercise for the reader.
+          <Footnote>
+            Footnote: Adding caching to prevent calculating the same branch
+            multiple times as well as making it stack based instead of recursive
+            (JavaScript sadly has no tail call optimization) is left as an
+            exercise for the reader.
+          </Footnote>
         </p>
         <Accordion title="Code of the depth first search">
           <CodeBlock language="typescript">
@@ -815,25 +817,27 @@ const Hashcode: NextPage = () => {
               anything else. This is horribly slow, do not try this at home.
             </div>
             <SudokuApplet showNotes={false} strategy={bruteForceStrategy} />
-            <Accordion title="Code of the brute force strategy">
-              <CodeBlock language="typescript">{`function bruteForceStrategy(sudoku: SudokuGrid): SimpleSudoku[] {
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        if (sudoku[i][j] === 0) {
-          const newSudokus = []
-          for (let k = 1; k <= 9; k++) {
-            const newSudoku = sudoku.map((row) => row.slice())
-            newSudoku[i][j] = k
-            newSudokus.push(newSudoku)
+            <div className="mt-4">
+              <Accordion title="Code of the brute force strategy">
+                <CodeBlock language="typescript">{`function bruteForceStrategy(sudoku: SudokuGrid): SimpleSudoku[] {
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          if (sudoku[i][j] === 0) {
+            const newSudokus = []
+            for (let k = 1; k <= 9; k++) {
+              const newSudoku = sudoku.map((row) => row.slice())
+              newSudoku[i][j] = k
+              newSudokus.push(newSudoku)
+            }
+            return newSudokus
           }
-          return newSudokus
         }
       }
-    }
 
-    return []
-  }`}</CodeBlock>
-            </Accordion>
+      return []
+    }`}</CodeBlock>
+              </Accordion>
+            </div>
           </Card>
         </div>
         <div>
@@ -847,8 +851,9 @@ const Hashcode: NextPage = () => {
               any strategy.
             </div>
             <SudokuApplet showNotes={false} strategy={withValidCheckStrategy} />
-            <Accordion title="Code of the improved brute force">
-              <CodeBlock language="typescript">{`function withValidCheckStrategy(sudoku: SudokuGrid): SudokuGrid[] {
+            <div className="mt-4">
+              <Accordion title="Code of the improved brute force">
+                <CodeBlock language="typescript">{`function withValidCheckStrategy(sudoku: SudokuGrid): SudokuGrid[] {
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
       if (sudoku[i][j] === 0) {
@@ -868,7 +873,8 @@ const Hashcode: NextPage = () => {
 
   return []
 }`}</CodeBlock>
-            </Accordion>
+              </Accordion>
+            </div>
           </Card>
         </div>
         <Card title="Minimum remaining value">
@@ -885,8 +891,9 @@ const Hashcode: NextPage = () => {
             showNotes={false}
             strategy={minimumRemainingValueStrategy}
           />
-          <Accordion title="Code of the minimum remaining value strategy">
-            <CodeBlock language="typescript">{`function getEmptyCoordinates(sudoku: SudokuGrid): [number, number][] {
+          <div className="mt-4">
+            <Accordion title="Code of the minimum remaining value strategy">
+              <CodeBlock language="typescript">{`function getEmptyCoordinates(sudoku: SudokuGrid): [number, number][] {
   const emptyCoordinates: [number, number][] = []
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
@@ -934,7 +941,8 @@ function minimumRemainingValueStrategy(
 
   return newSudokus
 }`}</CodeBlock>
-          </Accordion>
+            </Accordion>
+          </div>
         </Card>
         <Card title={"Arc Consistency"}>
           <div className="-scroll-mb-80">
@@ -1011,8 +1019,9 @@ function minimumRemainingValueStrategy(
               return ac3(toDomainSudoku(sudoku)).sudoku
             }}
           />
-          <Accordion title="Code of the Arc consistency strategy">
-            <CodeBlock language="typescript">{`// We track the possible values (its domain) for each cell.
+          <div className="mt-4">
+            <Accordion title="Code of the Arc consistency strategy">
+              <CodeBlock language="typescript">{`// We track the possible values (its domain) for each cell.
 export type DomainSudoku = number[][][]
 
 // AC3 algorithm. Returns the reduced domain sudoku and if it is solvable.
@@ -1175,7 +1184,8 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
   return newSudokus
 }
 `}</CodeBlock>
-          </Accordion>
+            </Accordion>
+          </div>
         </Card>
         <h3>Rating the difficulty of sudokus</h3>
         <p>
@@ -1186,10 +1196,17 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           sudoku solvers yield an iteration count, which we will use as our cost
           function. I'm relying here on the paper "Rating and generating Sudoku
           puzzles based on constraint satisfaction problems." by Fatemi, Bahare,
-          Seyed Mehran Kazemi, and Nazanin Mehrasa.{" "}
-          <a href="#footnotes">
-            <sup>1</sup>
-          </a>
+          Seyed Mehran Kazemi, and Nazanin Mehrasa.
+          <Footnote>
+            FATEMI, Bahare; KAZEMI, Seyed Mehran; MEHRASA, Nazanin. Rating and
+            generating Sudoku puzzles based on constraint satisfaction problems.
+            International Journal of Computer and Information Engineering, 2014,
+            8. Jg., Nr. 10, S. 1816-1821.{" "}
+            <a href="https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=fc78d54ae5d5234c9fb229d6a2cd2ef5af181e70">
+              PDF
+            </a>
+          </Footnote>
+          <br />
           In the paper, they download sudokus of each difficulty section from
           websudoku.com, solve them by <s> students</s> volunteers and then run
           their algorithm on it. They then took the average of each category and
@@ -1407,16 +1424,6 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           function will not return infinity. Their algorithm will spend most of
           their time trying to stumble upon a valid sudoku.
         </p>
-        <h3>Footnotes</h3>
-        <blockquote>
-          FATEMI, Bahare; KAZEMI, Seyed Mehran; MEHRASA, Nazanin. Rating and
-          generating Sudoku puzzles based on constraint satisfaction problems.
-          International Journal of Computer and Information Engineering, 2014,
-          8. Jg., Nr. 10, S. 1816-1821.{" "}
-          <a href="https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=fc78d54ae5d5234c9fb229d6a2cd2ef5af181e70">
-            PDF
-          </a>
-        </blockquote>
       </BlogContent>
     </Container>
   )

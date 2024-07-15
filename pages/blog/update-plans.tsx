@@ -6,6 +6,7 @@ import { CodeBlock } from "../../components/code-block"
 import React, { useState } from "react"
 import { Author, BlogContent } from "../../components/blog"
 import { Card } from "../../components/card"
+import { Footnote } from "../../components/footnote"
 
 /* eslint-disable react/no-unescaped-entities */
 
@@ -327,9 +328,12 @@ const UpdatePlans: NextPage = () => {
           the desired one, allowing the user to review and approve the plan.
           This ensures that the developer can verify the changes are as
           intended, catching any undesired effects early.
-          <a href="#footnotes">
-            <sup>1</sup>
-          </a>
+          <Footnote>
+            For Terraform, this is not perfect, sadly. There are often “noise”
+            changes due to e.g., AWS API changes etc., that actually don’t
+            change anything. And this is actually a difficult part of writing
+            update plans - to correctly assess an "update" and a "no change".
+          </Footnote>
         </p>
         <p>Some more examples:</p>
         <ul className="blog">
@@ -373,9 +377,23 @@ const UpdatePlans: NextPage = () => {
           combination. Before people scream that one should never use a float
           for a monetary value, we will use an int that represents "money" in
           cents.
-          <a href="#footnotes">
-            <sup>2</sup>
-          </a>
+          <Footnote>
+            And you should never, I’ll haunt you personally. Floats are not
+            precise enough for monetary values or anything really where
+            precision is important. I find that representing money as fraction
+            of a cent is a decent way (e.g. stripes API does this), normally I
+            use a decimal type, those are sadly not built into programming
+            languages, but there are libraries e.g. in Go there is the{" "}
+            <a
+              rel="nofollow"
+              target="_blank"
+              href="https://github.com/shopspring/decimal"
+            >
+              github.com/shopspring/decimal
+            </a>{" "}
+            package, JavaScript has the{" "}
+            <a href="https://github.com/MikeMcl/big.js">big.js</a> package.
+          </Footnote>
         </p>
         <CodeBlock language="go" className="-mx-8">
           {`
@@ -574,9 +592,11 @@ func UpdateProducts(
           applied, so it is important as well that there is an undo option.
           Sometimes this is not completely possible - e.g., when Terraform
           deletes your production database, you can’t just "undo" that.
-          <a href="#footnotes">
-            <sup>3</sup>
-          </a>{" "}
+          <Footnote>
+            If you manage your AWS database using Terraform, please make sure
+            you have "skip_final_snapshot" set to false as deleting a database
+            also deletes the backups. Ask me how I know that.
+          </Footnote>
           But in many cases, it is possible. E.g. snapshot the database before
           the update and then revert to that snapshot if the update was faulty.
         </p>
@@ -584,9 +604,11 @@ func UpdateProducts(
           Some update plans can actually be used to implement this feature,
           e.g., git commits are exactly that. Git commits are update plans that
           you can freely undo and redo.
-          <a href="#footnotes">
-            <sup>4</sup>
-          </a>{" "}
+          <Footnote>
+            Git’s UX is just a bit lacking; while it is easy enough to undo a
+            commit, it becomes much harder to undo e.g. a rebase. Git reflog
+            exists, but it’s not a user friendly interface.
+          </Footnote>
           This works only so long as <i>all</i> changes to the system are made
           through the update plans, so for most systems, this is not feasible.
         </p>
@@ -624,47 +646,6 @@ func UpdateProducts(
           actually save the data to and only entails moving around application
           logic.
         </p>
-
-        <h3 id="footnotes" className="text-xl mt-16 mb-4">
-          Footnotes
-        </h3>
-        <ol className="blog">
-          <li>
-            For Terraform, this is not perfect, sadly. There are often “noise”
-            changes due to e.g., AWS API changes etc., that actually don’t
-            change anything. And this is actually a difficult part of writing
-            update plans - to correctly assess an "update" and a "no change".
-          </li>
-          <li>
-            <p>
-              And you should never, I’ll haunt you personally. Floats are not
-              precise enough for monetary values or anything really where
-              precision is important. I find that representing money as fraction
-              of a cent is a decent way (e.g. stripes API does this), normally I
-              use a decimal type, those are sadly not built into programming
-              languages, but there are libraries e.g. in Go there is the{" "}
-              <a
-                rel="nofollow"
-                target="_blank"
-                href="https://github.com/shopspring/decimal"
-              >
-                github.com/shopspring/decimal
-              </a>{" "}
-              package, JavaScript has the{" "}
-              <a href="https://github.com/MikeMcl/big.js">big.js</a> package.
-            </p>
-          </li>
-          <li>
-            If you manage your AWS database using Terraform, please make sure
-            you have "skip_final_snapshot" set to false as deleting a database
-            also deletes the backups. Ask me how I know that.
-          </li>
-          <li>
-            Git’s UX is just a bit lacking; while it is easy enough to undo a
-            commit, it becomes much harder to undo e.g. a rebase. Git reflog
-            exists, but it’s not a user friendly interface.
-          </li>
-        </ol>
       </BlogContent>
     </Container>
   )

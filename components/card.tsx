@@ -11,7 +11,7 @@ export const Card = ({
 }) => (
   <div
     className={clsx(
-      "flex flex-col relative border-2 border-slate-900 py-8 px-4 mt-8",
+      "flex flex-col relative border-2 border-slate-900 py-4 px-4 mt-8",
       bgColor,
     )}
   >
