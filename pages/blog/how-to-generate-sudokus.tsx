@@ -117,6 +117,25 @@ const SudokuPreview = ({
       }}
     >
       <div>
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((x) => {
+          // const hide = [0, 9].includes(i)
+          const makeBold = [0, 3, 6, 9].includes(x)
+          return (
+            <div
+              key={x}
+              style={{
+                width: "2px",
+                left: `${ySection * x}%`,
+                top: 0,
+                position: "absolute",
+                transform: "translateX(-50%)",
+                height: `${height}%`,
+                zIndex: makeBold ? 1 : 0,
+                background: makeBold ? "black" : "lightgray",
+              }}
+            />
+          )
+        })}
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((y) => {
           // const hide = [0, 9].includes(i)
           const makeBold = [0, 3, 6, 9].includes(y)
@@ -127,28 +146,11 @@ const SudokuPreview = ({
                 top: `${xSection * y}%`,
                 position: "absolute",
                 transform: "translateY(-50%)",
-                height: "1px",
+                height: "2px",
+                zIndex: makeBold ? 1 : 0,
                 background: makeBold ? "black" : "lightgray",
               }}
               key={y}
-            />
-          )
-        })}
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((x) => {
-          // const hide = [0, 9].includes(i)
-          const makeBold = [0, 3, 6, 9].includes(x)
-          return (
-            <div
-              key={x}
-              style={{
-                width: "1px",
-                left: `${ySection * x}%`,
-                top: 0,
-                position: "absolute",
-                transform: "translateX(-50%)",
-                height: `${height}%`,
-                background: makeBold ? "black" : "gray",
-              }}
             />
           )
         })}
@@ -239,10 +241,13 @@ const SudokuSolverDomain = ({
 
   const reset = useCallback(() => {
     setRunning(false)
-    setIterations(0)
-    setHistory([])
-    setSudoku(sudokuToSolve)
-    setStack([sudokuToSolve])
+    // Easy hack to wait for the next render cycle.
+    setTimeout(() => {
+      setIterations(0)
+      setHistory([])
+      setSudoku(sudokuToSolve)
+      setStack([sudokuToSolve])
+    })
   }, [
     setRunning,
     setIterations,
@@ -393,7 +398,7 @@ const SudokuApplet = ({
 
   return (
     <div>
-      <div className="flex gap-2 flex-col md:flex-row border border-black border-2 p-2">
+      <div className="flex gap-2 flex-col md:flex-row border-black border-2 p-2">
         {SUDOKUS.map((s, i) => {
           return (
             <button
@@ -433,7 +438,7 @@ const EMPTY_SUDOKU = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-const SudokuGenerator2 = ({
+const SudokuGenerator = ({
   strategy,
 }: {
   strategy: (sudoku: SudokuGrid) => SudokuGrid[]
@@ -1369,7 +1374,7 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
             .
           </p>
 
-          <SudokuGenerator2 strategy={AC3Strategy} />
+          <SudokuGenerator strategy={AC3Strategy} />
         </Card>
 
         <h3 id="criticism">Generation algorithm as described by the paper</h3>
