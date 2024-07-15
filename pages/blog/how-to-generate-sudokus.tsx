@@ -554,127 +554,145 @@ const SudokuGenerator2 = ({
       <div className="block sm:flex justify-between">
         <div className="pr-4">
           <div className="grid gap-2">
-            {"1. Find a sudoku that is solvable and unique:"}
-            <div className="flex gap-2">
-              <button
-                disabled={uniqueAndSolved}
-                className="py-2 px-4 bg-orange-200 border border-black text-black rounded-md hover:bg-orange-300 disabled:bg-gray-500"
-                onClick={async () => {
-                  let localStack = stack
-                  let localUniqueAndSolved = false
-                  while (true) {
-                    const [sudoku, ...rest] = localStack
-                    const solvedSudoku = solveSudoku(sudoku)
-                    localUniqueAndSolved =
-                      checkForUniqueness(sudoku, sudokuSolverMRV) &&
-                      solvedSudoku.solvedSudoku !== null
-                    if (localUniqueAndSolved) {
-                      setUnique(true)
-                      break
-                    }
-                    const newStack = step(sudoku, randomFn)
-                    localStack = [...newStack, ...rest]
-                    setSolvedSudoku(solvedSudoku)
-                    setStack(localStack)
-                    await new Promise((resolve) =>
-                      setTimeout(resolve, timeoutTime),
-                    )
-                  }
-                }}
-              >
-                {uniqueAndSolved ? "Solve (done)" : "Solve"}
-              </button>
-              <button
-                className="py-2 px-4 bg-orange-200 border border-black text-black rounded-md hover:bg-orange-300"
-                onClick={reset}
-              >
-                {"Reset"}
-              </button>
-              <button
-                disabled={uniqueAndSolved}
-                className="py-2 px-4 bg-orange-200 border border-black text-black rounded-md hover:bg-orange-300 disabled:bg-gray-500"
-                onClick={() => {
-                  if (stack.length === 0) {
-                    return
-                  }
-                  const [sudoku, ...rest] = stack
-                  const newStack = step(sudoku, randomFn)
-                  setStack([...newStack, ...rest])
-                }}
-              >
-                {uniqueAndSolved ? "Step (done)" : "Step"}
-              </button>
-            </div>
-            {"2. decrease / increase difficulty as much as possible. "}
-            {!uniqueAndSolved && (
-              <span className="text-gray-500">
-                {"Disabled: Sudoku is not unique and solvable yet."}
-              </span>
-            )}
-            <div className="flex gap-2">
-              <button
-                disabled={!uniqueAndSolved}
-                className="py-2 px-4 bg-slate-200 text-black border border-black  rounded-md hover:bg-slate-300 hover:cursor-pointer"
-                onClick={async () => {
-                  let sudoku = stack[0]
-                  while (true) {
-                    const newSudoku = nearToTheDifficultyStep(sudoku)
+            <ol className="ml-4 pl-4 list-outside list-decimal">
+              <li className="mb-4">
+                <div className="mb-2">
+                  Find a sudoku that is solvable and unique:
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    disabled={uniqueAndSolved}
+                    className="py-2 px-4 bg-orange-200 border border-black text-black rounded-md hover:bg-orange-300 disabled:bg-gray-500"
+                    onClick={async () => {
+                      let localStack = stack
+                      let localUniqueAndSolved = false
+                      while (true) {
+                        const [sudoku, ...rest] = localStack
+                        const solvedSudoku = solveSudoku(sudoku)
+                        localUniqueAndSolved =
+                          checkForUniqueness(sudoku, sudokuSolverMRV) &&
+                          solvedSudoku.solvedSudoku !== null
+                        if (localUniqueAndSolved) {
+                          setUnique(true)
+                          break
+                        }
+                        const newStack = step(sudoku, randomFn)
+                        localStack = [...newStack, ...rest]
+                        setSolvedSudoku(solvedSudoku)
+                        setStack(localStack)
+                        await new Promise((resolve) =>
+                          setTimeout(resolve, timeoutTime),
+                        )
+                      }
+                    }}
+                  >
+                    {uniqueAndSolved ? "Solve (done)" : "Solve"}
+                  </button>
+                  <button
+                    className="py-2 px-4 bg-orange-200 border border-black text-black rounded-md hover:bg-orange-300"
+                    onClick={reset}
+                  >
+                    {"Reset"}
+                  </button>
+                  <button
+                    disabled={uniqueAndSolved}
+                    className="py-2 px-4 bg-orange-200 border border-black text-black rounded-md hover:bg-orange-300 disabled:bg-gray-500"
+                    onClick={() => {
+                      if (stack.length === 0) {
+                        return
+                      }
+                      const [sudoku, ...rest] = stack
+                      const newStack = step(sudoku, randomFn)
+                      setStack([...newStack, ...rest])
+                    }}
+                  >
+                    {uniqueAndSolved ? "Step (done)" : "Step"}
+                  </button>
+                </div>
+              </li>
+              <li className="">
+                <div className="mb-2">
+                  <div>
+                    {"Decrease / increase difficulty as much as possible. "}
+                  </div>
+                  {!uniqueAndSolved && (
+                    <span className="text-gray-500">
+                      {"Disabled: Sudoku is not unique and solvable yet."}
+                    </span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    disabled={!uniqueAndSolved}
+                    className="py-2 px-4 bg-slate-200 text-black border border-black  rounded-md hover:bg-slate-300 hover:cursor-pointer"
+                    onClick={async () => {
+                      let sudoku = stack[0]
+                      while (true) {
+                        const newSudoku = nearToTheDifficultyStep(sudoku)
 
-                    const { solvedSudoku, iterations: newIterations } =
-                      solveSudoku(newSudoku)
-                    if (validIterations(newIterations)) {
-                      console.log("Reached goal")
-                      setMaxReached(true)
-                      break
-                    }
+                        const { solvedSudoku, iterations: newIterations } =
+                          solveSudoku(newSudoku)
+                        if (validIterations(newIterations)) {
+                          console.log("Reached goal")
+                          setMaxReached(true)
+                          break
+                        }
 
-                    if (sudoku === newSudoku) {
-                      setMaxReached(true)
-                      console.log(
-                        "Reached maximum simplicity / difficulty with this sudoku.",
-                      )
-                      break
-                    }
+                        if (sudoku === newSudoku) {
+                          setMaxReached(true)
+                          console.log(
+                            "Reached maximum simplicity / difficulty with this sudoku.",
+                          )
+                          break
+                        }
 
-                    sudoku = newSudoku
-                    setStack([newSudoku])
-                    setSolvedSudoku({ solvedSudoku, iterations: newIterations })
-                    console.log("New iterations", newIterations)
-                    await new Promise((resolve) =>
-                      setTimeout(resolve, timeoutTime),
-                    )
-                  }
-                }}
-              >
-                {maxReached ? "Solve (done)" : "Solve"}
-              </button>
-              <button
-                disabled={!uniqueAndSolved}
-                className="py-2 px-4 bg-slate-200 border border-black rounded-md hover:bg-slate-300 hover:cursor-pointer"
-                onClick={() => {
-                  const newSudoku = nearToTheDifficultyStep(sudoku)
+                        sudoku = newSudoku
+                        setStack([newSudoku])
+                        setSolvedSudoku({
+                          solvedSudoku,
+                          iterations: newIterations,
+                        })
+                        console.log("New iterations", newIterations)
+                        await new Promise((resolve) =>
+                          setTimeout(resolve, timeoutTime),
+                        )
+                      }
+                    }}
+                  >
+                    {maxReached ? "Solve (done)" : "Solve"}
+                  </button>
+                  <button
+                    disabled={!uniqueAndSolved}
+                    className="py-2 px-4 bg-slate-200 border border-black rounded-md hover:bg-slate-300 hover:cursor-pointer"
+                    onClick={() => {
+                      const newSudoku = nearToTheDifficultyStep(sudoku)
 
-                  const { solvedSudoku, iterations: newIterations } =
-                    solveSudoku(newSudoku)
-                  if (validIterations(newIterations)) {
-                    console.log("Reached goal")
-                    setMaxReached(true)
-                  }
+                      const { solvedSudoku, iterations: newIterations } =
+                        solveSudoku(newSudoku)
+                      if (validIterations(newIterations)) {
+                        console.log("Reached goal")
+                        setMaxReached(true)
+                      }
 
-                  if (sudoku === newSudoku) {
-                    setMaxReached(true)
-                    console.log(
-                      "Reached maximum simplicity / difficulty with this sudoku.",
-                    )
-                  }
+                      if (sudoku === newSudoku) {
+                        setMaxReached(true)
+                        console.log(
+                          "Reached maximum simplicity / difficulty with this sudoku.",
+                        )
+                      }
 
-                  setStack([newSudoku])
-                  setSolvedSudoku({ solvedSudoku, iterations: newIterations })
-                }}
-              >
-                {maxReached ? "Step (done)" : "Step"}
-              </button>
-            </div>
+                      setStack([newSudoku])
+                      setSolvedSudoku({
+                        solvedSudoku,
+                        iterations: newIterations,
+                      })
+                    }}
+                  >
+                    {maxReached ? "Step (done)" : "Step"}
+                  </button>
+                </div>
+              </li>
+            </ol>
           </div>
           <div className="mt-4">
             <label className="block" htmlFor="timeout">
@@ -919,13 +937,13 @@ function minimumRemainingValueStrategy(
           </Accordion>
         </Card>
         <Card title={"Arc Consistency"}>
-          <p>
+          <div className="-scroll-mb-80">
             We now embark on a different way to solve the sudoku, namely framing
             it as a Constraint Satisfaction Problem to solve it and then use Arc
             Consistency to simplify the problem. A quick primer on some computer
             science terms.
-          </p>
-          <ul>
+          </div>
+          <ul className="blog">
             <li>
               <strong>Domain</strong> - A domain is the set of possible values
               for a variable. For a sudoku, this is the numbers 1 - 9.
@@ -1217,7 +1235,7 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           exponential time.
         </p>
         <Card title={"Histograms"}>
-          <p>
+          <div className="mb-4">
             First let's draw a histogram of each strategy and each dataset to
             get an idea of the distribution. From that we can see that they seem
             to be more or less normally distributed (with the applied
@@ -1226,7 +1244,7 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
             Both the minimum remaining value and arc consistency algorithm look
             the same, but only for the more difficult levels as for the easy
             ones, they always need the same number of iterations.
-          </p>
+          </div>
           <TabComponent
             tabs={dataAnalysis.map((d) => d.name)}
             content={dataAnalysis.map((d) => (
@@ -1236,7 +1254,7 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
         </Card>
 
         <Card title={"QQ plots"}>
-          <p>
+          <div className="mb-4">
             Then we look at the QQ plots for each strategy/source/level
             combination. QQ plots are super cool to get an intuitive
             understanding on how the values are distributed. A perfect normal
@@ -1246,7 +1264,7 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
             the lower difficulty levels look much less like a straight line, but
             the higher difficulty levels look very much like it. This is
             explained with their very low iteration count for the easy sudokus.
-          </p>
+          </div>
 
           <TabComponent
             tabs={dataAnalysis.map((d) => d.name)}
@@ -1257,12 +1275,12 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
         </Card>
 
         <Card title="Correlation">
-          <p>
+          <div className="mb-4">
             We can already see that these graphs all look somewhat alike, even
             the second most basic brute force looks decently similar to our
             fancy CSP algorithm. But do the numbers agree? How much do the
             iterations correlate with the level?
-          </p>
+          </div>
           <TabComponent
             tabs={dataAnalysis.map((d) => d.name)}
             content={dataAnalysis.map((d) => (
@@ -1287,7 +1305,7 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
             To now generate a sudoku of a specific difficulty, we do the
             following:
           </div>
-          <ol>
+          <ol className="blog">
             <li>
               Start with an empty grid and fill it with random numbers until it
               is a valid (and unique sudoku). We backtrack when the added number

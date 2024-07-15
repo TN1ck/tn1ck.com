@@ -305,7 +305,7 @@ const UpdatePlans: NextPage = () => {
           and heart rates, an infrastructure update is typically done with the
           following steps:
         </p>
-        <ol>
+        <ol className="blog">
           <li>
             The developer changes the infrastructure code as they desire, e.g.,
             increasing the memory of a server from 8 to 16 GB.
@@ -332,7 +332,7 @@ const UpdatePlans: NextPage = () => {
           </a>
         </p>
         <p>Some more examples:</p>
-        <ul>
+        <ul className="blog">
           <li>
             Checkout pages use the plan-execute pattern - they show you what
             you’ll buy, the amount of money to be deducted, where to send it,
@@ -389,7 +389,7 @@ type Product struct {
           Then we define how our ProductPlan is supposed to look. Our update
           plan has:
         </p>
-        <ul>
+        <ul className="blog">
           <li>
             <strong>Added</strong> - products that are only in the new dataset
             and thus will be added.
@@ -555,7 +555,7 @@ func UpdateProducts(
           This pattern does not make sense for most data updates; as this
           entails more work and complexity. It makes sense when:
         </p>
-        <ul>
+        <ul className="blog">
           <li>
             You’re updating something that is hard to grasp, but doing the
             update creates immediate negative effects.
@@ -601,7 +601,7 @@ func UpdateProducts(
           </a>{" "}
           is the thread if you are interested, my conclusion:
         </p>
-        <ul className="ml-4 my-4 list-disc list-outside">
+        <ul className="blog">
           <li>
             <a href="https://github.com/dolthub/dolt">DoltDB</a> basically
             supports this OOTB with its ability to create branches and native
@@ -628,7 +628,7 @@ func UpdateProducts(
         <h3 id="footnotes" className="text-xl mt-16 mb-4">
           Footnotes
         </h3>
-        <ol>
+        <ol className="blog">
           <li>
             For Terraform, this is not perfect, sadly. There are often “noise”
             changes due to e.g., AWS API changes etc., that actually don’t

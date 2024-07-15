@@ -65,12 +65,20 @@ address {
   @apply text-lg mt-8 font-bold;
 }
 
-.blog ul {
-  @apply my-4 ml-4 list-outside list-disc;
+ul.blog  {
+  @apply ml-4 list-outside list-disc;
 }
 
-.blog ol {
-  @apply my-4 ml-4 list-outside list-decimal;
+ul.blog li {
+  @apply my-2;
+}
+
+ol.blog {
+  @apply ml-4 pl-4 list-outside list-decimal;
+}
+
+ol.blog li {
+  @apply my-2;
 }
 
 .blog blockquote {

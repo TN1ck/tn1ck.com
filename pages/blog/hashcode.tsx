@@ -36,7 +36,7 @@ const Hashcode: NextPage = () => {
           One can check the problems that were solved in the previous years;
           every problem had a similar structure:
         </p>
-        <ol>
+        <ol className="blog">
           <li>
             It’s always some kind of NP-hard problem where the given dataset is
             far too big to actually find the optimal solution.
@@ -66,7 +66,7 @@ const Hashcode: NextPage = () => {
           in the eyes of Hashcode, but we learned some important things during
           this test phase.
         </p>
-        <ul>
+        <ul className="blog">
           <li>
             Everyone should ensure they have the same version of the programming
             language and working environment.
@@ -152,7 +152,7 @@ const Hashcode: NextPage = () => {
           learned some important things, which we will keep in mind for next
           time:
         </p>
-        <ul>
+        <ul className="blog">
           <li>
             Try to implement a simple solution first and really think hard about
             your heuristic.
