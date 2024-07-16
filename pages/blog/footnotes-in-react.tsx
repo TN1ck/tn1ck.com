@@ -148,7 +148,7 @@ interface FootnoteProps {
 
 export const Footnote = ({ children }: FootnoteProps) => {
   const { addFootnote } = useFootnoteContext()
-  const [footnoteNumber, setFootnoteNumber] = useState<number | null>(null)
+  const [footnoteNumber, setFootnoteNumber] = useState<number | undefined>(undefined)
   const hasAddedFootnote = useRef(false)
 
   useEffect(() => {
