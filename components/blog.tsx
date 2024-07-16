@@ -23,6 +23,10 @@ export const Author = ({ date }: { date: string }) => {
 const Footnotes = () => {
   const { footnotes } = useFootnoteContext()
 
+  if (footnotes.length === 0) {
+    return null
+  }
+
   return (
     <section>
       <h3 id="footnotes" className="text-xl mt-16 mb-4">
