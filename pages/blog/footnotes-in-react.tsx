@@ -135,7 +135,8 @@ export { FootnoteProvider, useFootnoteContext }
 }`}</CodeBlock>
           </Footnote>{" "}
           I also added an id so we can link back to it from the footnotes
-          section, as why wouldn’t we? This is an interactive medium.
+          section, as why wouldn’t we? This is an interactive medium after all,
+          praise the hyperlink!
         </p>
         <CodeBlock language="typescript">{`// components/Footnote.tsx
 
