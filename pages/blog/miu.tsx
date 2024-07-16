@@ -14,10 +14,6 @@ export const metadata = {
 const Miu: NextPage = () => {
   return (
     <Container activeId="blog">
-      <Head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-      </Head>
       <BlogContent metadata={metadata}>
         <p>
           The first exercise introduced in{" "}

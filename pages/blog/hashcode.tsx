@@ -15,10 +15,6 @@ export const metadata = {
 const Hashcode: NextPage = () => {
   return (
     <Container activeId="blog">
-      <Head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-      </Head>
       <BlogContent metadata={metadata}>
         <p>
           Hashcode is an international programming competition where teams, with

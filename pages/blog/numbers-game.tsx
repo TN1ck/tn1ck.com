@@ -102,10 +102,6 @@ const StepsSlider = () => {
 const NumbersGame: NextPage = () => {
   return (
     <Container activeId="blog">
-      <Head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-      </Head>
       <BlogContent metadata={metadata}>
         <p>
           One of the games bored students play is the &quot;Numbers Game,&quot;

@@ -3,11 +3,13 @@ import {
   FootnoteProvider,
   useFootnoteContext,
 } from "../context/FootnoteContext"
+import Head from "next/head"
 
 export interface BlogMetadata {
   title: string
   date: string
   slug: string
+  description: string
 }
 
 export const Author = ({ date }: { date: string }) => {
@@ -55,11 +57,24 @@ export const BlogContent = ({
   hideBackButton,
 }: {
   children: React.ReactNode
-  metadata?: BlogMetadata
+  metadata: BlogMetadata
   hideBackButton?: boolean
 }) => {
   return (
     <FootnoteProvider>
+      <Head>
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content="" />
+
+        <meta property="twitter:domain" content="tn1ck.com" />
+        <meta name="twitter:title" content={metadata.title} />
+        <meta name="twitter:description" content={metadata.description} />
+      </Head>
       <article className="blog flex flex-col relative bg-slate-50 border-2 border-slate-900 p-4 md:p-8 mt-16">
         {!hideBackButton && (
           <Link

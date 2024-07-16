@@ -285,10 +285,6 @@ pepper,100
 const UpdatePlans: NextPage = () => {
   return (
     <Container activeId="blog">
-      <Head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-      </Head>
       <BlogContent metadata={metadata}>
         <p className="my-4">
           At the company I’m currently working at, a.k.a.{" "}

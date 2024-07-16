@@ -15,10 +15,6 @@ export const metadata = {
 const Dropbox: NextPage = () => {
   return (
     <Container activeId="blog">
-      <Head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-      </Head>
       <BlogContent metadata={metadata}>
         <p>
           Dropbox just revamped their branding - and their website. The new

@@ -755,10 +755,6 @@ const SudokuGenerator = ({
 const Hashcode: NextPage = () => {
   return (
     <Container activeId="blog">
-      <Head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-      </Head>
       <BlogContent metadata={metadata}>
         <p>
           Once upon a time I decided to create a complete sudoku application as

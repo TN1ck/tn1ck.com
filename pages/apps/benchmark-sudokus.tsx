@@ -14,10 +14,11 @@ import {
   minimumRemainingValueStrategy,
 } from "../../lib/sudoku/sudokus"
 
-export const METADATA = {
+export const metadata = {
   title: "Benchmark sudokus",
   date: "2024-06-01",
   slug: "benchmark-sudokus",
+  description: "Benchmark sudokus",
 }
 
 const downloadCSV = (csvStringRaw: string, name: string) => {
@@ -100,9 +101,7 @@ const BenchmarkSudokus = () => {
 const BenchmarkSudokusPage: NextPage = () => {
   return (
     <Container activeId="blog">
-      <BlogContent>
-        <h1>{METADATA.title}</h1>
-        <Author date={METADATA.date} />
+      <BlogContent metadata={metadata}>
         <BenchmarkSudokus />
       </BlogContent>
     </Container>
