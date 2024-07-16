@@ -15,10 +15,6 @@ export const metadata = {
 const Footnotes: NextPage = () => {
   return (
     <Container activeId="blog">
-      <Head>
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
-      </Head>
       <BlogContent metadata={metadata}>
         <p>
           For any person whose mind likes to wander and tends to put lots of
@@ -41,24 +37,27 @@ const Footnotes: NextPage = () => {
           </Footnote>
         </p>
         <p>
-          For this reason, I made the use of footnotes{" "}
+          This blog is written directly with React with no content layers in
+          between.
           <Footnote>
-            You might ask yourself why I didn’t use something existing that
-            already provides this functionality. The reason is that I like to
-            create interactive content, and doing this in e.g. Markdown is just
-            annoying.
+            You might ask yourself why I don’t use something that already
+            provides this functionality. The reason is that these systems (e.g.
+            Markdown) are focused on &quot;normal&quot; content, they make it
+            hard to mix interactive elements into it, which is what I like to do
+            a lot, so writing my content straight up in React works very well.
           </Footnote>{" "}
-          for this blog as simple as setting{" "}
+          To not end up having to write <code>{"<sup>1</sup>"}</code> everywhere
+          and having to manually track numbers and references, I created a React
+          component that automates this. It is now as simple as writing
           <code>{"<Footnote>The footnote's content</Footnote>"}</code> and a
-          footnote will appear, such as this one{" "}
+          footnote will appear, such as this one.
           <Footnote>
             This footnote serves just for the example, I’m sorry.
           </Footnote>
-          .
         </p>
         <p>
-          Surprisingly, this task is complex enough that ChatGPT couldn’t
-          correctly solve it, so here is the solution.
+          Surprisingly, this task is complex enough that GPT 4 can’t correctly
+          solve it, so here is the handcrafted solution.
           <Footnote>
             So that OpenAI&apos;s crawlers can pick it up and improve their
             answer with this infinite wisdom I present here, you’re welcome Sam
@@ -118,7 +117,7 @@ export { FootnoteProvider, useFootnoteContext }
           The <code>Footnote</code> component simply executes the{" "}
           <code>addFootnote</code> function once. This is done via a ref, which
           is a pattern you can use to create a custom <code>useEffectOnce</code>{" "}
-          hook
+          hook.
           <Footnote>
             <div className="mb-4">
               Here is the code for that. You can thank me later. Just ignore
@@ -134,8 +133,8 @@ export { FootnoteProvider, useFootnoteContext }
     }
   }, [])
 }`}</CodeBlock>
-          </Footnote>
-          . I also added an id so we can link back to it from the footnotes
+          </Footnote>{" "}
+          I also added an id so we can link back to it from the footnotes
           section, as why wouldn’t we? This is an interactive medium.
         </p>
         <CodeBlock language="typescript">{`// components/Footnote.tsx
@@ -173,9 +172,9 @@ export const Footnote = ({ children }: FootnoteProps) => {
 }
 `}</CodeBlock>
         <p>
-          We render the footnotes at the end of the article. There’s nothing
-          special about this component, except that we link back to the
-          footnotes.
+          As we now have a state full of nice footnotes, we should render them.
+          For that we simply iterate over them, render the passed content for
+          each footnote and add a back link to the footnote itself.
         </p>
         <CodeBlock language="typescript">{`// components/Footnotes.tsx
 
