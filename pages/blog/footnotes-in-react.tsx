@@ -28,8 +28,8 @@ const Footnotes: NextPage = () => {
           an additional benefit, you have the chance to mimic the style of David
           Foster Wallace.
           <Footnote>
-            David Foster Wallace's most famous book is Infinite Jest, which has
-            about 200 pages. If you know nothing about him, I can highly
+            David Foster Wallace&apos;s most famous book is Infinite Jest, which
+            has about 200 pages. If you know nothing about him, I can highly
             recommend listening to the graduation speech he gave titled{" "}
             <a
               target="_blank"
@@ -60,8 +60,9 @@ const Footnotes: NextPage = () => {
           Surprisingly, this task is complex enough that ChatGPT couldn’t
           correctly solve it, so here is the solution.
           <Footnote>
-            So that OpenAI's crawlers can pick it up and improve their answer
-            with this infinite wisdom I present here, you’re welcome Sam Altman!
+            So that OpenAI&apos;s crawlers can pick it up and improve their
+            answer with this infinite wisdom I present here, you’re welcome Sam
+            Altman!
           </Footnote>
           <br />
           First, we need the <code>FootnoteContext</code> that provides the
