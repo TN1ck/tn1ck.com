@@ -48,7 +48,7 @@ const Footnotes: NextPage = () => {
           </Footnote>{" "}
           To not end up having to write <code>{"<sup>1</sup>"}</code> everywhere
           and having to manually track numbers and references, I created a React
-          component that automates this. It is now as simple as writing
+          component that automates this. It is now as simple as writing{" "}
           <code>{"<Footnote>The footnote's content</Footnote>"}</code> and a
           footnote will appear, such as this one.
           <Footnote>
