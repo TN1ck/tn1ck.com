@@ -761,10 +761,11 @@ const Hashcode: NextPage = () => {
           my grandma wanted to play some sudokus on her computer and I wasn't
           satisfied with the free offers available. The project went on for some
           years and finally lead to{" "}
-          <a href="https://sudoku.tn1ck.com">sudoku.tn1ck.com</a>. While working
-          on it, I went down the rabbit hole of generating sudokus of a
-          specified "human perceived" difficulty and created accidentally a
-          quite thorough analysis of it.
+          <a href="https://sudoku.tn1ck.com">sudoku.tn1ck.com</a> - a free and{" "}
+          <a href="https://github.com/TN1ck/super-sudoku">open source</a> sudoku
+          app without any tracking. While working on it, I went down the rabbit
+          hole of generating sudokus of a specified "human perceived" difficulty
+          and created accidentally a quite thorough analysis of it.
         </p>
         <h2>Creating a sudoku solver</h2>
         {/* While writing a Sudoku Solver is a
