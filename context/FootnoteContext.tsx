@@ -14,7 +14,7 @@ const FootnoteContext = createContext<FootnoteContextType | undefined>(
 const FootnoteProvider = ({ children }: { children: ReactNode }) => {
   const [footnotes, setFootnotes] = useState<string[]>([])
 
-  const addFootnote = async (content: string) => {
+  const addFootnote = (content: string): Promise<number> => {
     return new Promise<number>((resolve) => {
       setFootnotes((prevFootnotes) => {
         resolve(prevFootnotes.length + 1)

@@ -7,10 +7,12 @@ import { metadata as numbersGameMetadata } from "./numbers-game"
 import { metadata as dropboxMetadata } from "./dropbox-header"
 import { metadata as hashCodeMetadata } from "./hashcode"
 import { metadata as howToGenerateSudokusMetadata } from "./how-to-generate-sudokus"
+import { metadata as footnotesMetadata } from "./footnotes-in-react"
 import { BlogMetadata } from "../../components/blog"
 import Head from "next/head"
 
 const BLOG_ENTRIES: BlogMetadata[] = [
+  footnotesMetadata,
   howToGenerateSudokusMetadata,
   updatePlansMetadata,
   dropboxMetadata,

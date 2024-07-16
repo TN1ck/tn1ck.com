@@ -41,6 +41,10 @@ address {
   @apply link;
 }
 
+.blog code {
+  @apply bg-slate-200;
+}
+
 .blog a.no-underline {
   text-decoration: none
 }
