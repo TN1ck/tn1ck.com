@@ -23,7 +23,7 @@ export const Footnote = ({ children }: FootnoteProps) => {
     }
   }, [children, addFootnote])
 
-  if (footnoteNumber === null) return null
+  if (footnoteNumber === undefined) return null
 
   return (
     <a href="#footnotes" id={`footnote-${footnoteNumber}`}>

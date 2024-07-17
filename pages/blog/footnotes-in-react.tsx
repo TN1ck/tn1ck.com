@@ -71,7 +71,10 @@ const Footnotes: NextPage = () => {
           until setFootnotes executes its argument to know the current length of
           the footnotes list.
         </p>
-        <CodeBlock language="typescript">{`// context/FootnoteContext.tsx
+        <CodeBlock
+          className="-mx-8"
+          language="typescript"
+        >{`// context/FootnoteContext.tsx
 
 import React, { createContext, useContext, useState, ReactNode } from "react"
 
@@ -138,7 +141,10 @@ export { FootnoteProvider, useFootnoteContext }
           section, as why wouldn’t we? This is an interactive medium after all,
           praise the hyperlink!
         </p>
-        <CodeBlock language="typescript">{`// components/Footnote.tsx
+        <CodeBlock
+          className="-mx-8"
+          language="typescript"
+        >{`// components/Footnote.tsx
 
 import React, { ReactNode, useRef, useEffect, useState } from "react"
 import { useFootnoteContext } from "../context/FootnoteContext"
@@ -161,7 +167,7 @@ export const Footnote = ({ children }: FootnoteProps) => {
     }
   }, [children, addFootnote])
 
-  if (footnoteNumber === null) return null
+  if (footnoteNumber === undefined) return null
 
   return (
     <a href="#footnotes" id={\`footnote-\${footnoteNumber}\`}>
@@ -177,7 +183,10 @@ export const Footnote = ({ children }: FootnoteProps) => {
           For that we simply iterate over them, render the passed content for
           each footnote and add a back link to the footnote itself.
         </p>
-        <CodeBlock language="typescript">{`// components/Footnotes.tsx
+        <CodeBlock
+          className="-mx-8"
+          language="typescript"
+        >{`// components/Footnotes.tsx
 
 export const Footnotes = () => {
   const { footnotes } = useFootnoteContext()
@@ -208,7 +217,10 @@ export const Footnotes = () => {
   )
 }`}</CodeBlock>
         <p>Lastly we have to bring it all together and actually use it.</p>
-        <CodeBlock language="typescript">{`// pages/blog-article.tsx
+        <CodeBlock
+          className="-mx-8"
+          language="typescript"
+        >{`// pages/blog-article.tsx
 
 export default () => {
   return (
