@@ -72,7 +72,7 @@ const Footnotes: NextPage = () => {
           the footnotes list.
         </p>
         <CodeBlock
-          className="-mx-8"
+          className="md:-mx-8 md:px-8 -mx-4"
           language="typescript"
         >{`// context/FootnoteContext.tsx
 
@@ -142,7 +142,7 @@ export { FootnoteProvider, useFootnoteContext }
           praise the hyperlink!
         </p>
         <CodeBlock
-          className="-mx-8"
+          className="md:-mx-8 md:px-8 -mx-4"
           language="typescript"
         >{`// components/Footnote.tsx
 
@@ -171,7 +171,7 @@ export const Footnote = ({ children }: FootnoteProps) => {
 
   return (
     <a href="#footnotes" id={\`footnote-\${footnoteNumber}\`}>
-      <span className="text-sm text-orange-500 border-orange-500 border px-1 mr-1 hover:text-orange-700 hover:bg-slate-200">
+      <span className="text-sm text-orange-500 px-1 mr-1 hover:text-orange-700">
         {footnoteNumber}
       </span>
     </a>
@@ -184,7 +184,7 @@ export const Footnote = ({ children }: FootnoteProps) => {
           each footnote and add a back link to the footnote itself.
         </p>
         <CodeBlock
-          className="-mx-8"
+          className="md:-mx-8 md:px-8 -mx-4"
           language="typescript"
         >{`// components/Footnotes.tsx
 
@@ -205,7 +205,7 @@ export const Footnotes = () => {
           <li key={index}>
             {footnote}
             <a
-              className="border ml-1 px-1 text-orange-500 border-orange-500 no-underline"
+              className="ml-1 px-1 text-orange-500"
               href={\`#footnote-\${index + 1}\`}
             >
               {"<-"}
@@ -218,7 +218,7 @@ export const Footnotes = () => {
 }`}</CodeBlock>
         <p>Lastly we have to bring it all together and actually use it.</p>
         <CodeBlock
-          className="-mx-8"
+          className="md:-mx-8 md:px-8 -mx-4"
           language="typescript"
         >{`// pages/blog-article.tsx
 

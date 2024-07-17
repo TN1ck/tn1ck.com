@@ -398,7 +398,7 @@ const UpdatePlans: NextPage = () => {
             <a href="https://github.com/MikeMcl/big.js">big.js</a> package.
           </Footnote>
         </p>
-        <CodeBlock language="go" className="-mx-8">
+        <CodeBlock language="go" className="md:-mx-8  md:px-8 -mx-4">
           {`
 type Product struct {
 	ID    string
@@ -428,7 +428,7 @@ type Product struct {
             and thus will be removed.
           </li>
         </ul>
-        <CodeBlock language="go" className="-mx-8">
+        <CodeBlock language="go" className="md:-mx-8  md:px-8 -mx-4">
           {`
 type ProductPair struct {
 	OldProduct Product
@@ -448,7 +448,7 @@ type ProductUpdatePlan struct {
           is that it’s a pure function; it has no side effects and doesn’t even
           return an error. It’s very easy to test this.
         </p>
-        <CodeBlock language="go" className="-mx-8">
+        <CodeBlock language="go" className="md:-mx-8  md:px-8 -mx-4">
           {`
 func CreatePlan(
 	oldProducts []Product, newProducts []Product,
@@ -490,7 +490,7 @@ func CreatePlan(
           represent the database. We keep it simple and do not use any batch
           updates/inserts here.
         </p>
-        <CodeBlock language="go" className="-mx-8">
+        <CodeBlock language="go" className="md:-mx-8  md:px-8 -mx-4">
           {`
 type Repo interface {
 	InsertProduct(product Product) error
@@ -530,7 +530,7 @@ func (pup ProductUpdatePlan) Execute(repo Repo) error {
           endpoint would call; the preview flag controls if it’s just a preview
           or the actual import.
         </p>
-        <CodeBlock language="go" className="-mx-8">
+        <CodeBlock language="go" className="md:-mx-8  md:px-8 -mx-4">
           {`
 func UpdateProducts(
 	repo repo, csv string, preview bool
@@ -568,7 +568,7 @@ func UpdateProducts(
           sensible data. There is no error handling, you have to rely on the
           plan-execute pattern for the safeguarding ;).
         </p>
-        <div className="p-4 bg-gray-200 -mx-8">
+        <div className="p-4 bg-gray-200 md:-mx-8 md:px-8 -mx-4">
           <StoreExample />
         </div>
         <h3>When should one use the plan-execute pattern?</h3>
