@@ -191,7 +191,7 @@ const NumbersGame: NextPage = () => {
           first step would be to match the 1 on the left in the first row with
           the 1 on the left in the second row.
         </p>
-        <div>
+        <code>
           {MINIMAL_SOLUTION_STEPS.map((step, index) => {
             return (
               <Fragment key={index}>
@@ -202,7 +202,7 @@ const NumbersGame: NextPage = () => {
               </Fragment>
             )
           })}
-        </div>
+        </code>
         <p>Here it is, a bit nicer as an image sequence:</p>
         <StepsSlider />
         <p>

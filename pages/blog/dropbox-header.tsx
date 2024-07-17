@@ -54,7 +54,7 @@ const Dropbox: NextPage = () => {
         containing fixed positioned elements.
         <p>So, to make it work, one needs:</p>
         <p>1. A relatively positioned section which will hold the content.</p>
-        <CodeBlock language="css" className="-mx-8">{`
+        <CodeBlock language="css" className="md:-mx-8 md:px-8 -mx-4">{`
 .section {
     position: relative;
 }
@@ -64,7 +64,7 @@ const Dropbox: NextPage = () => {
           section and clips its content. When set to <code>auto</code>, it will
           automatically use 100%.
         </p>
-        <CodeBlock language="css" className="-mx-8">
+        <CodeBlock language="css" className="md:-mx-8 md:px-8 -mx-4">
           {`
 .section__absolute-container {
     position: absolute;
@@ -80,7 +80,7 @@ const Dropbox: NextPage = () => {
           3. Inside the absolutely positioned container, the fixed positioned
           element with a <code>transform</code> to make Safari happy.
         </p>
-        <CodeBlock language="css" className="-mx-8">
+        <CodeBlock language="css" className="md:-mx-8 md:px-8 -mx-4">
           {`
 .section__fixed-element {
     position: fixed;
@@ -94,7 +94,7 @@ const Dropbox: NextPage = () => {
 `}
         </CodeBlock>
         <p>This would be valid HTML with these classes:</p>
-        <CodeBlock language="xml" className="-mx-8">
+        <CodeBlock language="xml" className="md:-mx-8 md:px-8 -mx-4">
           {`
 <div class="section">
     <div class="section__absolute-container">
