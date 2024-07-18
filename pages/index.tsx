@@ -1,8 +1,32 @@
 import type { NextPage, Metadata } from "next"
 import Link from "next/link"
 import Container from "../components/container"
-import WorkSection from "../components/work"
 import Head from "next/head"
+import { Card } from "../components/card"
+
+const WorkSection = ({
+  time,
+  title,
+  description,
+}: {
+  time: string
+  title: string
+  description: React.ReactNode
+}) => (
+  <Card
+    title={
+      <div>
+        <strong
+          className="block"
+          dangerouslySetInnerHTML={{ __html: title }}
+        ></strong>
+        <time className="block text-xs font-normal">{time}</time>
+      </div>
+    }
+  >
+    <div className="mt-2">{description}</div>
+  </Card>
+)
 
 export const metadata: Metadata = {
   title: "Tn1ck.com - Personal Website of Tom Nick",
@@ -14,32 +38,84 @@ const workData = [
   {
     time: "Mid 2021 - Now",
     title: "VP of Engineering @ re:cap",
-    description:
-      "We're building a funding marketplace for the subscription economy. With re:cap, companies can trade recurring revenue streams for upfront capital – no dilution, no debt, no hassle.",
+    description: (
+      <>
+        We’re building a funding marketplace for the subscription economy. With
+        re:cap, companies can trade recurring revenue streams for upfront
+        capital – no dilution, no debt, no hassle.
+      </>
+    ),
   },
   {
     time: "Mid 2019 - Mid 2021",
     title: "Software Engineer @ Google / YouTube",
-    description:
-      "Worked on bringing e-commerce features onto YouTube (ShopTube). Work included working on the whole YouTube stack and cross collaborating with several other teams.",
+    description: (
+      <>
+        Worked on bringing e-commerce features onto YouTube (ShopTube). Work
+        included working on the whole YouTube stack and cross collaborating with
+        several other teams.
+      </>
+    ),
   },
   {
     time: "Mid 2017 - Mid 2019",
     title: "Head of Software Engineering @ Separa / KPV Lab",
-    description:
-      '<a className="link" href="https://www.linkedin.com/company/sapera-studios">Sapera</a> (before Infographics Group / KPV Lab) was a venture capital funded agency for infographics. We were building a tool to enable creatives to build web native stories. The tool ended up being something like Flash, but based on Three.js and heavily optimized for phones. The software still exists at <a className="link" href="https://business.scrolly.com/">scrlly.com</a>.',
+    description: (
+      <>
+        <a
+          className="link"
+          href="https://www.linkedin.com/company/sapera-studios"
+        >
+          Sapera
+        </a>{" "}
+        (before Infographics Group / KPV Lab) was a venture capital funded
+        agency for infographics. We were building a tool to enable creatives to
+        build web native stories. The tool ended up being something like Flash,
+        but based on Three.js and heavily optimized for phones. The software
+        still exists at{" "}
+        <a className="link" href="https://business.scrolly.com/">
+          scrlly.com
+        </a>
+        .
+      </>
+    ),
   },
   {
     time: "Early 2015 - Mid 2017",
     title: "Senior Frontend Engineer @ LIQID Investments GmbH",
-    description:
-      '<a className="link" href="https://www.liqid.de">LIQID</a> is a robo advisor that offers affluent investors in Germany a fully digital wealth management service. Only eight months after market launch, LIQID reached 100 million euro in assets under management and was named Germany’s best late stage FinTech startup. As of today, LIQID is among the four largest and most successful robo advisors in Europe.',
+    description: (
+      <>
+        <a className="link" href="https://www.liqid.de">
+          LIQID
+        </a>{" "}
+        is a robo advisor that offers affluent investors in Germany a fully
+        digital wealth management service. Only eight months after market
+        launch, LIQID reached 100 million euro in assets under management and
+        was named Germany’s best late stage FinTech startup. As of today, LIQID
+        is among the four largest and most successful robo advisors in Europe.
+      </>
+    ),
   },
   {
     time: "2013 - 2014",
     title: "Working Student @ 42reports",
-    description:
-      'The startup 42reports gave brick and mortar stores realtime analytics using wifi fingerprinting. 42reports provided devices that were easy to setup, a realtime dashboard and the ability to track complete shopping malls using a mesh of routers. 42reports was acquired by <a className="link" rel="noreferrer" target="_blank" href="https://www.dilax.com/">Dilax</a>.',
+    description: (
+      <>
+        The startup 42reports gave brick and mortar stores realtime analytics
+        using wifi fingerprinting. 42reports provided devices that were easy to
+        setup, a realtime dashboard and the ability to track complete shopping
+        malls using a mesh of routers. 42reports was acquired by{" "}
+        <a
+          className="link"
+          rel="noreferrer"
+          target="_blank"
+          href="https://www.dilax.com/"
+        >
+          Dilax
+        </a>
+        .
+      </>
+    ),
   },
 ]
 

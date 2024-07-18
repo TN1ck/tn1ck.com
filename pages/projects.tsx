@@ -210,11 +210,13 @@ const Projects: NextPage = () => {
           actions immediately affected the global leaderboard and score, so the
           application could be used to shown on an office screen. The layout
           engine of the application was written by me, as well as all other
-          things. The technologies used were exclusively lower level things like
-          react, reflux, lodash.
-          <a className="link" href="https://bachelor-tom-nick.herokuapp.com">
-            I host a semi working version with a reddit backend here.
-          </a>
+          things. The technologies used were exclusively react, reflux, lodash.{" "}
+          <s>
+            <a className="link" href="https://bachelor-tom-nick.herokuapp.com">
+              I host a semi working version with a reddit backend here.
+            </a>
+          </s>{" "}
+          Sadly, the generous Heroku free tier does not exist anymore.
         </ProjectComponent>
         <ProjectComponent
           project={{
