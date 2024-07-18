@@ -501,27 +501,25 @@ type Repo interface {
 }
 
 func (pup ProductUpdatePlan) Execute(repo Repo) error {
-	return repo.Transaction(func(repo Repo) error {
-		for _, product := range pup.Added {
-			err := repo.InsertProduct(product)
-			if err != nil {
-				return err
-			}
-		}
-		for _, productPair := range pup.Updated {
-			err := repo.UpdateProduct(productPair.NewProduct)
-			if err != nil {
-				return err
-			}
-		}
-		for _, product := range pup.Deleted {
-			err := repo.DeleteProduct(product)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	})
+  for _, product := range pup.Added {
+    err := repo.InsertProduct(product)
+    if err != nil {
+      return err
+    }
+  }
+  for _, productPair := range pup.Updated {
+    err := repo.UpdateProduct(productPair.NewProduct)
+    if err != nil {
+      return err
+    }
+  }
+  for _, product := range pup.Deleted {
+    err := repo.DeleteProduct(product)
+    if err != nil {
+      return err
+    }
+  }
+  return nil
 }
 `}
         </CodeBlock>
@@ -540,16 +538,21 @@ func UpdateProducts(
 	if err != nil {
 		return ProductUpdatePlan{}, err
 	}
-	oldProducts, err := repo.GetProducts()
-	if err != nil {
-		return ProductUpdatePlan{}, err
-	}
-	plan := CreatePlan(oldProducts, products)
-	if preview {
-		return plan, nil
-	}
+  
+  var plan ProductUpdatePlan
+  err = repo.Transaction(func(repo Repo) error {
+    oldProducts, err := repo.GetProducts()
+    if err != nil {
+      return ProductUpdatePlan{}, err
+    }
+    plan = CreatePlan(oldProducts, products)
+    if preview {
+      nil
+    }
+	  return plan.Execute(repo)
+  })
 
-	return plan, plan.Execute(repo)
+  return plan, err
 }
 `}
         </CodeBlock>
@@ -571,6 +574,35 @@ func UpdateProducts(
         <div className="p-4 bg-gray-200 md:-mx-8 md:px-8 -mx-4">
           <StoreExample />
         </div>
+        <h3>State changes between preview & execute</h3>
+        <p>
+          A fundamental problem with the plan-execute pattern is that the state
+          can change between preview and execute.{" "}
+          <Footnote>
+            Thanks for the folks at{" "}
+            <a href="https://www.reddit.com/r/golang/comments/1e5q4e6/safeguarding_changes_using_the_planexecute_pattern/">
+              /r/golang
+            </a>{" "}
+            to point this out.
+          </Footnote>{" "}
+          This is especially true for systems that have a lot of concurrent
+          users. E.g., if you preview a price change for a product, and in the
+          meantime, someone else changes the price, the preview is not valid
+          anymore. This is a problem that is hard to solve in a general way and
+          is often solved by locking the resource, which can lead to other
+          problems. But directly executing the changes without a preview is also
+          not a good solution, as it can lead to unexpected results.
+          <br />
+          Most plan-execute patterns do not require that the state is{" "}
+          <i>exactly</i> the same between preview and execute e.g. a file delete
+          dialog will not stop deleting files because someone already deleted
+          one of them. Terraform will not stop applying changes because someone
+          else applied a change in the meantime (it does have its own locking
+          mechanism though). It's more about giving the user a way to see what
+          will happen and then execute that plan, making sure that the updates
+          make sense, e.g. preventing the user from accidentally deleting their
+          production database.
+        </p>
         <h3>When should one use the plan-execute pattern?</h3>
         <p>
           This pattern does not make sense for most data updates; as this
@@ -587,6 +619,13 @@ func UpdateProducts(
             that what they are about to do is correct, e.g., wouldn’t it be nice
             if email clients would tell you how many people you are about to
             send an email to if you are sending it to a group?
+          </li>
+          <li>
+            Either locking the resource is ok, state changes between preview and
+            execute are acceptable or it's ok to deny execution if the state
+            changed between plan & execute (E.g. the delete file dialog would
+            refuse to execute if one of the affected file got deleted in the
+            meantime).
           </li>
         </ul>
         <h3>Snapshots & undo</h3>

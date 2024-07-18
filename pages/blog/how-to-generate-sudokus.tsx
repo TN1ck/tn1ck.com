@@ -828,21 +828,21 @@ const Hashcode: NextPage = () => {
             <div className="mt-4">
               <Accordion title="Code of the brute force strategy">
                 <CodeBlock language="typescript">{`function bruteForceStrategy(sudoku: SudokuGrid): SimpleSudoku[] {
-      for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
-          if (sudoku[i][j] === 0) {
-            const newSudokus = []
-            for (let k = 1; k <= 9; k++) {
-              const newSudoku = sudoku.map((row) => row.slice())
-              newSudoku[i][j] = k
-              newSudokus.push(newSudoku)
-            }
-            return newSudokus
-          }
+  for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+      if (sudoku[i][j] === 0) {
+        const newSudokus = []
+        for (let k = 1; k <= 9; k++) {
+          const newSudoku = sudoku.map((row) => row.slice())
+          newSudoku[i][j] = k
+          newSudokus.push(newSudoku)
         }
+        return newSudokus
       }
+    }
+  }
 
-      return []
+  return []
     }`}</CodeBlock>
               </Accordion>
             </div>
@@ -1155,7 +1155,8 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
     return [simpleSudoku]
   }
 
-  // No solution found yet. We create a list of all cells that have more than 1 solution as x/y coordinates.
+  // No solution found yet. We create a list of all cells
+  // that have more than 1 solution as x/y coordinates.
   const emptyCellCoordinates: [number, number][] = []
   for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
