@@ -71,8 +71,8 @@ const Projects: NextPage = () => {
             title: "anagrams.io",
             year: "2017",
             author: "Tom Nick",
-            video: "/projects/anagrams.io.mp4",
-            preview: "/projects/anagrams.io.png",
+            video: "/projects/anagrams.io-new.mp4",
+            preview: "/projects/anagrams.io-new.png",
           }}
         >
           <p>
