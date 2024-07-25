@@ -34,13 +34,13 @@ const Projects: NextPage = () => {
             <a className="link" href="https://sudoku.tn1ck.com">
               sudoku.tn1ck.com
             </a>{" "}
-            is full featured sudoku app with a decently polished web UI. It has
-            support for notes, hints, keyboard shortcuts, a timer that stops
+            is a full featured sudoku app with a decently polished web UI. It
+            has support for notes, hints, keyboard shortcuts, a timer that stops
             when the window loses focus, 100 sudokus for each of the
-            difficulties and first class citizen support for desktop (mobile or
-            mouse) and mobile. I started this project out of frustration for the
-            available web options back then (2017), this has since then greatly
-            improved. The project is{" "}
+            difficulties and first class citizen support for desktop (keyboard
+            or mouse) and mobile. I started this project out of frustration for
+            the available web options back then (2017), this has since then
+            greatly improved. The project is{" "}
             <a className="link" href="https://github.com/TN1ck/super-sudoku">
               open source on Github
             </a>
