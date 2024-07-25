@@ -1422,9 +1422,9 @@ export function AC3Strategy(sudoku: SudokuGrid): SudokuGrid[] {
           I’m not entirely sure if they meant to start with a valid Sudoku, but
           "initial puzzle with some random numbers" does not sound like it.
           Furthermore, "just adding, deleting or changing a single number" is
-          not efficient, as again they, this can lead to an invalid
-          configuration quickly, albeit the hill climbing will now be a bit
-          faster, although we can easily guide the algorithm more here.
+          not efficient, as again, this can lead to an invalid configuration
+          quickly, albeit the hill climbing will take care of that if you were
+          in an valid configuration before.
         </p>
         <p>
           I find my algorithm to be more efficient and elegant as it is guided
