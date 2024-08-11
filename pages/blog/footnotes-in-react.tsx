@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { NextPage, Metadata } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
@@ -56,8 +57,67 @@ const Footnotes: NextPage = () => {
           </Footnote>
         </p>
         <p>
-          Surprisingly, this task is complex enough that GPT 4 can’t correctly
-          solve it, so here is the handcrafted solution.
+          Proper footnotes are quite complex, as the footnotes table can only be
+          created after all footnotes are set. This is also the reason that you
+          have to compile a LaTeX/BibTeX document four times.
+          <Footnote>
+            Answer slightly adapted from{" "}
+            <a
+              className="link"
+              href="https://tex.stackexchange.com/questions/53235/why-does-latex-bibtex-need-three-passes-to-clear-up-all-warnings"
+            >
+              tex.stackexchange.com
+            </a>
+            .
+          </Footnote>
+        </p>
+        <ol className="blog">
+          <li>
+            <code>latex document</code>: All <code>{`\\cite{...}`}</code>{" "}
+            arguments are written in the file <code>document.aux</code>.
+          </li>
+          <li>
+            <code>bibtex document</code>: This information is taken by bibtex
+            and the relevant entries are put into the <code>.bbl</code> file,
+            sorted either alphabetically or by citation order (sometimes called
+            "unsorted") and formatted according to the instructions provided by
+            the bibliography style that’s in use.
+          </li>
+          <li>
+            <code>latex document</code>: The <code>.bbl</code> file is included
+            at the point the <code>\bibliography</code> instruction is used, and
+            the correct labels for <code>{`\\cite{...}`}</code> commands are
+            written into the <code>.aux</code> file.
+          </li>
+          <li>
+            <code>latex document</code>: The correct labels are now known and
+            set in the document.
+          </li>
+        </ol>
+        <p>
+          So how do you make footnotes work for a dynamic content? The answer is
+          you don’t. "Classical" footnotes are not possible in a dynamic
+          website, as adding / removing footnotes would change their numbers and
+          render them useless. So all footnotes have to be known when the
+          footnote table is created. If the footnotes are not known at that
+          time, one normally has to resort to just showing them when clicking on
+          them without creating a separate table at the end (normally a question
+          mark is used then instead of a number). This way each note is
+          independent from each other. It’s also the more "web native" way of
+          doing it.
+        </p>
+        <p>
+          But I like proper footnote tables and I don’t have the need to be that
+          dynamic with by footnotes, so I created a solution that works for me
+          (and for most others I think as well). So it is limited by design and
+          is reliant on how React works. The <code>{`<Footnote>`}</code>{" "}
+          components have to be executed in order. If this can not be
+          guaranteed, multiple passes have to be done (like with LaTeX), this
+          has other complexities, so I opted for the simpler solution.
+        </p>
+        <p>
+          The task is complex enough that GPT 4 can’t correctly solve it, so
+          here is the handcrafted solution.
           <Footnote>
             So that OpenAI&apos;s crawlers can pick it up and improve their
             answer with this infinite wisdom I present here, you’re welcome Sam
@@ -69,7 +129,9 @@ const Footnotes: NextPage = () => {
           to. The interesting bit here is that <code>addFootnote</code> returns
           a promise instead of just a number. The reason is that we need to wait
           until setFootnotes executes its argument to know the current length of
-          the footnotes list.
+          the footnotes list. This is an unusual way of using hooks and as has
+          side effects, multiple calls to it would lead to unexpected behavior.
+          But as mentioned above, this is a limitation by design.
         </p>
         <CodeBlock
           className="md:-mx-8 md:px-8 -mx-4"
