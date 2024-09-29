@@ -35,70 +35,229 @@ const PseudoModal = ({
   )
 }
 
-type ProductState = {
-  step: "basic_information"
-  productId: string
-  productName: string
+type DatesAndLocationState = {
+  step: "dates_and_location"
+  fromDate: string
+  toDate: string
+  city: string
 }
 
-const AddProductSimple = () => {
-  const [state, setState] = useState<ProductState>({
-    step: "basic_information",
-    productId: "",
-    productName: "",
+type CarPreferencesState = Omit<DatesAndLocationState, "step"> & {
+  step: "car_preferences"
+  transmission: "automatic" | "manual"
+  seats: number
+}
+
+type CarSelectionState = Omit<CarPreferencesState, "step"> & {
+  step: "car_selection"
+  selectedCar: string | null
+}
+
+type RentalState =
+  | DatesAndLocationState
+  | CarPreferencesState
+  | CarSelectionState
+
+const RentCarFlow = () => {
+  const [state, setState] = useState<RentalState>({
+    step: "dates_and_location",
+    fromDate: "",
+    toDate: "",
+    city: "",
   })
 
   const totalSteps = 3
   const currentStep = {
-    basic_information: {
+    dates_and_location: {
       step: 1,
-      header: "Basic product information",
+      header: "Rental Dates and Location",
+    },
+    car_preferences: {
+      step: 2,
+      header: "Car Preferences",
+    },
+    car_selection: {
+      step: 3,
+      header: "Select Your Car",
     },
   }[state.step]
 
+  const handleNext = () => {
+    if (state.step === "dates_and_location") {
+      setState({
+        ...state,
+        step: "car_preferences",
+        transmission: "automatic",
+        seats: 4,
+      })
+    } else if (state.step === "car_preferences") {
+      setState({ ...state, step: "car_selection", selectedCar: null })
+    }
+  }
+
+  const handleBack = () => {
+    if (state.step === "car_selection") {
+      const { selectedCar, ...previousState } = state
+      setState({ ...previousState, step: "car_preferences" })
+    } else if (state.step === "car_preferences") {
+      const { transmission, seats, ...previousState } = state
+      setState({ ...previousState, step: "dates_and_location" })
+    }
+  }
+
   return (
     <PseudoModal
-      header={`Step ${currentStep.step}/${totalSteps}: ${currentStep.header}`}
+      header={
+        <div className="flex items-center">
+          {state.step !== "dates_and_location" && (
+            <button
+              className="px-2 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md mr-4"
+              onClick={handleBack}
+            >
+              {"Back"}
+            </button>
+          )}
+          <div>{`Step ${currentStep.step}/${totalSteps}: ${currentStep.header}`}</div>
+        </div>
+      }
     >
-      {(() => {
-        switch (state.step) {
-          case "basic_information":
-            return (
-              <div className="grid gap-4">
-                <div>
-                  <label>Product identifier</label>
-                  <input
-                    className="border border-black rounded-md p-1 w-full"
-                    value={state.productId}
-                    onChange={(e) =>
-                      setState({
-                        ...state,
-                        productId: e.target.value,
-                      })
-                    }
-                  />
+      <div className="min-h-96">
+        {(() => {
+          switch (state.step) {
+            case "dates_and_location":
+              return (
+                <div className="grid gap-4">
+                  <div>
+                    <label>From Date</label>
+                    <input
+                      type="date"
+                      className="border border-black rounded-md p-1 w-full"
+                      value={state.fromDate}
+                      onChange={(e) =>
+                        setState({
+                          ...state,
+                          fromDate: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label>To Date</label>
+                    <input
+                      type="date"
+                      className="border border-black rounded-md p-1 w-full"
+                      value={state.toDate}
+                      onChange={(e) =>
+                        setState({
+                          ...state,
+                          toDate: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label>City</label>
+                    <input
+                      className="border border-black rounded-md p-1 w-full"
+                      value={state.city}
+                      onChange={(e) =>
+                        setState({
+                          ...state,
+                          city: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      className="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md"
+                      onClick={handleNext}
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <label>Product name</label>
-                  <input
-                    className="border border-black rounded-md p-1 w-full"
-                    value={state.productName}
-                    onChange={(e) =>
-                      setState({
-                        ...state,
-                        productName: e.target.value,
-                      })
-                    }
-                  />
+              )
+            case "car_preferences":
+              return (
+                <div className="grid gap-4">
+                  <div>
+                    <label>Transmission</label>
+                    <select
+                      className="border border-black rounded-md p-1 w-full"
+                      value={state.transmission}
+                      onChange={(e) =>
+                        setState({
+                          ...state,
+                          transmission: e.target.value as
+                            | "automatic"
+                            | "manual",
+                        })
+                      }
+                    >
+                      <option value="automatic">Automatic</option>
+                      <option value="manual">Manual</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label>Number of Seats</label>
+                    <input
+                      type="number"
+                      className="border border-black rounded-md p-1 w-full"
+                      value={state.seats}
+                      onChange={(e) =>
+                        setState({
+                          ...state,
+                          seats: parseInt(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      className="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md"
+                      onClick={handleNext}
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
-                <button className="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md">
-                  Next
-                </button>
-              </div>
-            )
-        }
-        return null
-      })()}
+              )
+            case "car_selection":
+              return (
+                <div className="grid gap-4">
+                  <div>
+                    <label>Select a Car</label>
+                    <select
+                      className="border border-black rounded-md p-1 w-full"
+                      value={state.selectedCar || ""}
+                      onChange={(e) =>
+                        setState({
+                          ...state,
+                          selectedCar: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Select a car</option>
+                      <option value="economy">Economy Car</option>
+                      <option value="midsize">Midsize Car</option>
+                      <option value="luxury">Luxury Car</option>
+                    </select>
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      className="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md"
+                      onClick={() => console.log("Rental completed:", state)}
+                    >
+                      Complete Rental
+                    </button>
+                  </div>
+                </div>
+              )
+          }
+          return null
+        })()}
+      </div>
     </PseudoModal>
   )
 }
@@ -163,13 +322,31 @@ const Footnotes: NextPage = () => {
           </PseudoModal>
         </div>
         <p>
-          We can use this Modal now to implement a user flow of a supermarket,
-          where the user can add a product to the inventory. The scenario is
-          made up and we are not here to discuss the usefulness of the UX here.
+          We can use this modal now implement the user flow of renting a car.
+          The modal has three steps now:
+        </p>
+        <ol className="ml-4 pl-4 list-outside list-decimal">
+          <li>Rental dates and location</li>
+          <li>Car preferences</li>
+          <li>Select your car</li>
+        </ol>
+        <p>
+          The user can see the progress as well as can go back to the previous
+          screen. This is actually pretty close to what car rental companies
+          process looks like.{" "}
+          <Footnote>
+            We'd just need to add some dark UX patterns and fear mongering to
+            sell some pricey car insurances.
+          </Footnote>
         </p>
         <div className="my-4">
-          <AddProductSimple />
+          <RentCarFlow />
         </div>
+        <p>
+          This is nothing a developer would complain about, it is absolutely ok
+          to do this. The problem arises if we want to create multiple
+          variations of this. Let's say you are asked to add a state before.
+        </p>
       </BlogContent>
     </Container>
   )
