@@ -9,7 +9,7 @@ import React, { useState } from "react"
 import { Accordion } from "../../components/accordion"
 
 export const metadata = {
-  title: "Compose UIs to keep you sane & productive",
+  title: "Don't extend UIs, compose them",
   description: "",
   date: "2024-09-29",
   slug: "composable-uis",
@@ -564,24 +564,40 @@ const Footnotes: NextPage = () => {
           considered.
         </p>
         <p>
-          In this post I want to present the notion of "composing" UIs.
-          Composing means that we use independent UI blocks / flows that we link
-          together to create the different user journeys. At the the other
+          In this post I want to talk about "composing" UIs. Composing means
+          that we use independent UI blocks / flows that we link together to
+          create the different pages and user journeys. At the the other
           spectrum is to create a distinct and optimal user experience for each
-          user journey.
+          page & user journey.
+        </p>
+        <p>
+          Every UI is composed of building block. We all use components like
+          "buttons", "accordions", "cards" and a plentitude of other building
+          blocks we discover while building our applications. Some design
+          systems use "atomic" design to group these into buckets depending on
+          their "atomicity" with a button being an atom, a search form being a
+          molecule, then we have organisms, templates & pages. I find this
+          overly semantic and not useful in practice - I just use components &
+          pages.
+        </p>
+        <p>
+          The goal is to keep our UIs composable, meaning they consist of
+          components and flows we can reuse. But it's not as easy as it sounds,
+          as perfect composability clashes with the theoretical optimal user
+          experience.
         </p>
         <p>
           We explore this using a rather complex UI pattern, that of a modal
           flow. A modal flow is a multi-step user journey that happens in a
-          modal.{" "}
+          modal{" "}
           <Footnote>
             Also called Dialoge, Popups etc. A modal is a UI that appears on top
             of everything and normally contains one specific user flow.
           </Footnote>
-          They are a great tool to simplify the process for a user and, as with
-          every modal, are easy to be used across the whole application. The
-          issue arises when we want to customize a modal flow for a new user
-          journey.
+          . They are a great tool to simplify the process for a user and, as
+          with every modal, are amazing for composability as you can reuse them
+          through the whole application. The issue arises when we want to
+          customize such a modal flow for a new user journey.
         </p>
         {/* <p>
           UX Designers <s>always</s> normally want to provide the best
@@ -974,13 +990,15 @@ const RentCarFlow = () => {
         </Accordion>
 
         <p>
-          You implement this and all is good, this was easy enough. You are now
-          tasked to add an option to this flow:
+          This gets implemented and all is good, it's a nicely reuseable UI that
+          can be reused whenever we want to prompt the user to rent a car. But
+          then we get a new requirement, they would like to extend the user
+          journey and we get this task:
         </p>
         <ul className="ml-4 pl-4 list-outside list-disc">
           <li>
-            Extend the flow with an optional discount screen. It will be shown
-            as the first step of the flow when it should show.
+            Extend the flow with an optional discount screen. It should be shown
+            as the very first step of the user flow.
           </li>
         </ul>
         <p>
@@ -1166,20 +1184,10 @@ const RentCarFlowWithInitialDiscountScreen = () => {
           developer stop and wonder what's the best way to extend the existing
           flow to achieve this.
         </p>
-        <p>
-          We have the following options to implement the design:
-          <Footnote>
-            We could go completely rogue and create an abstraction for modal
-            flows. Can't be too hard, right? We have a list of steps and one can
-            go back and forth. As with every abstraction, it works until it
-            doesn't work, e.g., when we have to implement a non-linear flow.
-            This is not a real option in my opinion, except if creating
-            different user flows is your core business.
-          </Footnote>{" "}
-        </p>
+        <p>We have the following options to implement this design:</p>
         <ol className="ml-4 pl-4 list-outside list-decimal">
           <li>
-            <strong>Extend the existing flow</strong>
+            <strong>Extend the existing component</strong>
             <br />
             We can extend our existing component with a new state and screen and
             one can toggle either mode. Implementation wise, this comes at a big
@@ -1200,41 +1208,20 @@ const RentCarFlowWithInitialDiscountScreen = () => {
             right approach when lots of variations or variations that greatly
             differ have to be implemented and it has to be this exact UX.
           </li>
-          <li>
-            <strong>
-              Create a new UI component and compose it with the modal
-            </strong>
-            <br />
-            Instead of extending the existing modal, we create a new modal that
-            only shows the discount screen. When clicking "Next", it closes
-            itself and opens the existing modal.{" "}
-            <strong>
-              This is the easiest and most satisfying to implement.
-            </strong>{" "}
-            We do not have to change the existing modal (or its tests),
-            potentially introducing bugs and increasing complexity. It's also
-            the easiest solution to delete, which is great if we don't know if
-            the discount flow is actually something we want to keep.
-          </li>
         </ol>
         <p>
-          Here is an example implementation of the third "compose UIs" option.
-          The difference is that the discount step is not part of the progress
-          anymore, also that one cannot go back to the discount as the new
-          component doesn't know about it.{" "}
-          <Footnote>
-            The "back" button could be implemented with relative ease though,
-            but it would feel glitchy as the modal would disappear and reappear.
-          </Footnote>{" "}
-          If these were actual modals, we would also see the discount modal
-          closing and the rent car modal opening, which might feel slightly
-          jarring. So the user experience is definitely degraded, but only so
-          much, that nobody would mind, the journey itself is the same.
+          That's a lot of work, but maybe we could talk to UX and convince them
+          to create a "composed" UI instead? Something that would leave the
+          existing component as is and we just plug something in front? They
+          come up with the following design. Instead of <i>extending</i> the
+          existing flow, they <i>composed</i> the existing modal with a new
+          modal that is opened first and when "Next" is clicked, the new modal
+          closes and the existing one will open. (The "Reset to discount" is for
+          your convenience and not part of the design.)
         </p>
         <div className="my-4">
           <DiscountModalFlow />
         </div>
-
         <Accordion
           title={`Code of the "rent a car" modal flow with discount screen`}
         >
@@ -1270,6 +1257,22 @@ const DiscountModalFlow = () => {
   )
 }`}</CodeBlock>
         </Accordion>
+        <p>
+          This design is extremely easy to implement. The existing component did
+          not have to be changed at all and adding a modal for one screen is
+          simple. This approach would also make it easy to get rid of the
+          feature if the company ever decides it doesn't want to do discounts
+          anymore. The downside is that the user experience is slightly degraded
+          - the user is missing context from the initial screen in which step
+          they are, they also cannot go back to the discount screen.
+          <Footnote>
+            The "back" button could be implemented with relative ease though,
+            but it would feel glitchy as the modal would disappear and reappear.
+          </Footnote>{" "}
+          If these were actual modals, we would also see the discount modal
+          closing and the rent car modal opening, which might feel slightly
+          jarring. But we gained so much and lost so little.
+        </p>
         <p>
           The code necessary to achieve this is almost trivial and most
           importantly we didn't have to change the existing component, keeping
