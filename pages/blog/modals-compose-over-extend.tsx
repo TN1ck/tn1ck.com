@@ -9,10 +9,10 @@ import React, { useState } from "react"
 import { Accordion } from "../../components/accordion"
 
 export const metadata = {
-  title: "Extending modal flows is hard",
+  title: "Modal flows: compose over extend",
   description: "",
   date: "2024-09-29",
-  slug: "extending-modal-flows",
+  slug: "modals-compose-over-extend",
 }
 
 const PseudoModal = ({
@@ -555,8 +555,9 @@ const Footnotes: NextPage = () => {
           A modal flow is a multi-step user journey that happens in a modal.
           They are a great tool to simplify the process for a user and, as with
           every modal, are easy to be used across the whole application. In this
-          post, I'll showcase why they are problematic when it comes to
-          extending them.
+          post, I'll showcase why they are problematic when they have to support
+          different user flows at the same time and that in these cases
+          composing is often better than extending.
         </p>
         {/* <p>
           UX Designers <s>always</s> normally want to provide the best
@@ -568,7 +569,7 @@ const Footnotes: NextPage = () => {
           absolutely crucial. This time we look at modal flows and what
           annoyances they bring.
         </p> */}
-        <h2>Example modal flow: Rent a car</h2>
+        <h2>Example: Rent a car modal flow</h2>
         <p>
           Below we see a simple modal component. We skip all the normally
           complicated parts, e.g., rendering it above everything and managing
@@ -1129,43 +1130,60 @@ const RentCarFlowWithInitialDiscountScreen = () => {
           developer stop and wonder what's the best way to reuse the existing
           flow.
         </p>
-        <p>We have the following options to extend the flow:</p>
+        <p>
+          We have the following options to extend the flow:
+          <Footnote>
+            We could go completely rogue and create an abstraction for modal
+            flows. Can't be too hard, right? We have a list of steps and one can
+            go back and forth. As with every abstraction, it works until it
+            doesn't work, e.g., when we have to implement a non-linear flow.
+            This is not a real option in my opinion, except if creating
+            different user flows is your core business.
+          </Footnote>{" "}
+        </p>
         <ol className="ml-4 pl-4 list-outside list-decimal">
           <li>
-            We can extend our existing flow with a new state and screen. This
-            will complicate the logic quite a bit, but at least we have
-            everything in one place. This is the right approach if we only have
-            a few deviations.
+            <strong>Extend the existing flow</strong>
+            <br />
+            We can extend our existing component with a new state and screen.
+            While for certain user flows, you want everything in one place, it
+            comes at a big cost. It increases the complexity of the component,
+            opens up to risks of introducing bugs and it would be hard to remove
+            this added capability if business decides that the discount screen
+            is not something we want to offer anymore.
           </li>
           <li>
+            <strong>Refactor & reuse for a new component</strong>
+            <br />
             We create components for all steps of the existing modal and reuse
             them in a new component. This will keep the modal components simple,
-            but we would still need to put the logic somewhere which modal to
-            use. In this instance, it's an OK solution and can be seen in the
-            code above, but is the right approach when lots of variations or
-            variations that greatly differ have to be implemented.
+            but we have a lot of code repitition and now two components that
+            need testing. Every time we change one of the pages, we have to make
+            sure we handle that correct in either version. In this instance,
+            it's an OK solution and can be seen in the code above, it is the
+            right approach when lots of variations or variations that greatly
+            differ have to be implemented and it has to be this exact UX.
           </li>
           <li>
-            We go completely rogue and create an abstraction for modal flows.
-            Can't be too hard, right? We have a list of steps and one can go
-            back and forth. As with every abstraction, it works until it doesn't
-            work, e.g., when we have to implement a non-linear flow.
-          </li>
-          <li>
-            We deviate from the UX and make it not part of the same modal. An
-            option here would be to create a new Modal that only shows the
-            "Discount applied" message and then when clicking "Next" would close
-            itself and open the existing one.{" "}
-            <strong>This is the easiest to implement</strong> and can often be
-            the right solution when comparing complexity and speed of
-            implementation vs. perfection. Below we see an example of this.
+            <strong>Compose over extend</strong>
+            <br />
+            Instead of extending the existing modal, we create a new modal that
+            only shows the discount screen. When clicking "Next", it closes
+            itself and opens the existing modal.{" "}
+            <strong>
+              This is the easiest and most satisfying to implement.
+            </strong>{" "}
+            We do not have to change the existing modal (or its tests),
+            potentially introducing bugs and increasing complexity. It's also
+            the easiest solution to delete, which is great if we don't know if
+            the discount flow is actually something we want to keep.
           </li>
         </ol>
         <p>
-          Here is an example implementation of the third option. The difference
-          is that the discount step is not part of the progress anymore, also
-          that one cannot go back to the discount as the new component doesn't
-          know about it.{" "}
+          Here is an example implementation of the third "Compose over extend"
+          option. The difference is that the discount step is not part of the
+          progress anymore, also that one cannot go back to the discount as the
+          new component doesn't know about it.{" "}
           <Footnote>
             The "back" button could be implemented with relative ease though,
             but it would feel glitchy as the modal would disappear and reappear.
@@ -1214,13 +1232,12 @@ const DiscountModalFlow = () => {
         </div>
         <h2>Conclusion</h2>
         <p>
-          In this case, the fourth option works quite well and should always be
-          considered in these cases, as it needs the least amount of code and we
-          do not have to change the existing modal (and its tests!). The other
-          options come with quite some complexity, and with complexity come
-          potential bugs. I hope this helps the next developer to reference this
-          to their UX team, so they don't have to spend time for minuscule UX
-          improvements.
+          Creating composable modal flows over extending existing ones are much
+          easier to implement, maintain and use. When they are an option, I
+          would always recommend of going for them. This does not mean that the
+          other options should not be used, they have there place, especially
+          when one cannot sacrifice even a little bit of user experience - e.g.
+          the flow is a core part of the business.
         </p>
         <h2>Side note</h2>
         <p>
@@ -1228,7 +1245,7 @@ const DiscountModalFlow = () => {
           modals, it's just a bit more annoying as they have more constraints
           with the header component having to be separate from the inner
           component. For non-modal flows, this doesn't have to be the case,
-          resulting in potentially better reusability.
+          resulting in potentially better reusability & composability.
         </p>
       </BlogContent>
     </Container>
