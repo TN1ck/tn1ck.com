@@ -8,12 +8,12 @@ import { metadata as dropboxMetadata } from "./dropbox-header"
 import { metadata as hashCodeMetadata } from "./hashcode"
 import { metadata as howToGenerateSudokusMetadata } from "./how-to-generate-sudokus"
 import { metadata as footnotesMetadata } from "./footnotes-in-react"
-import { metadata as composeModalFlowMetadata } from "./modals-compose-over-extend"
+import { metadata as composableUIs } from "./composable-uis"
 import { BlogMetadata } from "../../components/blog"
 import Head from "next/head"
 
 const BLOG_ENTRIES: BlogMetadata[] = [
-  composeModalFlowMetadata,
+  composableUIs,
   footnotesMetadata,
   howToGenerateSudokusMetadata,
   updatePlansMetadata,

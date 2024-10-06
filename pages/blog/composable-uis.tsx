@@ -9,10 +9,10 @@ import React, { useState } from "react"
 import { Accordion } from "../../components/accordion"
 
 export const metadata = {
-  title: "Modal flows: compose over extend",
+  title: "Compose UIs to keep you sane & productive",
   description: "",
   date: "2024-09-29",
-  slug: "modals-compose-over-extend",
+  slug: "composable-uis",
 }
 
 const PseudoModal = ({
@@ -552,12 +552,36 @@ const Footnotes: NextPage = () => {
     <Container activeId="blog">
       <BlogContent metadata={metadata}>
         <p>
-          A modal flow is a multi-step user journey that happens in a modal.
+          Creating the best user interfaces translates to the best user
+          experience, which then <i>can</i> translate to an apps success. Which
+          is why frontend developers and UX designers spend their waking hours
+          crafting the best experiences (at least I hope they do).
+        </p>
+        <p>
+          With everything, there are compromises in building UIs, perfection is
+          unattainable (especially on the web) and certain UI patterns can be
+          not worth implementing when their implementation complexity is
+          considered.
+        </p>
+        <p>
+          In this post I want to present the notion of "composing" UIs.
+          Composing means that we use independent UI blocks / flows that we link
+          together to create the different user journeys. At the the other
+          spectrum is to create a distinct and optimal user experience for each
+          user journey.
+        </p>
+        <p>
+          We explore this using a rather complex UI pattern, that of a modal
+          flow. A modal flow is a multi-step user journey that happens in a
+          modal.{" "}
+          <Footnote>
+            Also called Dialoge, Popups etc. A modal is a UI that appears on top
+            of everything and normally contains one specific user flow.
+          </Footnote>
           They are a great tool to simplify the process for a user and, as with
-          every modal, are easy to be used across the whole application. In this
-          post, I'll showcase why they are problematic when they have to support
-          different user flows at the same time and that in these cases
-          composing is often better than extending.
+          every modal, are easy to be used across the whole application. The
+          issue arises when we want to customize a modal flow for a new user
+          journey.
         </p>
         {/* <p>
           UX Designers <s>always</s> normally want to provide the best
@@ -573,13 +597,23 @@ const Footnotes: NextPage = () => {
         <p>
           Below we see a simple modal component. We skip all the normally
           complicated parts, e.g., rendering it above everything and managing
-          the visible state. This post is not about that. The important part is
-          that modals have a header and a body, which is what makes it also
-          especially hard to reuse parts of a modal flow - the header and body
-          are visually linked, but have to be kept separate in code. The code
-          for the examples is below and written in React; reading it is not
-          necessary to understand the message.
+          the visible state. The important part is that modals have a header and
+          a body, which is what makes it also especially hard to reuse parts of
+          a modal flow - the header and body are visually linked, but have to be
+          kept separate in code. The code for the examples is below and written
+          in React; reading it is not necessary to understand this blog post.
         </p>
+        <div className="my-8">
+          <PseudoModal header="Header of the modal">
+            <div className="grid gap-4">
+              <div>This is my Modal body. Anything could be in here.</div>
+              <button className="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md">
+                {"This is a button"}
+              </button>
+            </div>
+          </PseudoModal>
+        </div>
+
         <Accordion title="Code of the pseudo modal">
           <CodeBlock language="typescript">
             {`const PseudoModal = ({
@@ -603,16 +637,6 @@ const Footnotes: NextPage = () => {
 }`}
           </CodeBlock>
         </Accordion>
-        <div className="my-8">
-          <PseudoModal header="Header of the modal">
-            <div className="grid gap-4">
-              <div>This is my Modal body. Anything could be in here.</div>
-              <button className="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md">
-                {"This is a button"}
-              </button>
-            </div>
-          </PseudoModal>
-        </div>
         <p>
           We can use this modal now to implement the user flow of renting a car.
           The modal has four steps now:
@@ -632,6 +656,9 @@ const Footnotes: NextPage = () => {
             sell some pricey car insurances.
           </Footnote>
         </p>
+        <div className="my-4">
+          <RentCarFlow />
+        </div>
         <Accordion title={`Code of the "rent a car" modal`}>
           <CodeBlock language="typescript">
             {`type DatesAndLocationState = {
@@ -945,9 +972,7 @@ const RentCarFlow = () => {
 }`}
           </CodeBlock>
         </Accordion>
-        <div className="my-4">
-          <RentCarFlow />
-        </div>
+
         <p>
           You implement this and all is good, this was easy enough. You are now
           tasked to add an option to this flow:
@@ -958,7 +983,16 @@ const RentCarFlow = () => {
             as the first step of the flow when it should show.
           </li>
         </ul>
-        <p>The UX team would like us to implement it exactly like this:</p>
+        <p>
+          The UX team, in their pursuit to create the most optimal user
+          experience, found that <i>extending</i> the existing modal flow will
+          exactly do that. They put the optional discount screen at the
+          beginning of the user journey and have it tightly integrated with the
+          existing one.
+        </p>
+        <div className="my-4">
+          <RentCarFlowWithInitialDiscountScreen />
+        </div>
         <Accordion
           title={`Code of the "rent a car with discount screen" modal flow`}
         >
@@ -1108,30 +1142,32 @@ const RentCarFlowWithInitialDiscountScreen = () => {
   )
 }`}</CodeBlock>
         </Accordion>
-        <div className="my-4">
-          <RentCarFlowWithInitialDiscountScreen />
-        </div>
         <p>
-          The difficulties of implementing this design are that we cannot reuse
-          the existing component without modifying it, as:
+          This design wants us to <i>extend</i> the existing flow. The
+          difficulties of implementing this design are that we cannot reuse the
+          existing component without modifying it, as:
         </p>
         <ul className="ml-4 pl-4 list-outside list-disc">
           <li>
-            The header shows the steps and the amount changed for the subsequent
-            steps.
+            The header shows the steps and the total steps and the number for
+            each step changed.
           </li>
           <li>
             The back button is shown on the dates & location page, whereas it
-            previously was not.
+            previously was not. It also links back to the discount screen.
+          </li>
+          <li>
+            Modals themselves are basically "contained" UIs, we can not change a
+            modal UI without changing the component itself.
           </li>
         </ul>
         <p>
           These are of course not insurmountable issues, but it makes a
-          developer stop and wonder what's the best way to reuse the existing
-          flow.
+          developer stop and wonder what's the best way to extend the existing
+          flow to achieve this.
         </p>
         <p>
-          We have the following options to extend the flow:
+          We have the following options to implement the design:
           <Footnote>
             We could go completely rogue and create an abstraction for modal
             flows. Can't be too hard, right? We have a list of steps and one can
@@ -1145,12 +1181,12 @@ const RentCarFlowWithInitialDiscountScreen = () => {
           <li>
             <strong>Extend the existing flow</strong>
             <br />
-            We can extend our existing component with a new state and screen.
-            While for certain user flows, you want everything in one place, it
-            comes at a big cost. It increases the complexity of the component,
-            opens up to risks of introducing bugs and it would be hard to remove
-            this added capability if business decides that the discount screen
-            is not something we want to offer anymore.
+            We can extend our existing component with a new state and screen and
+            one can toggle either mode. Implementation wise, this comes at a big
+            cost. It increases the complexity of the component, opens up to
+            risks of introducing bugs and it would be hard to remove this added
+            capability if business decides that the discount screen is not
+            something we want to offer anymore.
           </li>
           <li>
             <strong>Refactor & reuse for a new component</strong>
@@ -1165,7 +1201,9 @@ const RentCarFlowWithInitialDiscountScreen = () => {
             differ have to be implemented and it has to be this exact UX.
           </li>
           <li>
-            <strong>Compose over extend</strong>
+            <strong>
+              Create a new UI component and compose it with the modal
+            </strong>
             <br />
             Instead of extending the existing modal, we create a new modal that
             only shows the discount screen. When clicking "Next", it closes
@@ -1180,18 +1218,23 @@ const RentCarFlowWithInitialDiscountScreen = () => {
           </li>
         </ol>
         <p>
-          Here is an example implementation of the third "Compose over extend"
-          option. The difference is that the discount step is not part of the
-          progress anymore, also that one cannot go back to the discount as the
-          new component doesn't know about it.{" "}
+          Here is an example implementation of the third "compose UIs" option.
+          The difference is that the discount step is not part of the progress
+          anymore, also that one cannot go back to the discount as the new
+          component doesn't know about it.{" "}
           <Footnote>
             The "back" button could be implemented with relative ease though,
             but it would feel glitchy as the modal would disappear and reappear.
           </Footnote>{" "}
           If these were actual modals, we would also see the discount modal
           closing and the rent car modal opening, which might feel slightly
-          jarring.
+          jarring. So the user experience is definitely degraded, but only so
+          much, that nobody would mind, the journey itself is the same.
         </p>
+        <div className="my-4">
+          <DiscountModalFlow />
+        </div>
+
         <Accordion
           title={`Code of the "rent a car" modal flow with discount screen`}
         >
@@ -1227,25 +1270,19 @@ const DiscountModalFlow = () => {
   )
 }`}</CodeBlock>
         </Accordion>
-        <div className="my-4">
-          <DiscountModalFlow />
-        </div>
+        <p>
+          The code necessary to achieve this is almost trivial and most
+          importantly we didn't have to change the existing component, keeping
+          us safe from regression bugs and leaving more room to work on other
+          features.
+        </p>
         <h2>Conclusion</h2>
         <p>
-          Creating composable modal flows over extending existing ones are much
-          easier to implement, maintain and use. When they are an option, I
-          would always recommend of going for them. This does not mean that the
-          other options should not be used, they have there place, especially
-          when one cannot sacrifice even a little bit of user experience - e.g.
-          the flow is a core part of the business.
-        </p>
-        <h2>Side note</h2>
-        <p>
-          All step-by-step user flows suffer somewhat from this problem. For
-          modals, it's just a bit more annoying as they have more constraints
-          with the header component having to be separate from the inner
-          component. For non-modal flows, this doesn't have to be the case,
-          resulting in potentially better reusability & composability.
+          Creating composable UIs over creating custom ones for each user
+          journey is easier to develop and maintain. When it is an option, I
+          would always recommend of going for it. This does not mean that custom
+          (and more perfect) UIs should not be done, but they should only be
+          used when it's worth it e.g. it's part of the core user journey.
         </p>
       </BlogContent>
     </Container>
