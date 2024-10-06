@@ -552,11 +552,11 @@ const Footnotes: NextPage = () => {
     <Container activeId="blog">
       <BlogContent metadata={metadata}>
         <p>
-          A modal flow is a multi step user journey that happens in a modal.
-          They are a great tool to simplify the process for a user and as every
-          modal, are easy to be used across the whole application. In this post
-          I'll showcase why they are problematic when it comes to extending
-          them.
+          A modal flow is a multi-step user journey that happens in a modal.
+          They are a great tool to simplify the process for a user and, as with
+          every modal, are easy to be used across the whole application. In this
+          post, I'll showcase why they are problematic when it comes to
+          extending them.
         </p>
         {/* <p>
           UX Designers <s>always</s> normally want to provide the best
@@ -571,12 +571,12 @@ const Footnotes: NextPage = () => {
         <h2>Example modal flow: Rent a car</h2>
         <p>
           Below we see a simple modal component. We skip all the normally
-          complicated parts e.g. rendering it above everything and managing the
-          visible state. This post is not about that. The important part is that
-          modals have a header and a body, which is what makes it also
+          complicated parts, e.g., rendering it above everything and managing
+          the visible state. This post is not about that. The important part is
+          that modals have a header and a body, which is what makes it also
           especially hard to reuse parts of a modal flow - the header and body
           are visually linked, but have to be kept separate in code. The code
-          for the examples is below and written in React, reading it is not
+          for the examples is below and written in React; reading it is not
           necessary to understand the message.
         </p>
         <Accordion title="Code of the pseudo modal">
@@ -613,8 +613,8 @@ const Footnotes: NextPage = () => {
           </PseudoModal>
         </div>
         <p>
-          We can use this modal now implement the user flow of renting a car.
-          The modal has three steps now:
+          We can use this modal now to implement the user flow of renting a car.
+          The modal has four steps now:
         </p>
         <ol className="ml-4 pl-4 list-outside list-decimal">
           <li>Rental dates and location</li>
@@ -623,11 +623,11 @@ const Footnotes: NextPage = () => {
           <li>Rental complete</li>
         </ol>
         <p>
-          The user can see the progress as well as can go back to the previous
-          screen. This is actually pretty close to what car rental companies
-          process looks like.{" "}
+          The user can see the progress as well as go back to the previous
+          screen. This is actually pretty close to what car rental companies'
+          processes look like.{" "}
           <Footnote>
-            We'd just need to add some dark UX patterns and fear mongering to
+            We'd just need to add some dark UX patterns and fear-mongering to
             sell some pricey car insurances.
           </Footnote>
         </p>
@@ -957,7 +957,7 @@ const RentCarFlow = () => {
             as the first step of the flow when it should show.
           </li>
         </ul>
-        <p>The UX team would like us to implement it exactly this:</p>
+        <p>The UX team would like us to implement it exactly like this:</p>
         <Accordion
           title={`Code of the "rent a car with discount screen" modal flow`}
         >
@@ -1121,7 +1121,7 @@ const RentCarFlowWithInitialDiscountScreen = () => {
           </li>
           <li>
             The back button is shown on the dates & location page, whereas it
-            previously was not
+            previously was not.
           </li>
         </ul>
         <p>
@@ -1141,15 +1141,15 @@ const RentCarFlowWithInitialDiscountScreen = () => {
             We create components for all steps of the existing modal and reuse
             them in a new component. This will keep the modal components simple,
             but we would still need to put the logic somewhere which modal to
-            use. In this instance, it's an ok solution and can be seen in the
+            use. In this instance, it's an OK solution and can be seen in the
             code above, but is the right approach when lots of variations or
             variations that greatly differ have to be implemented.
           </li>
           <li>
             We go completely rogue and create an abstraction for modal flows.
-            Can't be too hard right? We have a list of steps and one can go back
-            and front. As with every abstraction, it works until it doesn't
-            work, e.g. when we have to implement a non linear flow.
+            Can't be too hard, right? We have a list of steps and one can go
+            back and forth. As with every abstraction, it works until it doesn't
+            work, e.g., when we have to implement a non-linear flow.
           </li>
           <li>
             We deviate from the UX and make it not part of the same modal. An
@@ -1158,7 +1158,7 @@ const RentCarFlowWithInitialDiscountScreen = () => {
             itself and open the existing one.{" "}
             <strong>This is the easiest to implement</strong> and can often be
             the right solution when comparing complexity and speed of
-            implementation vs perfection. Below we see an example of this.
+            implementation vs. perfection. Below we see an example of this.
           </li>
         </ol>
         <p>
@@ -1167,10 +1167,10 @@ const RentCarFlowWithInitialDiscountScreen = () => {
           that one cannot go back to the discount as the new component doesn't
           know about it.{" "}
           <Footnote>
-            The "back" button could be implemented with relative easy though,
+            The "back" button could be implemented with relative ease though,
             but it would feel glitchy as the modal would disappear and reappear.
           </Footnote>{" "}
-          If this would be actual modals, we would also see the discount modal
+          If these were actual modals, we would also see the discount modal
           closing and the rent car modal opening, which might feel slightly
           jarring.
         </p>
@@ -1219,16 +1219,16 @@ const DiscountModalFlow = () => {
           do not have to change the existing modal (and its tests!). The other
           options come with quite some complexity, and with complexity come
           potential bugs. I hope this helps the next developer to reference this
-          to their UX team, so they don't have to spend time for miniscule UX
+          to their UX team, so they don't have to spend time for minuscule UX
           improvements.
         </p>
         <h2>Side note</h2>
         <p>
-          All step by step user flows suffer somewhat from this problem. For
-          modals, it's a just bit more annoying as they have more constraints
+          All step-by-step user flows suffer somewhat from this problem. For
+          modals, it's just a bit more annoying as they have more constraints
           with the header component having to be separate from the inner
-          component. For non modal flows, this doesn't have to be the case,
-          resulting in potential better reusability.
+          component. For non-modal flows, this doesn't have to be the case,
+          resulting in potentially better reusability.
         </p>
       </BlogContent>
     </Container>
