@@ -553,7 +553,7 @@ const Footnotes: NextPage = () => {
       <BlogContent metadata={metadata}>
         <p>
           Creating the best user interfaces translates to the best user
-          experience, which then <i>can</i> translate to an apps success. Which
+          experience, which then <i>can</i> translate to an app's success. Which
           is why frontend developers and UX designers spend their waking hours
           crafting the best experiences (at least I hope they do).
         </p>
@@ -566,13 +566,13 @@ const Footnotes: NextPage = () => {
         <p>
           In this post I want to talk about "composing" UIs. Composing means
           that we use independent UI blocks / flows that we link together to
-          create the different pages and user journeys. At the the other
-          spectrum is to create a distinct and optimal user experience for each
-          page & user journey.
+          create the different pages and user journeys. At the other spectrum is
+          to create a distinct and optimal user experience for each page & user
+          journey.
         </p>
         <p>
-          Every UI is composed of building block. We all use components like
-          "buttons", "accordions", "cards" and a plentitude of other building
+          Every UI is composed of building blocks. We all use components like
+          "buttons", "accordions", "cards" and a plethora of other building
           blocks we discover while building our applications. Some design
           systems use "atomic" design to group these into buckets depending on
           their "atomicity" with a button being an atom, a search form being a
@@ -591,12 +591,12 @@ const Footnotes: NextPage = () => {
           flow. A modal flow is a multi-step user journey that happens in a
           modal{" "}
           <Footnote>
-            Also called Dialoge, Popups etc. A modal is a UI that appears on top
+            Also called Dialog, Popups etc. A modal is a UI that appears on top
             of everything and normally contains one specific user flow.
           </Footnote>
           . They are a great tool to simplify the process for a user and, as
           with every modal, are amazing for composability as you can reuse them
-          through the whole application. The issue arises when we want to
+          throughout the whole application. The issue arises when we want to
           customize such a modal flow for a new user journey.
         </p>
         {/* <p>
@@ -990,7 +990,7 @@ const RentCarFlow = () => {
         </Accordion>
 
         <p>
-          This gets implemented and all is good, it's a nicely reuseable UI that
+          This gets implemented and all is good, it's a nicely reusable UI that
           can be reused whenever we want to prompt the user to rent a car. But
           then we get a new requirement, they would like to extend the user
           journey and we get this task:
@@ -1167,7 +1167,7 @@ const RentCarFlowWithInitialDiscountScreen = () => {
         </p>
         <ul className="ml-4 pl-4 list-outside list-disc">
           <li>
-            The header shows the steps and the total steps and the number for
+            The header shows the steps and the total steps, and the number for
             each step changed.
           </li>
           <li>
@@ -1175,12 +1175,12 @@ const RentCarFlowWithInitialDiscountScreen = () => {
             previously was not. It also links back to the discount screen.
           </li>
           <li>
-            Modals themselves are basically "contained" UIs, we can not change a
+            Modals themselves are basically "contained" UIs; we cannot change a
             modal UI without changing the component itself.
           </li>
         </ul>
         <p>
-          These are of course not insurmountable issues, but it makes a
+          These are, of course, not insurmountable issues, but it makes a
           developer stop and wonder what's the best way to extend the existing
           flow to achieve this.
         </p>
@@ -1190,9 +1190,9 @@ const RentCarFlowWithInitialDiscountScreen = () => {
             <strong>Extend the existing component</strong>
             <br />
             We can extend our existing component with a new state and screen and
-            one can toggle either mode. Implementation wise, this comes at a big
-            cost. It increases the complexity of the component, opens up to
-            risks of introducing bugs and it would be hard to remove this added
+            one can toggle either mode. Implementation-wise, this comes at a big
+            cost. It increases the complexity of the component, opens up risks
+            of introducing bugs, and it would be hard to remove this added
             capability if business decides that the discount screen is not
             something we want to offer anymore.
           </li>
@@ -1201,10 +1201,10 @@ const RentCarFlowWithInitialDiscountScreen = () => {
             <br />
             We create components for all steps of the existing modal and reuse
             them in a new component. This will keep the modal components simple,
-            but we have a lot of code repitition and now two components that
+            but we have a lot of code repetition and now two components that
             need testing. Every time we change one of the pages, we have to make
-            sure we handle that correct in either version. In this instance,
-            it's an OK solution and can be seen in the code above, it is the
+            sure we handle that correctly in either version. In this instance,
+            it's an OK solution and can be seen in the code above. It is the
             right approach when lots of variations or variations that greatly
             differ have to be implemented and it has to be this exact UX.
           </li>
@@ -1275,7 +1275,7 @@ const DiscountModalFlow = () => {
         </p>
         <p>
           The code necessary to achieve this is almost trivial and most
-          importantly we didn't have to change the existing component, keeping
+          importantly, we didn't have to change the existing component, keeping
           us safe from regression bugs and leaving more room to work on other
           features.
         </p>
@@ -1283,9 +1283,9 @@ const DiscountModalFlow = () => {
         <p>
           Creating composable UIs over creating custom ones for each user
           journey is easier to develop and maintain. When it is an option, I
-          would always recommend of going for it. This does not mean that custom
+          would always recommend going for it. This does not mean that custom
           (and more perfect) UIs should not be done, but they should only be
-          used when it's worth it e.g. it's part of the core user journey.
+          used when it's worth it, e.g., it's part of the core user journey.
         </p>
       </BlogContent>
     </Container>
