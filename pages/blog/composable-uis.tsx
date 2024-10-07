@@ -555,20 +555,20 @@ const Footnotes: NextPage = () => {
           Creating the best user interfaces translates to the best user
           experience, which then <i>can</i> translate to an app's success. Which
           is why frontend developers and UX designers spend their waking hours
-          crafting the best experiences (at least I hope they do).
+          crafting the best interfaces (at least I hope they do).
         </p>
         <p>
-          With everything, there are compromises in building UIs, perfection is
-          unattainable (especially on the web) and certain UI patterns can be
-          not worth implementing when their implementation complexity is
-          considered.
+          Like with everything, there are compromises in building UIs,
+          perfection is unattainable (especially on the web) and certain UI
+          patterns can be not worth implementing when their implementation
+          complexity is considered.
         </p>
         <p>
           In this post I want to talk about "composing" UIs. Composing means
-          that we use independent UI blocks / flows that we link together to
-          create the different pages and user journeys. At the other spectrum is
-          to create a distinct and optimal user experience for each page & user
-          journey.
+          that we use independent UI blocks or complete UI flows that we link
+          together to create the different pages and user journeys. At the other
+          spectrum is to create a distinct and optimal user experience for each
+          page & user journey.
         </p>
         <p>
           Every UI is composed of building blocks. We all use components like
