@@ -1505,7 +1505,7 @@ const RentCarFlowWithInitialDiscountScreen = () => {
             may reuse parts of the old component).
           </p>
           <p>
-            It's quite some work, especially if we don't have already have a
+            It's quite some work, especially if we don't already have a
             component that abstracts steps for us. But maybe we could talk to UX
             and convince them to create a "composed" UI instead? Something that
             would leave the existing component as is and we just plug something
@@ -1588,7 +1588,7 @@ const DiscountModalFlow = () => {
           </p>
           <h2>Final thoughts</h2>
           <p>
-            Keeping these strategies (don't extend, wrap or dispatch) in mind
+            Keeping these strategies (don't extend, wrap or delegate) in mind
             and making designers aware of the challenges engineers face with
             seemingly innocent UI changes can be of great help in keeping
             complexity at bay. Creating composable UIs, rather than custom ones
