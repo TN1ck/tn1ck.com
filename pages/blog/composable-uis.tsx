@@ -735,9 +735,10 @@ const Footnotes: NextPage = () => {
             </li>
           </ul>
           <p>
-            The UX team decides the functionality to switch between should be
-            placed in the card itself to reduce introducing clutter. It should
-            be a select that replaces the previous title.
+            The UX team decides that the functionality to switch between them
+            should be placed in the card itself to reduce introducing clutter.
+            The switching should be done using a dropdown menu that also
+            functions as the header of the card.
           </p>
           <div className="my-4">
             <MetricCardWithToggle
@@ -805,12 +806,11 @@ const MetricCardWithToggle = ({
 }`}</CodeBlock>
           </Accordion>
           <p>
-            This is a design that <i>extends</i> the existing component. We have
-            to either change the implementation of the existing component or
-            create a new one. It is a rather simple component, but the point
-            stands for any change where new functionality is placed{" "}
-            <strong>inside</strong> an existing one we need to do substantial
-            changes to it{" "}
+            This is a design that <i>extends</i> the existing component. But
+            whenever new functionality is placed <strong>inside</strong> an
+            existing component we <strong>have</strong> to change it. We can
+            merely decide if we want to extend the existing one or create a new
+            component{" "}
             <Footnote>
               In React you can always pass other react components for the
               content e.g., instead of title being a string, it can be a
@@ -907,8 +907,9 @@ const MetricCardsComposition = ({
           </p>
           <p>
             The downside is that we had to change the surrounding layout, which{" "}
-            <i>could</i> be a downgrade in user experience and sometimes it is
-            worth it to extend a component like this.
+            <i>could</i> be a substantial downgrade in user experience. So one
+            cannot always wrap in these instances, sometimes we have to go with
+            the "extension" design.
           </p>
           {/* <p>
           UX Designers <s>always</s> normally want to provide the best
@@ -922,7 +923,7 @@ const MetricCardsComposition = ({
         </p> */}
           <h2>Example 2: Rent a car modal flow</h2>
           <p>
-            New we explore composability with a rather complex UI pattern, that
+            Now we explore composability with a rather complex UI pattern, that
             of a modal flow. A modal flow is a multi-step user journey that
             happens in a modal{" "}
             <Footnote>
