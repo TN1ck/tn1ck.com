@@ -7,6 +7,7 @@ import Head from "next/head"
 import { Footnote } from "../../components/footnote"
 import React, { useState } from "react"
 import { Accordion } from "../../components/accordion"
+import clsx from "clsx"
 
 export const metadata = {
   title: "Don't extend UIs, compose them",
@@ -547,6 +548,105 @@ const DiscountModalFlow = () => {
   )
 }
 
+const MetricCard = ({
+  title,
+  description,
+  metric,
+}: {
+  title: string
+  description: string
+  metric: string
+}) => {
+  return (
+    <div className="border-2 border-black p-4">
+      <div className="text-lg">{title}</div>
+      <div className="text-xl">{metric}</div>
+      <div className="text-sm text-gray-500">{description}</div>
+    </div>
+  )
+}
+
+type MetricDefinition = {
+  title: string
+  description: string
+  metric: string
+  key: string
+}
+
+const MetricCardWithToggle = ({
+  metricDefinitions,
+}: {
+  metricDefinitions: MetricDefinition[]
+}) => {
+  const [currentMetric, setCurrentMetric] = useState(metricDefinitions[0])
+
+  return (
+    <div className="border-2 border-black p-4">
+      <div className="flex justify-between">
+        <select
+          value={currentMetric.key}
+          onChange={(e) =>
+            setCurrentMetric(
+              metricDefinitions.find((m) => m.key === e.target.value) ||
+                metricDefinitions[0],
+            )
+          }
+          className="my-2 block text-xl p-2 w-full border border-black"
+        >
+          {metricDefinitions.map((metric) => (
+            <option key={metric.key} value={metric.key}>
+              {metric.title}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="text-xl">{currentMetric.metric}</div>
+      <div className="text-sm text-gray-500">{currentMetric.description}</div>
+    </div>
+  )
+}
+
+type MetricDefinitionNew = {
+  title: string
+  description: string
+  metric: string
+  key: string
+  keyTranslation: string
+}
+
+const MetricCardsComposition = ({
+  metricDefinitions,
+}: {
+  metricDefinitions: MetricDefinitionNew[]
+}) => {
+  const [currentMetric, setCurrentMetric] = useState(metricDefinitions[0])
+  return (
+    <div>
+      <div className="flex flex-row gap-2">
+        {metricDefinitions.map((metric) => (
+          <button
+            key={metric.key}
+            onClick={() => setCurrentMetric(metric)}
+            className={clsx(
+              "text-sm text-gray-500 border-t-2 border-l-2 border-r-2 border-black p-2",
+              {
+                "bg-black text-white": metric.key === currentMetric.key,
+              },
+            )}
+          >
+            {metric.keyTranslation}
+          </button>
+        ))}
+      </div>
+      <MetricCard
+        title={currentMetric.title}
+        description={currentMetric.description}
+        metric={currentMetric.metric}
+      />
+    </div>
+  )
+}
+
 const Footnotes: NextPage = () => {
   return (
     <Container activeId="blog">
@@ -576,9 +676,9 @@ const Footnotes: NextPage = () => {
           blocks we discover while building our applications. Some design
           systems use "atomic" design to group these into buckets depending on
           their "atomicity" with a button being an atom, a search form being a
-          molecule, then we have organisms, templates & pages. I find this
-          overly semantic and not useful in practice - I just use components &
-          pages.
+          molecule, then we have organisms, templates & pages (I personally find
+          this overly semantic and not useful in practice - I just use
+          components & pages).
         </p>
         <p>
           The goal is to keep our UIs composable, meaning they consist of
@@ -587,17 +687,225 @@ const Footnotes: NextPage = () => {
           experience.
         </p>
         <p>
-          We explore this using a rather complex UI pattern, that of a modal
-          flow. A modal flow is a multi-step user journey that happens in a
-          modal{" "}
+          We explore this with the two following interactive examples. The code
+          for the examples is available below them, but reading it is not
+          required, it's just for the curious React developer.
+        </p>
+        <h2>Example 1: Metric card</h2>
+        <p>
+          We start off with a simple card component that is used to show some
+          metrics for an imaginary car rental company. The component has a
+          title, description and the metric itself.
+        </p>
+        <div className="my-4">
+          <MetricCard
+            title="Cars rented in the last 30 days"
+            description="The number of cars rented in the last 30 days"
+            metric="245"
+          />
+        </div>
+        <Accordion title="Code of the metric card">
+          <CodeBlock language="typescript">
+            {`const MetricCard = ({
+  title,
+  description,
+  metric,
+}: {
+  title: string
+  description: string
+  metric: string
+}) => {
+  return (
+    <div className="border-2 border-black p-4">
+      <div className="text-lg">{title}</div>
+      <div className="text-xl">{metric}</div>
+      <div className="text-sm text-gray-500">{description}</div>
+    </div>
+  )
+}`}
+          </CodeBlock>
+        </Accordion>
+        <p>It's a perfectly fine component. Now we get the requirement:</p>
+        <ul className="ml-4 pl-4 list-outside list-disc">
+          <li>
+            The user should be able to toggle between multiple intervals,
+            instead of only showing the last 30. They should be able to see the
+            last 30, 60 and 90 days.
+          </li>
+        </ul>
+        <p>
+          The UX team decides the functionality to switch between should be
+          placed in the card itself to reduce introducing clutter. It should be
+          a select that replaces the previous title.
+        </p>
+        <div className="my-4">
+          <MetricCardWithToggle
+            metricDefinitions={[
+              {
+                title: "Cars rented in the last 30 days",
+                description: "The number of cars rented in the last 30 days",
+                metric: "245",
+                key: "30d",
+              },
+              {
+                title: "Cars rented in the last 60 days",
+                description: "The number of cars rented in the last 60 days",
+                metric: "511",
+                key: "60d",
+              },
+              {
+                title: "Cars rented in the last 90 days",
+                description: "The number of cars rented in the last 90 days",
+                metric: "741",
+                key: "90d",
+              },
+            ]}
+          />
+        </div>
+        <Accordion title="Code of the metric card with select inside">
+          <CodeBlock language="typescript">{`type MetricDefinition = {
+  title: string
+  description: string
+  metric: string
+  key: string
+}
+
+const MetricCardWithToggle = ({
+  metricDefinitions,
+}: {
+  metricDefinitions: MetricDefinition[]
+}) => {
+  const [currentMetric, setCurrentMetric] = useState(metricDefinitions[0])
+
+  return (
+    <div className="border-2 border-black p-4">
+      <div className="flex justify-between">
+        <select
+          value={currentMetric.key}
+          onChange={(e) =>
+            setCurrentMetric(
+              metricDefinitions.find((m) => m.key === e.target.value) ||
+                metricDefinitions[0],
+            )
+          }
+          className="my-2 block text-xl p-2 w-full border border-black"
+        >
+          {metricDefinitions.map((metric) => (
+            <option key={metric.key} value={metric.key}>
+              {metric.title}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="text-xl">{currentMetric.metric}</div>
+      <div className="text-sm text-gray-500">{currentMetric.description}</div>
+    </div>
+  )
+}`}</CodeBlock>
+        </Accordion>
+        <p>
+          This is a design that <i>extends</i> the existing component. We have
+          to either change the implementation of the existing component or
+          create a new one. It is a rather simple component, but the point
+          stands for any change where new functionality is placed{" "}
+          <strong>inside</strong> an existing one we need to do substantial
+          changes to it{" "}
           <Footnote>
-            Also called Dialog, Popups etc. A modal is a UI that appears on top
-            of everything and normally contains one specific user flow.
+            In React you can always pass other react components for the content
+            e.g., instead of title being a string, it can be a React.Node. This
+            makes components quite flexible, but it also has its limits as they
+            are still bound by the layout and refactoring these components can
+            be challenging as one has to check each usage of it.
           </Footnote>
-          . They are a great tool to simplify the process for a user and, as
-          with every modal, are amazing for composability as you can reuse them
-          throughout the whole application. The issue arises when we want to
-          customize such a modal flow for a new user journey.
+          .
+        </p>
+        <p>
+          The composition approach would keep the existing component as is and{" "}
+          <strong>build around it</strong>. For this example, it could look like
+          this:
+        </p>
+        <div className="my-4">
+          <MetricCardsComposition
+            metricDefinitions={[
+              {
+                title: "Cars rented in the last 30 days",
+                description: "The number of cars rented in the last 30 days",
+                metric: "245",
+                key: "30d",
+                keyTranslation: "30 days",
+              },
+              {
+                title: "Cars rented in the last 60 days",
+                description: "The number of cars rented in the last 60 days",
+                metric: "511",
+                key: "60d",
+                keyTranslation: "60 days",
+              },
+              {
+                title: "Cars rented in the last 90 days",
+                description: "The number of cars rented in the last 90 days",
+                metric: "741",
+                key: "90d",
+                keyTranslation: "90 days",
+              },
+            ]}
+          />
+        </div>
+        <Accordion title="code of metric card with buttons outside">
+          <CodeBlock language="typescript">
+            {`type MetricDefinition = {
+  title: string
+  description: string
+  metric: string
+  key: string
+  keyTranslation: string
+}
+
+const MetricCardsComposition = ({
+  metricDefinitions,
+}: {
+  metricDefinitions: MetricDefinition[]
+}) => {
+  const [currentMetric, setCurrentMetric] = useState(metricDefinitions[0])
+  return (
+    <div>
+      <div className="flex flex-row gap-2">
+        {metricDefinitions.map((metric) => (
+          <button
+            key={metric.key}
+            onClick={() => setCurrentMetric(metric)}
+            className={clsx(
+              "text-sm text-gray-500 border-t-2 border-l-2 border-r-2 border-black p-2",
+              {
+                "bg-black text-white": metric.key === currentMetric.key,
+              },
+            )}
+          >
+            {metric.keyTranslation}
+          </button>
+        ))}
+      </div>
+      <MetricCard
+        title={currentMetric.title}
+        description={currentMetric.description}
+        metric={currentMetric.metric}
+      />
+    </div>
+  )
+}`}
+          </CodeBlock>
+        </Accordion>
+        <p>
+          With this version, we did not have to change the existing component as
+          we put the new controls outside of it. Despite being simpler to
+          implement, favoring composition gives us also more opportunities to
+          create new blocks to compose with, as the new UI component that we
+          used to wrap the existing one can wrap <i>any</i> existing component.
+        </p>
+        <p>
+          The downside is that we had to change the surrounding layout, which{" "}
+          <i>could</i> be a downgrade in user experience and sometimes it is
+          worth it to extend a component like this.
         </p>
         {/* <p>
           UX Designers <s>always</s> normally want to provide the best
@@ -609,15 +917,27 @@ const Footnotes: NextPage = () => {
           absolutely crucial. This time we look at modal flows and what
           annoyances they bring.
         </p> */}
-        <h2>Example: Rent a car modal flow</h2>
+        <h2>Example 2: Rent a car modal flow</h2>
+        <p>
+          New we explore composability with a rather complex UI pattern, that of
+          a modal flow. A modal flow is a multi-step user journey that happens
+          in a modal{" "}
+          <Footnote>
+            Also called Dialog, Popups etc. A modal is a UI that appears on top
+            of everything and normally contains one specific user flow.
+          </Footnote>
+          . They are a great tool to simplify the process for a user and, as
+          with every modal, are amazing for composability as you can reuse them
+          throughout the whole application. The issue arises when we want to
+          customize such a modal flow for a new user journey.
+        </p>
         <p>
           Below we see a simple modal component. We skip all the normally
           complicated parts, e.g., rendering it above everything and managing
           the visible state. The important part is that modals have a header and
           a body, which is what makes it also especially hard to reuse parts of
           a modal flow - the header and body are visually linked, but have to be
-          kept separate in code. The code for the examples is below and written
-          in React; reading it is not necessary to understand this blog post.
+          kept separate in code.
         </p>
         <div className="my-8">
           <PseudoModal header="Header of the modal">
@@ -629,7 +949,6 @@ const Footnotes: NextPage = () => {
             </div>
           </PseudoModal>
         </div>
-
         <Accordion title="Code of the pseudo modal">
           <CodeBlock language="typescript">
             {`const PseudoModal = ({
@@ -988,7 +1307,6 @@ const RentCarFlow = () => {
 }`}
           </CodeBlock>
         </Accordion>
-
         <p>
           This gets implemented and all is good, it's a nicely reusable UI that
           can be reused whenever we want to prompt the user to rent a car. But
