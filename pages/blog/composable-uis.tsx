@@ -350,7 +350,7 @@ const DiscountScreen = ({ onNext }: { onNext: () => void }) => {
   return (
     <div>
       <div className="text-lg">
-        You get a discount because you are a corporate customer.
+        You get a discount because you are reading this blog post.
       </div>
       <div className="flex justify-end">
         <button
@@ -514,7 +514,7 @@ const DiscountModal = ({ onNext }: { onNext: () => void }) => {
   return (
     <PseudoModal header="Discount">
       <div className="text-lg">
-        You get a discount because you are a corporate customer.
+        You get a discount because you are reading this blog post.
       </div>
       <div className="flex justify-end">
         <button
