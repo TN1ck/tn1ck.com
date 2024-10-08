@@ -106,7 +106,8 @@ export const BlogContent = ({
             </div>
           </div>
         )}
-        {children}
+
+        <div>{children}</div>
         <Footnotes />
       </article>
     </FootnoteProvider>

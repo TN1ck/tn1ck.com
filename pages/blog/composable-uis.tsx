@@ -651,62 +651,63 @@ const Footnotes: NextPage = () => {
   return (
     <Container activeId="blog">
       <BlogContent metadata={metadata}>
-        <p>
-          Creating the best user interfaces translates to the best user
-          experience, which then <i>can</i> translate to an app's success. Which
-          is why frontend developers and UX designers spend their waking hours
-          crafting the best interfaces (at least I hope they do).
-        </p>
-        <p>
-          Like with everything, there are compromises in building UIs,
-          perfection is unattainable (especially on the web) and certain UI
-          patterns can be not worth implementing when their implementation
-          complexity is considered.
-        </p>
-        <p>
-          In this post I want to talk about "composing" UIs. Composing means
-          that we use independent UI blocks or complete UI flows that we link
-          together to create the different pages and user journeys. At the other
-          spectrum is to create a distinct and optimal user experience for each
-          page & user journey.
-        </p>
-        <p>
-          Every UI is composed of building blocks. We all use components like
-          "buttons", "accordions", "cards" and a plethora of other building
-          blocks we discover while building our applications. Some design
-          systems use "atomic" design to group these into buckets depending on
-          their "atomicity" with a button being an atom, a search form being a
-          molecule, then we have organisms, templates & pages (I personally find
-          this overly semantic and not useful in practice - I just use
-          components & pages).
-        </p>
-        <p>
-          The goal is to keep our UIs composable, meaning they consist of
-          components and flows we can reuse. But it's not as easy as it sounds,
-          as perfect composability clashes with the theoretical optimal user
-          experience.
-        </p>
-        <p>
-          We explore this with the two following interactive examples. The code
-          for the examples is available below them, but reading it is not
-          required, it's just for the curious React developer.
-        </p>
-        <h2>Example 1: Metric card</h2>
-        <p>
-          We start off with a simple card component that is used to show some
-          metrics for an imaginary car rental company. The component has a
-          title, description and the metric itself.
-        </p>
-        <div className="my-4">
-          <MetricCard
-            title="Cars rented in the last 30 days"
-            description="The number of cars rented in the last 30 days"
-            metric="245"
-          />
-        </div>
-        <Accordion title="Code of the metric card">
-          <CodeBlock language="typescript">
-            {`const MetricCard = ({
+        <div className="overflow-hidden">
+          <p>
+            Creating the best user interfaces translates to the best user
+            experience, which then <i>can</i> translate to an app's success.
+            Which is why frontend developers and UX designers spend their waking
+            hours crafting the best interfaces (at least I hope they do).
+          </p>
+          <p>
+            Like with everything, there are compromises in building UIs,
+            perfection is unattainable (especially on the web) and certain UI
+            patterns can be not worth implementing when their implementation
+            complexity is considered.
+          </p>
+          <p>
+            In this post I want to talk about "composing" UIs. Composing means
+            that we use independent UI blocks or complete UI flows that we link
+            together to create the different pages and user journeys. At the
+            other spectrum is to create a distinct and optimal user experience
+            for each page & user journey.
+          </p>
+          <p>
+            Every UI is composed of building blocks. We all use components like
+            "buttons", "accordions", "cards" and a plethora of other building
+            blocks we discover while building our applications. Some design
+            systems use "atomic" design to group these into buckets depending on
+            their "atomicity" with a button being an atom, a search form being a
+            molecule, then we have organisms, templates & pages (I personally
+            find this overly semantic and not useful in practice - I just use
+            components & pages).
+          </p>
+          <p>
+            The goal is to keep our UIs composable, meaning they consist of
+            components and flows we can reuse. But it's not as easy as it
+            sounds, as perfect composability clashes with the theoretical
+            optimal user experience.
+          </p>
+          <p>
+            We explore this with the two following interactive examples. The
+            code for the examples is available below them, but reading it is not
+            required, it's just for the curious React developer.
+          </p>
+          <h2>Example 1: Metric card</h2>
+          <p>
+            We start off with a simple card component that is used to show some
+            metrics for an imaginary car rental company. The component has a
+            title, description and the metric itself.
+          </p>
+          <div className="my-4">
+            <MetricCard
+              title="Cars rented in the last 30 days"
+              description="The number of cars rented in the last 30 days"
+              metric="245"
+            />
+          </div>
+          <Accordion title="Code of the metric card">
+            <CodeBlock language="typescript">
+              {`const MetricCard = ({
   title,
   description,
   metric,
@@ -723,47 +724,47 @@ const Footnotes: NextPage = () => {
     </div>
   )
 }`}
-          </CodeBlock>
-        </Accordion>
-        <p>It's a perfectly fine component. Now we get the requirement:</p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>
-            The user should be able to toggle between multiple intervals,
-            instead of only showing the last 30. They should be able to see the
-            last 30, 60 and 90 days.
-          </li>
-        </ul>
-        <p>
-          The UX team decides the functionality to switch between should be
-          placed in the card itself to reduce introducing clutter. It should be
-          a select that replaces the previous title.
-        </p>
-        <div className="my-4">
-          <MetricCardWithToggle
-            metricDefinitions={[
-              {
-                title: "Cars rented in the last 30 days",
-                description: "The number of cars rented in the last 30 days",
-                metric: "245",
-                key: "30d",
-              },
-              {
-                title: "Cars rented in the last 60 days",
-                description: "The number of cars rented in the last 60 days",
-                metric: "511",
-                key: "60d",
-              },
-              {
-                title: "Cars rented in the last 90 days",
-                description: "The number of cars rented in the last 90 days",
-                metric: "741",
-                key: "90d",
-              },
-            ]}
-          />
-        </div>
-        <Accordion title="Code of the metric card with select inside">
-          <CodeBlock language="typescript">{`type MetricDefinition = {
+            </CodeBlock>
+          </Accordion>
+          <p>It's a perfectly fine component. Now we get the requirement:</p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>
+              The user should be able to toggle between multiple intervals,
+              instead of only showing the last 30. They should be able to see
+              the last 30, 60 and 90 days.
+            </li>
+          </ul>
+          <p>
+            The UX team decides the functionality to switch between should be
+            placed in the card itself to reduce introducing clutter. It should
+            be a select that replaces the previous title.
+          </p>
+          <div className="my-4">
+            <MetricCardWithToggle
+              metricDefinitions={[
+                {
+                  title: "Cars rented in the last 30 days",
+                  description: "The number of cars rented in the last 30 days",
+                  metric: "245",
+                  key: "30d",
+                },
+                {
+                  title: "Cars rented in the last 60 days",
+                  description: "The number of cars rented in the last 60 days",
+                  metric: "511",
+                  key: "60d",
+                },
+                {
+                  title: "Cars rented in the last 90 days",
+                  description: "The number of cars rented in the last 90 days",
+                  metric: "741",
+                  key: "90d",
+                },
+              ]}
+            />
+          </div>
+          <Accordion title="Code of the metric card with select inside">
+            <CodeBlock language="typescript">{`type MetricDefinition = {
   title: string
   description: string
   metric: string
@@ -802,58 +803,59 @@ const MetricCardWithToggle = ({
     </div>
   )
 }`}</CodeBlock>
-        </Accordion>
-        <p>
-          This is a design that <i>extends</i> the existing component. We have
-          to either change the implementation of the existing component or
-          create a new one. It is a rather simple component, but the point
-          stands for any change where new functionality is placed{" "}
-          <strong>inside</strong> an existing one we need to do substantial
-          changes to it{" "}
-          <Footnote>
-            In React you can always pass other react components for the content
-            e.g., instead of title being a string, it can be a React.Node. This
-            makes components quite flexible, but it also has its limits as they
-            are still bound by the layout and refactoring these components can
-            be challenging as one has to check each usage of it.
-          </Footnote>
-          .
-        </p>
-        <p>
-          The composition approach would keep the existing component as is and{" "}
-          <strong>build around it</strong>. For this example, it could look like
-          this:
-        </p>
-        <div className="my-4">
-          <MetricCardsComposition
-            metricDefinitions={[
-              {
-                title: "Cars rented in the last 30 days",
-                description: "The number of cars rented in the last 30 days",
-                metric: "245",
-                key: "30d",
-                keyTranslation: "30 days",
-              },
-              {
-                title: "Cars rented in the last 60 days",
-                description: "The number of cars rented in the last 60 days",
-                metric: "511",
-                key: "60d",
-                keyTranslation: "60 days",
-              },
-              {
-                title: "Cars rented in the last 90 days",
-                description: "The number of cars rented in the last 90 days",
-                metric: "741",
-                key: "90d",
-                keyTranslation: "90 days",
-              },
-            ]}
-          />
-        </div>
-        <Accordion title="code of metric card with buttons outside">
-          <CodeBlock language="typescript">
-            {`type MetricDefinition = {
+          </Accordion>
+          <p>
+            This is a design that <i>extends</i> the existing component. We have
+            to either change the implementation of the existing component or
+            create a new one. It is a rather simple component, but the point
+            stands for any change where new functionality is placed{" "}
+            <strong>inside</strong> an existing one we need to do substantial
+            changes to it{" "}
+            <Footnote>
+              In React you can always pass other react components for the
+              content e.g., instead of title being a string, it can be a
+              React.Node. This makes components quite flexible, but it also has
+              its limits as they are still bound by the layout and refactoring
+              these components can be challenging as one has to check each usage
+              of it.
+            </Footnote>
+            .
+          </p>
+          <p>
+            The composition approach would keep the existing component as is and{" "}
+            <strong>build around it</strong>. For this example, it could look
+            like this:
+          </p>
+          <div className="my-4">
+            <MetricCardsComposition
+              metricDefinitions={[
+                {
+                  title: "Cars rented in the last 30 days",
+                  description: "The number of cars rented in the last 30 days",
+                  metric: "245",
+                  key: "30d",
+                  keyTranslation: "30 days",
+                },
+                {
+                  title: "Cars rented in the last 60 days",
+                  description: "The number of cars rented in the last 60 days",
+                  metric: "511",
+                  key: "60d",
+                  keyTranslation: "60 days",
+                },
+                {
+                  title: "Cars rented in the last 90 days",
+                  description: "The number of cars rented in the last 90 days",
+                  metric: "741",
+                  key: "90d",
+                  keyTranslation: "90 days",
+                },
+              ]}
+            />
+          </div>
+          <Accordion title="code of metric card with buttons outside">
+            <CodeBlock language="typescript">
+              {`type MetricDefinition = {
   title: string
   description: string
   metric: string
@@ -893,21 +895,22 @@ const MetricCardsComposition = ({
     </div>
   )
 }`}
-          </CodeBlock>
-        </Accordion>
-        <p>
-          With this version, we did not have to change the existing component as
-          we put the new controls outside of it. Despite being simpler to
-          implement, favoring composition gives us also more opportunities to
-          create new blocks to compose with, as the new UI component that we
-          used to wrap the existing one can wrap <i>any</i> existing component.
-        </p>
-        <p>
-          The downside is that we had to change the surrounding layout, which{" "}
-          <i>could</i> be a downgrade in user experience and sometimes it is
-          worth it to extend a component like this.
-        </p>
-        {/* <p>
+            </CodeBlock>
+          </Accordion>
+          <p>
+            With this version, we did not have to change the existing component
+            as we put the new controls outside of it. Despite being simpler to
+            implement, favoring composition gives us also more opportunities to
+            create new blocks to compose with, as the new UI component that we
+            used to wrap the existing one can wrap <i>any</i> existing
+            component.
+          </p>
+          <p>
+            The downside is that we had to change the surrounding layout, which{" "}
+            <i>could</i> be a downgrade in user experience and sometimes it is
+            worth it to extend a component like this.
+          </p>
+          {/* <p>
           UX Designers <s>always</s> normally want to provide the best
           experience to the user, developers strive for simplicity as they have
           to maintain whatever beast the UX team designed. This ever going fight
@@ -917,41 +920,41 @@ const MetricCardsComposition = ({
           absolutely crucial. This time we look at modal flows and what
           annoyances they bring.
         </p> */}
-        <h2>Example 2: Rent a car modal flow</h2>
-        <p>
-          New we explore composability with a rather complex UI pattern, that of
-          a modal flow. A modal flow is a multi-step user journey that happens
-          in a modal{" "}
-          <Footnote>
-            Also called Dialog, Popups etc. A modal is a UI that appears on top
-            of everything and normally contains one specific user flow.
-          </Footnote>
-          . They are a great tool to simplify the process for a user and, as
-          with every modal, are amazing for composability as you can reuse them
-          throughout the whole application. The issue arises when we want to
-          customize such a modal flow for a new user journey.
-        </p>
-        <p>
-          Below we see a simple modal component. We skip all the normally
-          complicated parts, e.g., rendering it above everything and managing
-          the visible state. The important part is that modals have a header and
-          a body, which is what makes it also especially hard to reuse parts of
-          a modal flow - the header and body are visually linked, but have to be
-          kept separate in code.
-        </p>
-        <div className="my-8">
-          <PseudoModal header="Header of the modal">
-            <div className="grid gap-4">
-              <div>This is my Modal body. Anything could be in here.</div>
-              <button className="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md">
-                {"This is a button"}
-              </button>
-            </div>
-          </PseudoModal>
-        </div>
-        <Accordion title="Code of the pseudo modal">
-          <CodeBlock language="typescript">
-            {`const PseudoModal = ({
+          <h2>Example 2: Rent a car modal flow</h2>
+          <p>
+            New we explore composability with a rather complex UI pattern, that
+            of a modal flow. A modal flow is a multi-step user journey that
+            happens in a modal{" "}
+            <Footnote>
+              Also called Dialog, Popups etc. A modal is a UI that appears on
+              top of everything and normally contains one specific user flow.
+            </Footnote>
+            . They are a great tool to simplify the process for a user and, as
+            with every modal, are amazing for composability as you can reuse
+            them throughout the whole application. The issue arises when we want
+            to customize such a modal flow for a new user journey.
+          </p>
+          <p>
+            Below we see a simple modal component. We skip all the normally
+            complicated parts, e.g., rendering it above everything and managing
+            the visible state. The important part is that modals have a header
+            and a body, which is what makes it also especially hard to reuse
+            parts of a modal flow - the header and body are visually linked, but
+            have to be kept separate in code.
+          </p>
+          <div className="my-8">
+            <PseudoModal header="Header of the modal">
+              <div className="grid gap-4">
+                <div>This is my Modal body. Anything could be in here.</div>
+                <button className="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md">
+                  {"This is a button"}
+                </button>
+              </div>
+            </PseudoModal>
+          </div>
+          <Accordion title="Code of the pseudo modal">
+            <CodeBlock language="typescript">
+              {`const PseudoModal = ({
   header,
   children,
 }: {
@@ -970,33 +973,33 @@ const MetricCardsComposition = ({
     </div>
   )
 }`}
-          </CodeBlock>
-        </Accordion>
-        <p>
-          We can use this modal now to implement the user flow of renting a car.
-          The modal has four steps now:
-        </p>
-        <ol className="ml-4 pl-4 list-outside list-decimal">
-          <li>Rental dates and location</li>
-          <li>Car preferences</li>
-          <li>Select your car</li>
-          <li>Rental complete</li>
-        </ol>
-        <p>
-          The user can see the progress as well as go back to the previous
-          screen. This is actually pretty close to what car rental companies'
-          processes look like.{" "}
-          <Footnote>
-            We'd just need to add some dark UX patterns and fear-mongering to
-            sell some pricey car insurances.
-          </Footnote>
-        </p>
-        <div className="my-4">
-          <RentCarFlow />
-        </div>
-        <Accordion title={`Code of the "rent a car" modal`}>
-          <CodeBlock language="typescript">
-            {`type DatesAndLocationState = {
+            </CodeBlock>
+          </Accordion>
+          <p>
+            We can use this modal now to implement the user flow of renting a
+            car. The modal has four steps now:
+          </p>
+          <ol className="ml-4 pl-4 list-outside list-decimal">
+            <li>Rental dates and location</li>
+            <li>Car preferences</li>
+            <li>Select your car</li>
+            <li>Rental complete</li>
+          </ol>
+          <p>
+            The user can see the progress as well as go back to the previous
+            screen. This is actually pretty close to what car rental companies'
+            processes look like.{" "}
+            <Footnote>
+              We'd just need to add some dark UX patterns and fear-mongering to
+              sell some pricey car insurances.
+            </Footnote>
+          </p>
+          <div className="my-4">
+            <RentCarFlow />
+          </div>
+          <Accordion title={`Code of the "rent a car" modal`}>
+            <CodeBlock language="typescript">
+              {`type DatesAndLocationState = {
   step: "dates_and_location"
   fromDate: string
   toDate: string
@@ -1305,34 +1308,34 @@ const RentCarFlow = () => {
     </PseudoModal>
   )
 }`}
-          </CodeBlock>
-        </Accordion>
-        <p>
-          This gets implemented and all is good, it's a nicely reusable UI that
-          can be reused whenever we want to prompt the user to rent a car. But
-          then we get a new requirement, they would like to extend the user
-          journey and we get this task:
-        </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>
-            Extend the flow with an optional discount screen. It should be shown
-            as the very first step of the user flow.
-          </li>
-        </ul>
-        <p>
-          The UX team, in their pursuit to create the most optimal user
-          experience, found that <i>extending</i> the existing modal flow will
-          exactly do that. They put the optional discount screen at the
-          beginning of the user journey and have it tightly integrated with the
-          existing one.
-        </p>
-        <div className="my-4">
-          <RentCarFlowWithInitialDiscountScreen />
-        </div>
-        <Accordion
-          title={`Code of the "rent a car with discount screen" modal flow`}
-        >
-          <CodeBlock language="typescript">{`type DiscountState = {
+            </CodeBlock>
+          </Accordion>
+          <p>
+            This gets implemented and all is good, it's a nicely reusable UI
+            that can be reused whenever we want to prompt the user to rent a
+            car. But then we get a new requirement, they would like to extend
+            the user journey and we get this task:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>
+              Extend the flow with an optional discount screen. It should be
+              shown as the very first step of the user flow.
+            </li>
+          </ul>
+          <p>
+            The UX team, in their pursuit to create the most optimal user
+            experience, found that <i>extending</i> the existing modal flow will
+            exactly do that. They put the optional discount screen at the
+            beginning of the user journey and have it tightly integrated with
+            the existing one.
+          </p>
+          <div className="my-4">
+            <RentCarFlowWithInitialDiscountScreen />
+          </div>
+          <Accordion
+            title={`Code of the "rent a car with discount screen" modal flow`}
+          >
+            <CodeBlock language="typescript">{`type DiscountState = {
   step: "discount"
 }
 
@@ -1477,73 +1480,74 @@ const RentCarFlowWithInitialDiscountScreen = () => {
     </PseudoModal>
   )
 }`}</CodeBlock>
-        </Accordion>
-        <p>
-          This design wants us to <i>extend</i> the existing flow. The
-          difficulties of implementing this design are that we cannot reuse the
-          existing component without modifying it, as:
-        </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>
-            The header shows the steps and the total steps, and the number for
-            each step changed.
-          </li>
-          <li>
-            The back button is shown on the dates & location page, whereas it
-            previously was not. It also links back to the discount screen.
-          </li>
-          <li>
-            Modals themselves are basically "contained" UIs; we cannot change a
-            modal UI without changing the component itself.
-          </li>
-        </ul>
-        <p>
-          These are, of course, not insurmountable issues, but it makes a
-          developer stop and wonder what's the best way to extend the existing
-          flow to achieve this.
-        </p>
-        <p>We have the following options to implement this design:</p>
-        <ol className="ml-4 pl-4 list-outside list-decimal">
-          <li>
-            <strong>Extend the existing component</strong>
-            <br />
-            We can extend our existing component with a new state and screen and
-            one can toggle either mode. Implementation-wise, this comes at a big
-            cost. It increases the complexity of the component, opens up risks
-            of introducing bugs, and it would be hard to remove this added
-            capability if business decides that the discount screen is not
-            something we want to offer anymore.
-          </li>
-          <li>
-            <strong>Refactor & reuse for a new component</strong>
-            <br />
-            We create components for all steps of the existing modal and reuse
-            them in a new component. This will keep the modal components simple,
-            but we have a lot of code repetition and now two components that
-            need testing. Every time we change one of the pages, we have to make
-            sure we handle that correctly in either version. In this instance,
-            it's an OK solution and can be seen in the code above. It is the
-            right approach when lots of variations or variations that greatly
-            differ have to be implemented and it has to be this exact UX.
-          </li>
-        </ol>
-        <p>
-          That's a lot of work, but maybe we could talk to UX and convince them
-          to create a "composed" UI instead? Something that would leave the
-          existing component as is and we just plug something in front? They
-          come up with the following design. Instead of <i>extending</i> the
-          existing flow, they <i>composed</i> the existing modal with a new
-          modal that is opened first and when "Next" is clicked, the new modal
-          closes and the existing one will open. (The "Reset to discount" is for
-          your convenience and not part of the design.)
-        </p>
-        <div className="my-4">
-          <DiscountModalFlow />
-        </div>
-        <Accordion
-          title={`Code of the "rent a car" modal flow with discount screen`}
-        >
-          <CodeBlock language="typescript">{`const DiscountModal = ({ onNext }: { onNext: () => void }) => {
+          </Accordion>
+          <p>
+            This design wants us to <i>extend</i> the existing flow. The
+            difficulties of implementing this design are that we cannot reuse
+            the existing component without modifying it, as:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>
+              The header shows the steps and the total steps, and the number for
+              each step changed.
+            </li>
+            <li>
+              The back button is shown on the dates & location page, whereas it
+              previously was not. It also links back to the discount screen.
+            </li>
+            <li>
+              Modals themselves are basically "contained" UIs; we cannot change
+              a modal UI without changing the component itself.
+            </li>
+          </ul>
+          <p>
+            These are, of course, not insurmountable issues, but it makes a
+            developer stop and wonder what's the best way to extend the existing
+            flow to achieve this.
+          </p>
+          <p>We have the following options to implement this design:</p>
+          <ol className="ml-4 pl-4 list-outside list-decimal">
+            <li>
+              <strong>Extend the existing component</strong>
+              <br />
+              We can extend our existing component with a new state and screen
+              and one can toggle either mode. Implementation-wise, this comes at
+              a big cost. It increases the complexity of the component, opens up
+              risks of introducing bugs, and it would be hard to remove this
+              added capability if business decides that the discount screen is
+              not something we want to offer anymore.
+            </li>
+            <li>
+              <strong>Refactor & reuse for a new component</strong>
+              <br />
+              We create components for all steps of the existing modal and reuse
+              them in a new component. This will keep the modal components
+              simple, but we have a lot of code repetition and now two
+              components that need testing. Every time we change one of the
+              pages, we have to make sure we handle that correctly in either
+              version. In this instance, it's an OK solution and can be seen in
+              the code above. It is the right approach when lots of variations
+              or variations that greatly differ have to be implemented and it
+              has to be this exact UX.
+            </li>
+          </ol>
+          <p>
+            That's a lot of work, but maybe we could talk to UX and convince
+            them to create a "composed" UI instead? Something that would leave
+            the existing component as is and we just plug something in front?
+            They come up with the following design. Instead of <i>extending</i>{" "}
+            the existing flow, they <i>composed</i> the existing modal with a
+            new modal that is opened first and when "Next" is clicked, the new
+            modal closes and the existing one will open. (The "Reset to
+            discount" is for your convenience and not part of the design.)
+          </p>
+          <div className="my-4">
+            <DiscountModalFlow />
+          </div>
+          <Accordion
+            title={`Code of the "rent a car" modal flow with discount screen`}
+          >
+            <CodeBlock language="typescript">{`const DiscountModal = ({ onNext }: { onNext: () => void }) => {
   return (
     <PseudoModal header="Discount">
       <div className="text-lg">
@@ -1574,37 +1578,40 @@ const DiscountModalFlow = () => {
     </div>
   )
 }`}</CodeBlock>
-        </Accordion>
-        <p>
-          This design is extremely easy to implement. The existing component did
-          not have to be changed at all and adding a modal for one screen is
-          simple. This approach would also make it easy to get rid of the
-          feature if the company ever decides it doesn't want to do discounts
-          anymore. The downside is that the user experience is slightly degraded
-          - the user is missing context from the initial screen in which step
-          they are, they also cannot go back to the discount screen.
-          <Footnote>
-            The "back" button could be implemented with relative ease though,
-            but it would feel glitchy as the modal would disappear and reappear.
-          </Footnote>{" "}
-          If these were actual modals, we would also see the discount modal
-          closing and the rent car modal opening, which might feel slightly
-          jarring. But we gained so much and lost so little.
-        </p>
-        <p>
-          The code necessary to achieve this is almost trivial and most
-          importantly, we didn't have to change the existing component, keeping
-          us safe from regression bugs and leaving more room to work on other
-          features.
-        </p>
-        <h2>Conclusion</h2>
-        <p>
-          Creating composable UIs over creating custom ones for each user
-          journey is easier to develop and maintain. When it is an option, I
-          would always recommend going for it. This does not mean that custom
-          (and more perfect) UIs should not be done, but they should only be
-          used when it's worth it, e.g., it's part of the core user journey.
-        </p>
+          </Accordion>
+          <p>
+            This design is extremely easy to implement. The existing component
+            did not have to be changed at all and adding a modal for one screen
+            is simple. This approach would also make it easy to get rid of the
+            feature if the company ever decides it doesn't want to do discounts
+            anymore. The downside is that the user experience is slightly
+            degraded - the user is missing context from the initial screen in
+            which step they are, they also cannot go back to the discount
+            screen.
+            <Footnote>
+              The "back" button could be implemented with relative ease though,
+              but it would feel glitchy as the modal would disappear and
+              reappear.
+            </Footnote>{" "}
+            If these were actual modals, we would also see the discount modal
+            closing and the rent car modal opening, which might feel slightly
+            jarring. But we gained so much and lost so little.
+          </p>
+          <p>
+            The code necessary to achieve this is almost trivial and most
+            importantly, we didn't have to change the existing component,
+            keeping us safe from regression bugs and leaving more room to work
+            on other features.
+          </p>
+          <h2>Conclusion</h2>
+          <p>
+            Creating composable UIs over creating custom ones for each user
+            journey is easier to develop and maintain. When it is an option, I
+            would always recommend going for it. This does not mean that custom
+            (and more perfect) UIs should not be done, but they should only be
+            used when it's worth it, e.g., it's part of the core user journey.
+          </p>
+        </div>
       </BlogContent>
     </Container>
   )
