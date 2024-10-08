@@ -688,15 +688,28 @@ const Footnotes: NextPage = () => {
             optimal user experience.
           </p>
           <p>
-            We explore this with the two following interactive examples. The
+            There are two "strategies" I found that come up quite often and put
+            this "favoring composition" into more actionable items:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li className="font-bold">
+              Don't extend the component, wrap it with another{" "}
+            </li>
+            <li className="font-bold">
+              Don't extend the component, delegate to another
+            </li>
+          </ul>
+          <p>
+            We explore these strategies with the two interactive examples. The
             code for the examples is available below them, but reading it is not
             required, it's just for the curious React developer.
           </p>
-          <h2>Example 1: Metric card</h2>
+          <h2>Wrap, don't extend</h2>
           <p>
-            We start off with a simple card component that is used to show some
-            metrics for an imaginary car rental company. The component has a
-            title, description and the metric itself.
+            To showcase the first strategy, we start off with a simple card
+            component that is used to show some metrics for an imaginary car
+            rental company. The component has a title, description and the
+            metric itself.
           </p>
           <div className="my-4">
             <MetricCard
@@ -736,7 +749,7 @@ const Footnotes: NextPage = () => {
           </ul>
           <p>
             The UX team decides that the functionality to switch between them
-            should be placed in the card itself to reduce introducing clutter.
+            should be placed in the card itself. They want to <i>extend</i> it.
             The switching should be done using a dropdown menu that also
             functions as the header of the card.
           </p>
@@ -806,11 +819,11 @@ const MetricCardWithToggle = ({
 }`}</CodeBlock>
           </Accordion>
           <p>
-            This is a design that <i>extends</i> the existing component. But
-            whenever new functionality is placed <strong>inside</strong> an
-            existing component we <strong>have</strong> to change it. We can
-            merely decide if we want to extend the existing one or create a new
-            component{" "}
+            This is a design that extends the existing component, therefore, we
+            have to either change the implementation of the existing component
+            or create a new one. It is a rather simple component, but the point
+            stands that for any change where new functionality is placed inside
+            a component, we need to do substantial changes to it{" "}
             <Footnote>
               In React you can always pass other react components for the
               content e.g., instead of title being a string, it can be a
@@ -822,7 +835,9 @@ const MetricCardWithToggle = ({
             .
           </p>
           <p>
-            The composition approach would keep the existing component as is and{" "}
+            Instead of extending the existing component, let's try to use the
+            composition approach, to be specific, we will <i>wrap</i> the
+            component. We keep the existing component as is and{" "}
             <strong>build around it</strong>. For this example, it could look
             like this:
           </p>
@@ -909,7 +924,7 @@ const MetricCardsComposition = ({
             The downside is that we had to change the surrounding layout, which{" "}
             <i>could</i> be a substantial downgrade in user experience. So one
             cannot always wrap in these instances, sometimes we have to go with
-            the "extension" design.
+            the "extension" strategy.
           </p>
           {/* <p>
           UX Designers <s>always</s> normally want to provide the best
@@ -921,11 +936,11 @@ const MetricCardsComposition = ({
           absolutely crucial. This time we look at modal flows and what
           annoyances they bring.
         </p> */}
-          <h2>Example 2: Rent a car modal flow</h2>
+          <h2>Delegate, don't extend</h2>
           <p>
-            Now we explore composability with a rather complex UI pattern, that
-            of a modal flow. A modal flow is a multi-step user journey that
-            happens in a modal{" "}
+            Now we explore the second s composability trategy with a rather
+            complex UI pattern, that of a modal flow. A modal flow is a
+            multi-step user journey that happens in a modal{" "}
             <Footnote>
               Also called Dialog, Popups etc. A modal is a UI that appears on
               top of everything and normally contains one specific user flow.
@@ -1542,6 +1557,13 @@ const RentCarFlowWithInitialDiscountScreen = () => {
             modal closes and the existing one will open. (The "Reset to
             discount" is for your convenience and not part of the design.)
           </p>
+          <p>
+            I call this strategy <i>delegate</i>, because the component
+            delegates functionality to another. Delegation happens quite a bit
+            in UIs, every modal, every sub view, they can all be considered to
+            have been delegated by the component that dispatched or linked to
+            them.
+          </p>
           <div className="my-4">
             <DiscountModalFlow />
           </div>
@@ -1581,7 +1603,7 @@ const DiscountModalFlow = () => {
 }`}</CodeBlock>
           </Accordion>
           <p>
-            This design is extremely easy to implement. The existing component
+            The "delegation" design is easy to implement. The existing component
             did not have to be changed at all and adding a modal for one screen
             is simple. This approach would also make it easy to get rid of the
             feature if the company ever decides it doesn't want to do discounts
@@ -1602,15 +1624,20 @@ const DiscountModalFlow = () => {
             The code necessary to achieve this is almost trivial and most
             importantly, we didn't have to change the existing component,
             keeping us safe from regression bugs and leaving more room to work
-            on other features.
+            on other features. "Delegate, don't extend" saved <s>the day</s>{" "}
+            some development time.
           </p>
           <h2>Conclusion</h2>
           <p>
-            Creating composable UIs over creating custom ones for each user
-            journey is easier to develop and maintain. When it is an option, I
-            would always recommend going for it. This does not mean that custom
-            (and more perfect) UIs should not be done, but they should only be
-            used when it's worth it, e.g., it's part of the core user journey.
+            Keeping these strategies (don't extend, wrap or dispatch) in mind
+            and making designers aware of the challenges engineers face with
+            seemingly innocent UI changes can be of great help in keeping
+            complexity at bay. Creating composable UIs, rather than custom ones
+            for each user journey, is easier to develop and maintain. When it's
+            an option, I would always recommend going for it. This doesn't mean
+            that custom (and more perfect) UIs should never be done, but they
+            should only be used when it's worth it, e.g., when they're part of
+            the core user journey.
           </p>
         </div>
       </BlogContent>
