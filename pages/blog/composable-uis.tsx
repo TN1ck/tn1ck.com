@@ -1627,7 +1627,7 @@ const DiscountModalFlow = () => {
             on other features. "Delegate, don't extend" saved <s>the day</s>{" "}
             some development time.
           </p>
-          <h2>Conclusion</h2>
+          <h2>Final thoughts</h2>
           <p>
             Keeping these strategies (don't extend, wrap or dispatch) in mind
             and making designers aware of the challenges engineers face with
