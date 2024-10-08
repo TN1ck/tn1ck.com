@@ -27,7 +27,7 @@ const PseudoModal = ({
     <div className="border-black border-2 bg-white">
       <div className="flex justify-between p-4 border-b-2 border-black">
         <div className="text-lg">{header}</div>
-        <button className="px-2 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md">
+        <button className="px-2 h-8 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md">
           {"Close"}
         </button>
       </div>
@@ -303,7 +303,7 @@ const RentCarFlow = () => {
   return (
     <PseudoModal
       header={
-        <div className="flex items-center">
+        <div className="flex items-start">
           {["car_preferences", "car_selection"].includes(state.step) && (
             <button
               className="px-2 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md mr-4"
@@ -464,7 +464,7 @@ const RentCarFlowWithInitialDiscountScreen = () => {
   return (
     <PseudoModal
       header={
-        <div className="flex items-center">
+        <div className="flex items-start">
           {["dates_and_location", "car_preferences", "car_selection"].includes(
             state.step,
           ) && (
@@ -962,7 +962,7 @@ const MetricCardsComposition = ({
     <div className="border-black border-2">
       <div className="flex justify-between p-4 border-b-2 border-black">
         <div className="text-lg">{header}</div>
-        <button className="px-2 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md">
+        <button className="px-2 h-8 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md">
           {"Close"}
         </button>
       </div>
@@ -1263,7 +1263,7 @@ const RentCarFlow = () => {
   return (
     <PseudoModal
       header={
-        <div className="flex items-center">
+        <div className="flex items-start">
           {["car_preferences", "car_selection"].includes(state.step) && (
             <button
               className="px-2 bg-slate-200 hover:bg-slate-300 text-black border border-black rounded-md mr-4"
@@ -1432,7 +1432,7 @@ const RentCarFlowWithInitialDiscountScreen = () => {
   return (
     <PseudoModal
       header={
-        <div className="flex items-center">
+        <div className="flex items-start">
           {["dates_and_location", "car_preferences", "car_selection"].includes(
             state.step,
           ) && (
