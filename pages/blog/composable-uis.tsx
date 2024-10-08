@@ -674,7 +674,7 @@ const Footnotes: NextPage = () => {
           <p>
             Every UI is composed of building blocks. We all use components like
             "buttons", "accordions", "cards" and a plethora of other building
-            blocks we discover while building our applications. Some design
+            blocks we discover while developing our applications. Some design
             systems use "atomic" design to group these into buckets depending on
             their "atomicity" with a button being an atom, a search form being a
             molecule, then we have organisms, templates & pages (I personally
@@ -691,20 +691,20 @@ const Footnotes: NextPage = () => {
             There are two "strategies" I found that come up quite often and put
             this "favoring composition" into more actionable items:
           </p>
-          <ul className="ml-4 pl-4 list-outside list-disc">
+          <ol className="ml-4 pl-4 list-outside list-decimal">
             <li className="font-bold">
               Don't extend the component, wrap it with another{" "}
             </li>
             <li className="font-bold">
               Don't extend the component, delegate to another
             </li>
-          </ul>
+          </ol>
           <p>
-            We explore these strategies with the two interactive examples. The
-            code for the examples is available below them, but reading it is not
+            We explore these strategies with two interactive examples. The code
+            for the examples is available below them, but reading it is not
             required, it's just for the curious React developer.
           </p>
-          <h2>Wrap, don't extend</h2>
+          <h2>1. Wrap, don't extend</h2>
           <p>
             To showcase the first strategy, we start off with a simple card
             component that is used to show some metrics for an imaginary car
@@ -739,12 +739,14 @@ const Footnotes: NextPage = () => {
 }`}
             </CodeBlock>
           </Accordion>
-          <p>It's a perfectly fine component. Now we get the requirement:</p>
+          <p>
+            It's a perfectly fine component, but then we get a new requirement:
+          </p>
           <ul className="ml-4 pl-4 list-outside list-disc">
             <li>
               The user should be able to toggle between multiple intervals,
-              instead of only showing the last 30. They should be able to see
-              the last 30, 60 and 90 days.
+              instead of only showing the last 30 days. They should be able to
+              see the last 30, 60 and 90 days.
             </li>
           </ul>
           <p>
@@ -917,8 +919,7 @@ const MetricCardsComposition = ({
             as we put the new controls outside of it. Despite being simpler to
             implement, favoring composition gives us also more opportunities to
             create new blocks to compose with, as the new UI component that we
-            used to wrap the existing one can wrap <i>any</i> existing
-            component.
+            used to wrap the existing one can wrap <i>any</i> component.
           </p>
           <p>
             The downside is that we had to change the surrounding layout, which{" "}
@@ -936,9 +937,9 @@ const MetricCardsComposition = ({
           absolutely crucial. This time we look at modal flows and what
           annoyances they bring.
         </p> */}
-          <h2>Delegate, don't extend</h2>
+          <h2>2. Delegate, don't extend</h2>
           <p>
-            Now we explore the second s composability trategy with a rather
+            Now we explore the second composability strategy with a rather
             complex UI pattern, that of a modal flow. A modal flow is a
             multi-step user journey that happens in a modal{" "}
             <Footnote>
@@ -952,11 +953,11 @@ const MetricCardsComposition = ({
           </p>
           <p>
             Below we see a simple modal component. We skip all the normally
-            complicated parts, e.g., rendering it above everything and managing
-            the visible state. The important part is that modals have a header
-            and a body, which is what makes it also especially hard to reuse
-            parts of a modal flow - the header and body are visually linked, but
-            have to be kept separate in code.
+            complicated elements, e.g., rendering it above everything and
+            managing the visible state. The important part is that modals have a
+            header and a body, which is what makes it also especially hard to
+            reuse parts of a modal flow - the header and body are visually
+            linked, but have to be kept separate in code.
           </p>
           <div className="my-8">
             <PseudoModal header="Header of the modal">
@@ -993,12 +994,12 @@ const MetricCardsComposition = ({
           </Accordion>
           <p>
             We can use this modal now to implement the user flow of renting a
-            car. The modal has four steps now:
+            car. The modal has four steps:
           </p>
           <ol className="ml-4 pl-4 list-outside list-decimal">
             <li>Rental dates and location</li>
             <li>Car preferences</li>
-            <li>Select your car</li>
+            <li>Car selection</li>
             <li>Rental complete</li>
           </ol>
           <p>
@@ -1327,10 +1328,9 @@ const RentCarFlow = () => {
             </CodeBlock>
           </Accordion>
           <p>
-            This gets implemented and all is good, it's a nicely reusable UI
-            that can be reused whenever we want to prompt the user to rent a
-            car. But then we get a new requirement, they would like to extend
-            the user journey and we get this task:
+            This gets implemented and all is good, it's a nice UI that can be
+            reused whenever we want to prompt the user to rent a car. But then
+            we get a new requirement:
           </p>
           <ul className="ml-4 pl-4 list-outside list-disc">
             <li>
@@ -1500,62 +1500,21 @@ const RentCarFlowWithInitialDiscountScreen = () => {
           <p>
             This design wants us to <i>extend</i> the existing flow. The
             difficulties of implementing this design are that we cannot reuse
-            the existing component without modifying it, as:
+            the existing component without modifying it. We have again the
+            option to extend the existing component or create a new one (that
+            may reuse parts of the old component).
           </p>
-          <ul className="ml-4 pl-4 list-outside list-disc">
-            <li>
-              The header shows the steps and the total steps, and the number for
-              each step changed.
-            </li>
-            <li>
-              The back button is shown on the dates & location page, whereas it
-              previously was not. It also links back to the discount screen.
-            </li>
-            <li>
-              Modals themselves are basically "contained" UIs; we cannot change
-              a modal UI without changing the component itself.
-            </li>
-          </ul>
           <p>
-            These are, of course, not insurmountable issues, but it makes a
-            developer stop and wonder what's the best way to extend the existing
-            flow to achieve this.
-          </p>
-          <p>We have the following options to implement this design:</p>
-          <ol className="ml-4 pl-4 list-outside list-decimal">
-            <li>
-              <strong>Extend the existing component</strong>
-              <br />
-              We can extend our existing component with a new state and screen
-              and one can toggle either mode. Implementation-wise, this comes at
-              a big cost. It increases the complexity of the component, opens up
-              risks of introducing bugs, and it would be hard to remove this
-              added capability if business decides that the discount screen is
-              not something we want to offer anymore.
-            </li>
-            <li>
-              <strong>Refactor & reuse for a new component</strong>
-              <br />
-              We create components for all steps of the existing modal and reuse
-              them in a new component. This will keep the modal components
-              simple, but we have a lot of code repetition and now two
-              components that need testing. Every time we change one of the
-              pages, we have to make sure we handle that correctly in either
-              version. In this instance, it's an OK solution and can be seen in
-              the code above. It is the right approach when lots of variations
-              or variations that greatly differ have to be implemented and it
-              has to be this exact UX.
-            </li>
-          </ol>
-          <p>
-            That's a lot of work, but maybe we could talk to UX and convince
-            them to create a "composed" UI instead? Something that would leave
-            the existing component as is and we just plug something in front?
-            They come up with the following design. Instead of <i>extending</i>{" "}
-            the existing flow, they <i>composed</i> the existing modal with a
-            new modal that is opened first and when "Next" is clicked, the new
-            modal closes and the existing one will open. (The "Reset to
-            discount" is for your convenience and not part of the design.)
+            It's quite some work, especially if we don't have already have a
+            component that abstracts steps for us. But maybe we could talk to UX
+            and convince them to create a "composed" UI instead? Something that
+            would leave the existing component as is and we just plug something
+            in front? They come up with the following design. Instead of{" "}
+            <i>extending</i> the existing flow, they <i>composed</i> the
+            existing modal with a new modal that is opened first and when "Next"
+            is clicked, the new modal closes and the existing one will open.
+            (The "Reset to discount" is for your convenience and not part of the
+            design.)
           </p>
           <p>
             I call this strategy <i>delegate</i>, because the component
@@ -1574,7 +1533,7 @@ const RentCarFlowWithInitialDiscountScreen = () => {
   return (
     <PseudoModal header="Discount">
       <div className="text-lg">
-        You get a discount because you are a corporate customer.
+        You get a discount because you are reading this blog post.
       </div>
       <div className="flex justify-end">
         <button
