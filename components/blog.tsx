@@ -75,7 +75,7 @@ export const BlogContent = ({
         <meta name="twitter:title" content={metadata.title} />
         <meta name="twitter:description" content={metadata.description} />
       </Head>
-      <article className="blog flex flex-col relative bg-slate-50 border-2 border-slate-900 p-4 md:p-8 mt-16">
+      <article className="blog flex flex-col relative bg-slate-50 border-2 border-slate-900 p-4 md:p-8 mt-16 overflow-hidden">
         {!hideBackButton && (
           <Link
             className="absolute -top-2.5 -left-2.5 w-[19px] h-[19px] bg-white border-2 border-slate-900 cursor-pointer flex justify-center items-center"
