@@ -668,28 +668,38 @@ const Footnotes: NextPage = () => {
             In this post I want to talk about "composing" UIs. Composing means
             that we use independent UI blocks or complete UI flows that we link
             together to create the different pages and user journeys. At the
-            other spectrum is to create a distinct and optimal user experience
-            for each page & user journey.
+            other spectrum would be a completely unique UI for every new feature
+            or user journey.
           </p>
           <p>
-            Every UI is composed of building blocks. We all use components like
-            "buttons", "accordions", "cards" and a plethora of other building
-            blocks we discover while developing our applications. Some design
-            systems use "atomic" design to group these into buckets depending on
-            their "atomicity" with a button being an atom, a search form being a
-            molecule, then we have organisms, templates & pages (I personally
-            find this overly semantic and not useful in practice - I just use
-            components & pages).
+            In modern web design, independent UI blocks, also called components
+            are heavily used{" "}
+            <Footnote>
+              And we should be grateful for that, the dark times of translating
+              a pixel based design into a reality are mostly gone.
+            </Footnote>
+            , be it developers or designers, we all use components like
+            "buttons", "accordions", "cards" and many more we discover while
+            building our applications. Some design systems use "atomic" design
+            to group these into buckets depending on their "atomicity" with a
+            button being an atom, a search form being a molecule, then we have
+            organisms, templates & pages (I personally find this overly semantic
+            and not useful in practice - I just use components & pages).
           </p>
           <p>
-            The goal is to keep our UIs composable, meaning they consist of
-            components and flows we can reuse. But it's not as easy as it
-            sounds, as perfect composability clashes with the theoretical
-            optimal user experience.
+            The goal is to favor composability. We want to have lots of
+            components and flows that we can reuse over and over again, as this
+            will lead to less complexity and thus faster implementation times.
+            But it's not as easy as it sounds, as this clashes with the
+            theoretical optimal user experience - apps look different for a
+            reason, providing the best UX does mean creating custom components.
+            Nevertheless should favouring composability be the default and
+            customization or extension the exception.
           </p>
           <p>
-            There are two "strategies" I found that come up quite often and put
-            this "favoring composition" into more actionable items:
+            This is why I want to showcase two "strategies" that I found that
+            come up quite often, that put "favoring composition" into more
+            actionable items:
           </p>
           <ol className="ml-4 pl-4 list-outside list-decimal">
             <li className="font-bold">
