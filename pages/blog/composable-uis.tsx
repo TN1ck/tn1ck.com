@@ -672,11 +672,11 @@ const Footnotes: NextPage = () => {
             or user journey.
           </p>
           <p>
-            In modern web design, independent UI blocks, also called components
+            In modern web design, independent UI blocks, also called components,
             are heavily used{" "}
             <Footnote>
               And we should be grateful for that, the dark times of translating
-              a pixel based design into a reality are mostly gone.
+              a pixel-based design into a reality are mostly gone.
             </Footnote>
             , be it developers or designers, we all use components like
             "buttons", "accordions", "cards" and many more we discover while
@@ -693,7 +693,7 @@ const Footnotes: NextPage = () => {
             But it's not as easy as it sounds, as this clashes with the
             theoretical optimal user experience - apps look different for a
             reason, providing the best UX does mean creating custom components.
-            Nevertheless should favouring composability be the default and
+            Nevertheless, favoring composability should be the default and
             customization or extension the exception.
           </p>
           <p>
