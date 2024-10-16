@@ -125,7 +125,7 @@ const CarPreferencesStep: React.FC<{
     <div>
       <label>Transmission</label>
       <select
-        className="border border-black rounded-md p-1 w-full"
+        className="p-1"
         value={state.transmission}
         onChange={(e) =>
           setState({
@@ -172,7 +172,7 @@ const CarSelectionStep: React.FC<{
     <div>
       <label>Select a Car</label>
       <select
-        className="border border-black rounded-md p-1 w-full"
+        className="p-1"
         value={state.selectedCar || ""}
         onChange={(e) =>
           setState({
@@ -591,7 +591,7 @@ const MetricCardWithToggle = ({
                 metricDefinitions[0],
             )
           }
-          className="my-2 block text-xl p-2 w-full border border-black"
+          className="text-xl"
         >
           {metricDefinitions.map((metric) => (
             <option key={metric.key} value={metric.key}>
@@ -694,7 +694,7 @@ const Footnotes: NextPage = () => {
             theoretical optimal user experience - apps look different for a
             reason, providing the best UX does mean creating custom components.
             Nevertheless, favoring composability should be the default and
-            customization or extension the exception.
+            customization or extension a less frequent choice.
           </p>
           <p>
             This is why I want to showcase two "strategies" that I found that
@@ -1596,6 +1596,7 @@ const DiscountModalFlow = () => {
             on other features. "Delegate, don't extend" saved <s>the day</s>{" "}
             some development time.
           </p>
+
           <h2>Final thoughts</h2>
           <p>
             Keeping these strategies (don't extend, wrap or delegate) in mind
