@@ -18,10 +18,10 @@ const SimpleFixBlog: NextPage = () => {
       <BlogContent metadata={metadata}>
         <div className="overflow-hidden">
           <p>
-            As software engineers, one strives to build clean systems. Cleaner
+            As software engineers, we strive to build clean systems. Cleaner
             systems are easier to work with, easier to reason about, and easier
-            to extend. But finding the right solution is very hard, so much,
-            that one could argue, if you found the right solution, you're done{" "}
+            to extend. But finding the right solution is very hard, so much that
+            one could argue, if you found the right solution, you're done{" "}
             <Footnote>
               A great post about how the right data models can shape your
               product can be found at{" "}
@@ -63,7 +63,7 @@ const SimpleFixBlog: NextPage = () => {
           <h2>Fear of getting stuck with the wrong solution</h2>
           <p>
             A personal example where I was too caught up in building the right
-            solution was about early on about data connections and their error
+            solution was early on regarding data connections and their error
             states. At re:cap, you can connect your bank accounts and we'll
             update them daily. Open banking has many issues and these issues can
             happen at any stage, e.g. bank outages, the parsing of the data
@@ -108,8 +108,8 @@ const SimpleFixBlog: NextPage = () => {
           <h2>The balance of opposing ideas</h2>
           <p>
             So in the end, this article does not advocate for hacks everywhere,
-            but to be open about them. To not get blocked by the perfect system.
-            As F. Scott Fitzgerald said,{" "}
+            but to be open about them. To not get blocked by the idealistic
+            vision of the system. As F. Scott Fitzgerald said,{" "}
             <a
               rel="noopener noreferrer"
               target="_blank"
@@ -123,13 +123,16 @@ const SimpleFixBlog: NextPage = () => {
           </p>
           <p>
             The key insight I've gained is that it is ok to steer away from ones
-            vision. That the moment you discard stop-gap solutions, reflect if
-            that's actually the best for the product. An easy fix is a pragmatic
-            step forward that delivers value immediately. You can always
-            refactor later when you have more context, more time, or when the
-            easy solution actually starts causing problems. Until then, ship the
-            easy fix and move on to the next problem. Just be diligent about not
-            creating a mess, clean up when it is causing issues.
+            vision and that the moment you consider discarding stop-gap
+            solutions, reflect if that's actually the best for the product.
+          </p>
+          <p>
+            An easy fix is a pragmatic step forward that delivers value
+            immediately. You can always refactor later when you have more
+            context, more time, or when the easy solution actually starts
+            causing problems. Until then, ship the easy fix and move on to the
+            next problem. Just be diligent about not creating a mess, clean up
+            when it is causing issues.
           </p>
         </div>
       </BlogContent>
