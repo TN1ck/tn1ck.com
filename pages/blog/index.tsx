@@ -9,10 +9,12 @@ import { metadata as hashCodeMetadata } from "./hashcode"
 import { metadata as howToGenerateSudokusMetadata } from "./how-to-generate-sudokus"
 import { metadata as footnotesMetadata } from "./footnotes-in-react"
 import { metadata as composableUIs } from "./composable-uis"
+import { metadata as howToStopWorryingAndLoveTheEasyFixMetadata } from "./how-i-stopped-worrying-and-started-to-love-the-easy-fix"
 import { BlogMetadata } from "../../components/blog"
 import Head from "next/head"
 
 const BLOG_ENTRIES: BlogMetadata[] = [
+  howToStopWorryingAndLoveTheEasyFixMetadata,
   composableUIs,
   footnotesMetadata,
   howToGenerateSudokusMetadata,

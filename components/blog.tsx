@@ -39,7 +39,7 @@ const Footnotes = () => {
           <li key={index}>
             {footnote}
             <a
-              className="border px-1 text-orange-500 border-orange-500 no-underline"
+              className="border ml-2 px-1 text-orange-500 border-orange-500 no-underline"
               href={`#footnote-${index + 1}`}
             >
               {"<-"}
