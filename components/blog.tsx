@@ -7,6 +7,7 @@ import Head from "next/head"
 
 export interface BlogMetadata {
   title: string
+  reactTitle?: React.ReactNode
   date: string
   slug: string
   description: string
@@ -100,7 +101,7 @@ export const BlogContent = ({
         )}
         {metadata && (
           <div>
-            <h1>{metadata.title}</h1>
+            <h1>{metadata.reactTitle ?? metadata.title}</h1>
             <div className="-mt-4">
               <Author date={metadata.date} />
             </div>

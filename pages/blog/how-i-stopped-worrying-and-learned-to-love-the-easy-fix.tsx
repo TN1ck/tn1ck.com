@@ -5,11 +5,18 @@ import { Author, BlogContent } from "../../components/blog"
 import { Footnote } from "../../components/footnote"
 
 export const metadata = {
-  title: "How I stopped worrying and started to love the easy fix",
+  title: "How I stopped worrying and learned to love the easy fix",
+  reactTitle: (
+    <span>
+      How I stopped worrying and learned
+      <br />
+      to love the easy fix
+    </span>
+  ),
   description:
     "On the balance between perfect solutions and pragmatic fixes in software engineering",
   date: "2025-11-06",
-  slug: "how-i-stopped-worrying-and-started-to-love-the-easy-fix",
+  slug: "how-i-stopped-worrying-and-learned-to-love-the-easy-fix",
 }
 
 const SimpleFixBlog: NextPage = () => {
