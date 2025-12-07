@@ -3,6 +3,7 @@ import { NextPage } from "next"
 import Container from "../../components/container"
 import { BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
+import { Footnote } from "../../components/footnote"
 
 export const metadata = {
   title: "If it isn't visible, it's probably broken",
@@ -16,13 +17,6 @@ const VisibilityBlog: NextPage = () => {
   return (
     <Container activeId="blog">
       <BlogContent metadata={metadata}>
-        <p>If it isn't visible, it's probably broken. Make things visible.</p>
-        <p>
-          Add that tiny hover over a relative timestamp that shows the real
-          date. Add the crude debug view that dumps raw data. Spend an hour to
-          make a table searchable. Write down why you picked one approach over
-          another.
-        </p>
         <p>
           In my career building products at startups and in big tech, I've
           noticed a pattern: anything that isn't really visible yet is probably
@@ -43,6 +37,13 @@ const VisibilityBlog: NextPage = () => {
           <li>
             Users use your product and notice regressions because they know how
             it's supposed to behave.
+            <Footnote>
+              I am not advocating you should use your users as beta testers, nor
+              did any workplace see users as that. You should do everything to
+              make sure that your users do not see something broken. The point
+              is merely that a used products has automatic visibility due to its
+              users that want it to work.
+            </Footnote>
           </li>
           <li>
             Integration tests expect your app to behave in a certain way and
@@ -58,7 +59,7 @@ const VisibilityBlog: NextPage = () => {
         <ul className="ml-4 pl-4 list-outside list-disc">
           <li>
             Letting your users be the integration tests creates churn and
-            support tickets.
+            support tickets. Also it's disrespectful.
           </li>
           <li>Integration tests are non-trivial to write and maintain.</li>
           <li>QA time is expensive and limited.</li>
@@ -67,6 +68,20 @@ const VisibilityBlog: NextPage = () => {
           So you have to decide where to pay for visibility, and how much. As
           with everything, the first step is to be aware of the visibility of
           something.
+        </p>
+
+        <p>
+          The concept of visibility is already established quite well with
+          Observability. But that's actually coincidental, I didn't transfer
+          their concept to product development.{" "}
+          <a
+            className="link"
+            href="https://en.wikipedia.org/wiki/Carcinisation"
+          >
+            But similar how every animals final evolution is a crab
+          </a>
+          , making things more visible (in whatever way) is the logical
+          conclusion to many disciplines.
         </p>
 
         <h2>The visibility spectrum</h2>
@@ -130,10 +145,10 @@ const VisibilityBlog: NextPage = () => {
           </li>
         </ul>
         <p>
-          Even a very crude UI goes a long way compared to "only accessible via
-          SQL on the production database". I've been surprised many times by how
-          much time is saved simply by giving other people the ability to see
-          and poke at things.
+          Even a very crude UI or CSV export goes a long way compared to "only
+          accessible via SQL on the production database". I've been surprised
+          many times by how much time is saved simply by giving other people the
+          ability to see and poke at things.
         </p>
         <p>
           As mentioned, spotting an issue is different from being able to verify
