@@ -1,6 +1,7 @@
 import type { NextPage } from "next"
 import Link from "next/link"
 import Container from "../../components/container"
+import { metadata as visibilityMetadata } from "./if-it-isnt-visible-its-probably-broken"
 import { metadata as updatePlansMetadata } from "./update-plans"
 import { metadata as miuMetadata } from "./miu"
 import { metadata as numbersGameMetadata } from "./numbers-game"
@@ -14,6 +15,7 @@ import { BlogMetadata } from "../../components/blog"
 import Head from "next/head"
 
 const BLOG_ENTRIES: BlogMetadata[] = [
+  visibilityMetadata,
   howToStopWorryingAndLoveTheEasyFixMetadata,
   composableUIs,
   footnotesMetadata,
