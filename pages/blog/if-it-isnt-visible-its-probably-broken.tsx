@@ -76,6 +76,7 @@ const VisibilityBlog: NextPage = () => {
           their concept to product development.{" "}
           <a
             className="link"
+            target="_blank"
             href="https://en.wikipedia.org/wiki/Carcinisation"
           >
             But similar how every animals final evolution is a crab
