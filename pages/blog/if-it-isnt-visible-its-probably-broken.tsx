@@ -4,6 +4,7 @@ import Container from "../../components/container"
 import { BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
 import { Footnote } from "../../components/footnote"
+import { Card } from "../../components/card"
 
 export const metadata = {
   title: "If it isn't visible, it's probably broken",
@@ -69,7 +70,6 @@ const VisibilityBlog: NextPage = () => {
           with everything, the first step is to be aware of the visibility of
           something.
         </p>
-
         <p>
           The concept of visibility is already established quite well with
           Observability. But that's actually coincidental, I didn't transfer
@@ -83,7 +83,6 @@ const VisibilityBlog: NextPage = () => {
           , making things more visible (in whatever way) is the logical
           conclusion to many disciplines.
         </p>
-
         <h2>The visibility spectrum</h2>
         <p>
           I've started to think in terms of three axes for visibility. It
@@ -92,10 +91,7 @@ const VisibilityBlog: NextPage = () => {
         </p>
         <ol className="ml-4 pl-4 list-outside list-decimal">
           <li>Who can spot issues - and who can actually debug them?</li>
-          <li>
-            How much effort does it take to verify? (time, access,
-            representation, knowledge)
-          </li>
+          <li>How much effort does it take to verify?</li>
           <li>How often is it actually verified?</li>
         </ol>
         <p>
@@ -105,7 +101,6 @@ const VisibilityBlog: NextPage = () => {
           likely they are to be broken.
         </p>
         <p>Let's go through these.</p>
-
         <h2>1. Who can spot issues (and who can investigate them)?</h2>
         <p>
           This is the most intuitive dimension: who could notice that this thing
@@ -121,10 +116,12 @@ const VisibilityBlog: NextPage = () => {
         <p>There's also an important distinction between:</p>
         <ul className="ml-4 pl-4 list-outside list-disc">
           <li>
-            Spotting that something looks off ("this spike is weird"), and
+            <strong>Spotting</strong> that something looks off ("this spike is
+            weird"), and
           </li>
           <li>
-            Verifying whether it's actually wrong ("yes, this is not valid").
+            <strong>Verifying</strong> whether it's actually wrong ("yes, this
+            is not valid").
           </li>
         </ul>
         <p>
@@ -157,32 +154,33 @@ const VisibilityBlog: NextPage = () => {
           is often a gradual thing: over time, more people can understand,
           trace, and explain what is going on.
         </p>
-        <h3>Example: letting the shop owner debug a spike</h3>
-        <p>
-          Imagine you run an online shop and the system shows you a graph of
-          your sales for the last 30 days. One day there's a big spike, but your
-          total revenue barely moved. You spot a potential issue - and now you
-          try to understand how this number came to be:
-        </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>
-            The shop system shows you raw orders, filterable by time and
-            product.
-          </li>
-          <li>You filter down to the time window of the spike.</li>
-          <li>
-            You see that the product sold is your most popular one, but the
-            price is lower than usual.
-          </li>
-          <li>
-            You click on an order and see that the price was discounted with a
-            PROMOTION2025 code.
-          </li>
-          <li>
-            You go to the list of discount codes, see it was created by someone
-            in marketing a week earlier, and reach out to them.
-          </li>
-        </ul>
+        <Card title="Example: letting the shop owner debug a spike">
+          <p>
+            Imagine you run an online shop and the system shows you a graph of
+            your sales for the last 30 days. One day there's a big spike, but
+            your total revenue barely moved. You spot a potential issue - and
+            now you try to understand how this number came to be:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>
+              The shop system shows you raw orders, filterable by time and
+              product.
+            </li>
+            <li>You filter down to the time window of the spike.</li>
+            <li>
+              You see that the product sold is your most popular one, but the
+              price is lower than usual.
+            </li>
+            <li>
+              You click on an order and see that the price was discounted with a
+              PROMOTION2025 code.
+            </li>
+            <li>
+              You go to the list of discount codes, see it was created by
+              someone in marketing a week earlier, and reach out to them.
+            </li>
+          </ul>
+        </Card>
         <p>
           The example is simple, but it shows how much the person could
           investigate the issue themselves. If they didn't have access to
@@ -197,7 +195,6 @@ const VisibilityBlog: NextPage = () => {
           product. Magical products that are black boxes are amazing when they
           work, but incredibly frustrating when they don't.
         </p>
-
         <h2>2. How much effort does it take to verify?</h2>
         <p>
           Even if people can see an issue and are allowed to investigate,
@@ -212,7 +209,6 @@ const VisibilityBlog: NextPage = () => {
           <li>Required knowledge</li>
         </ul>
         <p>Let's look at each one.</p>
-
         <h3>2.1 How long does it take to verify?</h3>
         <p>
           While working at YouTube, there was often a rush on Fridays to get
@@ -268,7 +264,6 @@ const VisibilityBlog: NextPage = () => {
           ran in a second, you (and your AI agents) would develop very
           differently.
         </p>
-
         <h3>2.2 Ease of access</h3>
         <p>
           The easier it is to access the feature, data or process, the more
@@ -286,107 +281,111 @@ const VisibilityBlog: NextPage = () => {
           easy. The nice thing: improvements in "who can access this?" also
           usually improve ease of access in general.
         </p>
-        <h4>Anecdote: even a crude debug view helps</h4>
-        <p>
-          If you've ever used open banking, you probably know it has issues.
-          With PSD2, the EU made it law that banks have to provide APIs. It did
-          not standardize how the API should look or behave, so every bank did
-          its own thing.
-        </p>
-        <p>
-          For a product, this means: you don't integrate with every bank
-          yourself - you use an open banking provider. I've worked with
-          multiple. They all have their quirks. When a customer had trouble
-          connecting their bank, all of these could be at fault:
-        </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>The customer (wrong credentials, wrong bank selected, etc.)</li>
-          <li>The bank (outage, random error)</li>
-          <li>The open banking provider (implementation bug, API change)</li>
-          <li>Us (a bug in our integration)</li>
-        </ul>
-        <p>
-          Initially, when support asked "what went wrong for this user?", I had
-          to go dig through logs. Finding the right entries took time and was
-          annoying.
-        </p>
-        <p>
-          So I started saving all relevant connection attempts into a table
-          (bank_account_connection), which we already had to handle webhooks
-          anyway. Now I just had to run a simple SQL query to see all attempts
-          and their status.
-        </p>
-        <p>
-          Then I added a very simple table view for this to our internal
-          operations app. This took the task from minutes to seconds - for me.
-          But it also meant:
-        </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>Non-technical team members could see these attempts.</li>
-          <li>
-            With a bit of guidance, ops could quickly tell which party was at
-            fault.
-          </li>
-          <li>
-            Support stopped needing a developer for every single "bank
-            connection failed" case.
-          </li>
-        </ul>
+        <Card title="Anecdote: even a crude debug view helps">
+          <p>
+            If you've ever used open banking, you probably know it has issues.
+            With PSD2, the EU made it law that banks have to provide APIs. It
+            did not standardize how the API should look or behave, so every bank
+            did its own thing.
+          </p>
+          <p>
+            For a product, this means: you don't integrate with every bank
+            yourself - you use an open banking provider. I've worked with
+            multiple. They all have their quirks. When a customer had trouble
+            connecting their bank, all of these could be at fault:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>The customer (wrong credentials, wrong bank selected, etc.)</li>
+            <li>The bank (outage, random error)</li>
+            <li>The open banking provider (implementation bug, API change)</li>
+            <li>Us (a bug in our integration)</li>
+          </ul>
+          <p>
+            Initially, when support asked "what went wrong for this user?", I
+            had to go dig through logs. Finding the right entries took time and
+            was annoying.
+          </p>
+          <p>
+            So I started saving all relevant connection attempts into a table
+            (bank_account_connection), which we already had to handle webhooks
+            anyway. Now I just had to run a simple SQL query to see all attempts
+            and their status.
+          </p>
+          <p>
+            Then I added a very simple table view for this to our internal
+            operations app. This took the task from minutes to seconds - for me.
+            But it also meant:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>Non-technical team members could see these attempts.</li>
+            <li>
+              With a bit of guidance, ops could quickly tell which party was at
+              fault.
+            </li>
+            <li>
+              Support stopped needing a developer for every single "bank
+              connection failed" case.
+            </li>
+          </ul>
+        </Card>
         <p>
           All from "just showing some data" in a crude internal UI. Adding this
           kind of table to internal tools is often just boilerplate. With LLMs,
           the threshold of "is it worth it to build a view for this?" has
           dropped even further. The answer is "yes" much more often.
         </p>
-
         <h3>2.3 Representation</h3>
         <p>
           The shop owner wouldn't even have noticed the sales spike without the
           line chart. A table of daily totals is far less likely to make you
-          think "woah, what happened here?". Representation matters a lot.
+          think "woah, what happened here?". Representation matters a lot. The
+          more data points you have, the more necessary it becomes as 1000 rows
+          of data are not intuitive, bar charts are.
         </p>
-        <h4>Anecdote: aggregate your snapshots</h4>
-        <p>
-          I once had to make sure a critical piece of money-handling code was
-          tested properly so its business logic could be changed safely. We
-          would "buy" our customers' contracts to pay them their worth upfront
-          with a discount (factoring). They then had to pay us back over the
-          next months. There were multiple tables involved:
-        </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>The payout to the customer</li>
-          <li>Monthly payback schedules</li>
-          <li>Underlying contracts</li>
-          <li>Invoices belonging to those contracts</li>
-          <li>Future expected invoices</li>
-        </ul>
-        <p>Every month, the data had to be updated with the current status:</p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>Did some contracts churn?</li>
-          <li>Did the invoices we expected actually get paid?</li>
-          <li>
-            Do we need to replace a contract or move expected cashflows to a
-            later month?
-          </li>
-        </ul>
-        <p>In short: a lot of data that changed in non-trivial ways.</p>
-        <p>
-          I created an integration test that snapshotted these tables at various
-          important stages so we could see how any code change affected the
-          structures. On paper, this made things "visible".
-        </p>
-        <p>
-          In practice, when I changed the underlying code, the snapshot diffs
-          were huge and noisy. I could see that something changed, but not
-          whether it changed in the right way.
-        </p>
-        <p>
-          The solution wasn't to become a human diff engine. It was to make the
-          data readable. I created a custom aggregated structure that summarized
-          the important aspects instead:
-        </p>
-        <CodeBlock language="json" className="md:-mx-8 md:px-8 -mx-4">
-          {`
+        <Card title="Anecdote: aggregate your snapshots">
+          <p>
+            I once had to make sure a critical piece of money-handling code was
+            tested properly so its business logic could be changed safely. We
+            would "buy" our customers' contracts to pay them their worth upfront
+            with a discount (factoring). They then had to pay us back over the
+            next months. There were multiple tables involved:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>The payout to the customer</li>
+            <li>Monthly payback schedules</li>
+            <li>Underlying contracts</li>
+            <li>Invoices belonging to those contracts</li>
+            <li>Future expected invoices</li>
+          </ul>
+          <p>
+            Every month, the data had to be updated with the current status:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>Did some contracts churn?</li>
+            <li>Did the invoices we expected actually get paid?</li>
+            <li>
+              Do we need to replace a contract or move expected cashflows to a
+              later month?
+            </li>
+          </ul>
+          <p>In short: a lot of data that changed in non-trivial ways.</p>
+          <p>
+            I created an integration test that snapshotted these tables at
+            various important stages so we could see how any code change
+            affected the structures. On paper, this made things "visible".
+          </p>
+          <p>
+            In practice, when I changed the underlying code, the snapshot diffs
+            were huge and noisy. I could see that something changed, but not
+            whether it changed in the right way.
+          </p>
+          <p>
+            The solution wasn't to become a human diff engine. It was to make
+            the data readable. I created a custom aggregated structure that
+            summarized the important aspects instead:
+          </p>
+          <CodeBlock language="text" className="">
+            {`
 {
   "financeableContracts": 62,
   "financedContracts": 0,
@@ -413,19 +412,29 @@ const VisibilityBlog: NextPage = () => {
   ]
 }
           `}
-        </CodeBlock>
-        <p>Now I could quickly sanity-check:</p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>Do the totals still make sense?</li>
-          <li>Are there unexpected churned or replaced contracts?</li>
-          <li>Are invoices missing or mis-classified?</li>
-        </ul>
+          </CodeBlock>
+          <p>Now I could quickly sanity-check:</p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>Do the totals still make sense?</li>
+            <li>Are there unexpected churned or replaced contracts?</li>
+            <li>Are invoices missing or mis-classified?</li>
+          </ul>
+          <p>
+            Any change in the underlying code showed up as a simple, readable
+            diff in this structure. The invisibility problem wasn't "lack of
+            tests"; it was a data representation that no human could parse.
+          </p>
+        </Card>
         <p>
-          Any change in the underlying code showed up as a simple, readable diff
-          in this structure. The invisibility problem wasn't "lack of tests"; it
-          was a data representation that no human could parse.
+          The anecdote shows, that if the representation is lacking, the
+          visibility can completely tank, even if every other dimension is
+          fulfilled. So ask yourself questions like:
         </p>
-
+        <ul className="ml-4 pl-4 list-outside list-disc">
+          <li>Could I spot issues looking in its current form?</li>
+          <li>Is my data aggregated enough?</li>
+          <li>Does my data need a special visualization? (e.g. graph)</li>
+        </ul>
         <h3>2.4 Knowledge</h3>
         <p>
           Legacy code is often just "code where nobody on the team has a mental
@@ -459,14 +468,13 @@ const VisibilityBlog: NextPage = () => {
           "why on earth did I do this?".
         </p>
         <p>
-          At Google, they're very good at this via tooling. They don't have tons
-          of traditional documentation, but they have excellent code history
-          tools and strong habits around leaving traces in code reviews and
-          commits. You quickly learn to navigate through the history of a file
-          and understand why something looks the way it does. That's also a form
-          of visibility.
+          At Google, they're very good at this via tooling. They don't have much
+          traditional documentation, but they have excellent code history tools
+          and strong habits around leaving traces in code reviews and commits.
+          You quickly learn to navigate through the history of a file and
+          understand why something looks the way it does. That's also a form of
+          visibility.
         </p>
-
         <h2>3. How often is it actually verified?</h2>
         <p>
           This is where everything comes together. Even if something is easy and
@@ -503,59 +511,63 @@ const VisibilityBlog: NextPage = () => {
           it's broken.
         </p>
         <p>
-          Which leads to a hard but liberating conclusion: you should probably
-          delete more things.
+          Which leads to the conclusion: you should probably delete more things.
         </p>
-        <h3>Anecdote: invisible features rot</h3>
-        <p>
-          If I ever got Chinese character tattoos, they'd probably spell YAGNI
-          ("You Ain't Gonna Need It") and KISS ("Keep It Simple, Stupid"). But
-          let's go back in time, when I didn't have those yet ingrained through
-          experience.
-        </p>
-        <p>
-          At my first job, I was somehow responsible for the frontend as a
-          working student. Not great for me, not great for the company, but it
-          had one strong side effect: I got very attached to "my" code.
-        </p>
-        <p>
-          Like any product, we built experiments and features that later turned
-          out to be unneeded. But when the time came to delete something, it
-          felt... wrong.
-        </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>I'd spent my limited hours building it.</li>
-          <li>It worked (at least at some point).</li>
-          <li>Deleting it felt like deleting proof of work.</li>
-        </ul>
-        <p>
-          So I kept code around "just in case" and maintained code paths that
-          the product didn't actually use anymore. You can probably guess how
-          this ended: one day, someone needed that old feature again. We flipped
-          the switch back on.
-        </p>
-        <p>And it was broken.</p>
-        <p>
-          Not dramatically broken; just subtly incompatible. Over the months,
-          everything around it had changed:
-        </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>Different data shapes</li>
-          <li>Different assumptions</li>
-          <li>Different authentication flows</li>
-          <li>New invariants that the old code didn't respect</li>
-        </ul>
-        <p>We now had to:</p>
-        <ol className="ml-4 pl-4 list-outside list-decimal">
-          <li>Understand how it worked back then.</li>
-          <li>Understand how the system changed since.</li>
-          <li>Patch it back into shape.</li>
-        </ol>
-        <p>
-          In the end, it would have been faster and safer to rebuild it from
-          scratch with current constraints in mind. The painful insight: code
-          that nobody runs and nobody looks at isn't "sleeping". It's decaying.
-        </p>
+        <Card title="Anecdote: invisible features rot">
+          <p>
+            If I ever get tattoos with phrases that are important to me, it
+            would be YAGNI ("You Ain't Gonna Need It") and KISS ("Keep It
+            Simple, Stupid"). But let's go back in time, when I didn't have
+            those yet ingrained through experience.
+          </p>
+          <p>
+            At my first job, I was somehow responsible for the frontend as a
+            working student. Not great for me, not great for the company, but it
+            had one strong side effect: I got very attached to "my" code.
+          </p>
+          <p>
+            Like any product, we built experiments and features that later
+            turned out to be unneeded. But when the time came to delete
+            something, it felt... wrong.
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>I'd spent my limited hours building it.</li>
+            <li>It worked (at least at some point).</li>
+            <li>
+              Deleting it felt like throwing something away food that is still
+              good.
+            </li>
+          </ul>
+          <p>
+            So I kept code around "just in case" and maintained code paths that
+            the product didn't actually use anymore. You can probably guess how
+            this ended: one day, someone needed that old feature again. We
+            flipped the switch back on.
+          </p>
+          <p>And it was broken.</p>
+          <p>
+            Not dramatically broken; just subtly incompatible. Over the months,
+            everything around it had changed:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>Different data shapes</li>
+            <li>Different assumptions</li>
+            <li>Different authentication flows</li>
+            <li>New invariants that the old code didn't respect</li>
+          </ul>
+          <p>We now had to:</p>
+          <ol className="ml-4 pl-4 list-outside list-decimal">
+            <li>Understand how it worked back then.</li>
+            <li>Understand how the system changed since.</li>
+            <li>Patch it back into shape.</li>
+          </ol>
+          <p>
+            In the end, it would have been faster and safer to rebuild it from
+            scratch with current constraints in mind. The painful insight: code
+            that nobody runs and nobody looks at isn't "sleeping". It's
+            decaying.
+          </p>
+        </Card>
         <p>
           Once I started looking at features through the visibility spectrum,
           the rule became simple:
@@ -569,7 +581,6 @@ const VisibilityBlog: NextPage = () => {
           <li>So delete it. Be glad to delete it.</li>
         </ul>
         <p>You ain't gonna need it. Keep your codebase simple, stupid.</p>
-
         <h2>Making things visible on purpose</h2>
         <p>
           So what do you do with all of this? When you work on a feature, piece
