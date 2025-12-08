@@ -39,11 +39,11 @@ const VisibilityBlog: NextPage = () => {
             Users use your product and notice regressions because they know how
             it's supposed to behave.
             <Footnote>
-              I am not advocating you should use your users as beta testers, nor
-              did any workplace see users as that. You should do everything to
-              make sure that your users do not see something broken. The point
-              is merely that a used products has automatic visibility due to its
-              users that want it to work.
+              I'm not advocating using your users as beta testers, nor did any
+              workplace I was in see users that way. You should do everything
+              you can to make sure that your users do not see something broken.
+              The point is merely that a used product has automatic visibility
+              because its users want it to work.
             </Footnote>
           </li>
           <li>
@@ -60,7 +60,7 @@ const VisibilityBlog: NextPage = () => {
         <ul className="ml-4 pl-4 list-outside list-disc">
           <li>
             Letting your users be the integration tests creates churn and
-            support tickets. Also it's disrespectful.
+            support tickets - and frankly, it's disrespectful.
           </li>
           <li>Integration tests are non-trivial to write and maintain.</li>
           <li>QA time is expensive and limited.</li>
@@ -71,15 +71,15 @@ const VisibilityBlog: NextPage = () => {
           something.
         </p>
         <p>
-          The concept of visibility is already established quite well with
-          Observability. But that's actually coincidental, I didn't transfer
-          their concept to product development.{" "}
+          The concept of visibility is already established quite well in
+          infrastructure with observability. But my thinking here came more from
+          product work than from SRE blogs.{" "}
           <a
             className="link"
             target="_blank"
             href="https://en.wikipedia.org/wiki/Carcinisation"
           >
-            But similar how every animals final evolution is a crab
+            But similar how every animal's final evolution is a crab
           </a>
           , making things more visible (in whatever way) is the logical
           conclusion to many disciplines.
@@ -180,10 +180,10 @@ const VisibilityBlog: NextPage = () => {
             and was annoying.
           </p>
           <p>
-            So I started saving all relevant connection attempts into a table
-            (bank_account_connection), which we already had to handle webhooks
-            anyway. Now I just had to run a simple SQL query to see all attempts
-            and their status.
+            So I started saving all relevant connection attempts into a table (
+            <code>bank_account_connection</code>), which we already had to
+            handle webhooks anyway. Now I just had to run a simple SQL query to
+            see all attempts and their status.
           </p>
           <p>
             Then I added a very simple table view for this to our internal
@@ -203,14 +203,15 @@ const VisibilityBlog: NextPage = () => {
           </ul>
         </Card>
         <p>
-          The team members were able to spot issues before - as the customer
-          reached out, but they didn't have enough access to verify anything on
-          their own. By giving them access to even the most crude debug view,
-          the team members were empowered to investigate on their own.
+          The team members were able to spot issues before - as a customer
+          reached out - but they didn't have enough access to verify anything on
+          their own. By giving them access to even the crudest debug view, they
+          were suddenly empowered to investigate themselves.
         </p>
         <p>
           So next time you have to execute some database queries due to an
-          internal request, think about making it easier.
+          internal request, think about whether you can make that path easier or
+          even self-serve.
         </p>
         <h2>2. How much effort does it take to verify?</h2>
         <p>
@@ -262,31 +263,30 @@ const VisibilityBlog: NextPage = () => {
         </p>
         <Card title="Anecdote: the joy and annoyance of pre-commit checks">
           <p>
-            Pre-commit checks allow you to execute an action whenever you commit
-            code. The pitch is great: Never forget to run formatting, type
-            checks, unit testing etc. Simply put these checks into the
-            pre-commit.
+            Pre-commit checks allow you to execute actions whenever you commit
+            code. The pitch is great: never forget to run formatting, type
+            checks, unit tests etc. Simply put these checks into the pre-commit
+            hook.
           </p>
           <p>
             But if you ever worked at a place where pre-commit started to take
             longer, you are also familiar with the command line argument{" "}
             <code>--no-verify</code> that skips the pre-commit check. As you
-            don't really want to wait that long, so you start to{" "}
+            don't really want to wait that long, you start to{" "}
             <strong>execute it less often</strong>.
           </p>
           <p>
-            We faced this exact issue, more and more team members started to
+            We faced this exact issue: more and more team members started to
             skip the checks, me included. So we simply removed the biggest
-            offenders as we also run them in the CI. One of them was the code
+            offenders as we also ran them in CI. One of them was the code
             formatter - which in theory shouldn't break as it runs whenever you
             save.
           </p>
           <p>
-            This definitely helped... but it actually didn't help in merging the
-            PRs faster, as more often than not, the formatting was broken. As
-            Claude Code or Codex skips your on-save hook and are also not the
-            most reliable in following commands, the formatting was often
-            skipped.
+            This definitely helped... but it didn't actually help in merging PRs
+            faster, as more often than not, the formatting was broken. As Claude
+            Code or Codex skip your on-save hook and are also not the most
+            reliable in following commands, the formatting was often skipped.
           </p>
           <p>
             The formatter we used was{" "}
@@ -296,19 +296,19 @@ const VisibilityBlog: NextPage = () => {
               href="https://github.com/segmentio/golines"
             >
               <code>golines</code>
-            </a>{" "}
-            . It's an improvement over the normal go formatter, which doesn't
-            restrict any line length. But contrary to the default go formatter{" "}
-            <code>gofmt</code> which is almost instant, <code>golines</code>{" "}
-            could take up to a minute for our codebase.
+            </a>
+            . It's an improvement over the default Go formatter{" "}
+            <code>gofmt</code>, which doesn't restrict any line length. But
+            contrary to it, <code>golines</code> could take up to a minute on
+            our codebase, while <code>gofmt</code> is basically instant.
           </p>
           <p>
-            So what to do - put it back into pre-commit and never forget it and
-            be annoyed, or accept that one has to handle the occasional
-            breakage.
+            So what to do - put it back into pre-commit and never forget it but
+            always be annoyed, or accept that one has to handle the occasional
+            breakage?
           </p>
           <p>
-            The solution was neither for us. We decided to switch to{" "}
+            The solution was neither. We decided to switch to{" "}
             <a
               className="link"
               target="_blank"
@@ -316,20 +316,21 @@ const VisibilityBlog: NextPage = () => {
             >
               <code>gofumpt</code>
             </a>
-            . The project is healthy and while not supporting to break long
-            lines yet, it's on their roadmap. Because even though breaking long
-            lines is nice and helps, they don't happen too often in golang and
-            the time penalty was too much to bear.
+            . The project is healthy and while not supporting breaking long
+            lines yet, it's on their roadmap. Even though breaking long lines is
+            nice and helps, it doesn't happen that often in Go - and the time
+            penalty we paid for it was simply too much.
           </p>
         </Card>
         <p>
-          The anecdote showed that <i>how long</i> directly correlates with{" "}
-          <i>how often</i>. Even though developers know how annoying long
-          running tests or compilers are and do strive to make faster tools
-          (thanks to everyone rewriting slow tools in go, rust or zig). I think
-          decreasing the time-to-feedback for anything is still underrated. E.g.
-          if your whole test suite ran in a second instead of half an hour, you
-          (and your AI agents) would be able to develop completely differently.
+          The anecdote shows that <i>how long</i> something takes directly
+          correlates with <i>how often</i> it gets done. Developers already know
+          how annoying long-running tests or compilers are and do strive to make
+          faster tools (thanks to everyone rewriting slow tools in Go, Rust or
+          Zig). I still think decreasing the time-to-feedback for anything is
+          underrated. If your whole test suite ran in a second instead of half
+          an hour, you (and your AI agents) would be able to develop very
+          differently.
         </p>
         <h3>2.2 Ease of access</h3>
         <p>
@@ -348,15 +349,18 @@ const VisibilityBlog: NextPage = () => {
           easy. The nice thing: improvements in "who can access this?" also
           usually improve ease of access in general.
         </p>
-        <p>This definitely correlates also with how long it takes, but it's</p>
-
+        <p>
+          This obviously correlates with how long things take, but it's mainly
+          about friction: even small annoyances compound until you stop doing
+          the check at all.
+        </p>
         <Card title="Anecdote: making device testing easier at YouTube">
           <p>
-            YouTube is one of the biggest apps ever, as such it runs on every
+            YouTube is one of the biggest apps ever; as such it runs on every
             device that can theoretically run it. To make sure we didn't break
             anything when changing the mobile apps, we had plenty of test
-            devices laying around of different form factors and types (e.g.
-            Android Tablet, older iPhone).
+            devices lying around of different form factors and types (e.g.
+            Android tablet, older iPhone).
           </p>
           <p>
             Testing on the devices was easy if your feature was already launched
@@ -366,51 +370,48 @@ const VisibilityBlog: NextPage = () => {
             of feature flags. You could do it with your own corporate account,
             but that meant:
           </p>
-          <ol>
+          <ol className="ml-4 pl-4 list-outside list-decimal">
             <li>
-              Signing in with your Account on every test device you want to test
+              Signing in with your account on every test device you want to test
               on
             </li>
             <li>Doing the security challenges</li>
-            <li>Flipping the Flag and testing the new feature</li>
+            <li>Flipping the flag and testing the new feature</li>
             <li>
-              Cleaning up afterwards as you don't want anyone else to have
+              Cleaning up afterwards, as you don't want anyone else to have
               access to your account
             </li>
           </ol>
           <p>
-            Only point 3. should actually be necessary. I was a bit confused why
-            this is so annoying and why nobody didn't do anything to fix it yet.
-            Reading the docs it became clear that there actually existed a
-            solution, but only in the main YouTube office in San Bruno. There
-            they had a custom WiFi setup that allowed setting feature flags on
-            test accounts.
+            Only point 3 should actually be necessary. I was a bit confused why
+            this was so annoying and why nobody had fixed it yet. Reading the
+            docs it became clear that there actually existed a solution, but
+            only in the main YouTube office in San Bruno: they had a custom WiFi
+            setup that allowed setting feature flags on test accounts.
           </p>
           <p>
-            As we were a sizeable YouTube operation in Zurich back then (it
-            became even bigger, but I don't work there anymore), I was able to
-            get our own custom WiFi setup, making the whole testing on test
-            devices easier.
+            As we were a sizeable YouTube operation in Zurich back then, I was
+            able to get our own custom WiFi setup, making testing on devices
+            much easier.
           </p>
           <p>
-            Now I should mention how this transformed our device testing, but
-            sadly Covid hit and we were working from home. With me leaving to
-            join re:cap, I was never able to see the glory of the testing WiFi.
+            This is the part where I should mention how this transformed our
+            device testing, but sadly Covid hit and we were working from home.
+            With me leaving to join re:cap, I was never able to see the full
+            glory of the testing WiFi.
           </p>
         </Card>
-
         <p>
-          The anecdote should show, that it was mostly an annoying access
-          problem that made one not want to test quickly on a test device. The
-          steps to test weren't difficult before, nor took they that long. But
-          they were annoying enough, that one really didn't want to do it often.
+          The anecdote should show that it was mostly an annoying access problem
+          that made you not want to test quickly on a device. The steps weren't
+          difficult, nor did they take that long. But they were annoying enough
+          that you really didn't want to do them often.
         </p>
-
         <h3>2.3 Representation</h3>
         <p>
           Representation matters a lot. The more data points you have, the more
-          necessary it becomes as 1000 rows of data are not intuitive, bar
-          charts are.
+          important it becomes: 1000 rows of data are not intuitive; a bar chart
+          is.
         </p>
         <Card title="Anecdote: aggregate your snapshots">
           <p>
@@ -434,7 +435,7 @@ const VisibilityBlog: NextPage = () => {
             <li>Did some contracts churn?</li>
             <li>Did the invoices we expected actually get paid?</li>
             <li>
-              Do we need to replace a contract or move expected cashflows to a
+              Do we need to replace a contract or move expected cash flows to a
               later month?
             </li>
           </ul>
@@ -496,14 +497,14 @@ const VisibilityBlog: NextPage = () => {
           </p>
         </Card>
         <p>
-          The anecdote shows, that if the representation is lacking, the
-          visibility can completely tank, even if every other dimension is
-          fulfilled. So ask yourself questions like:
+          The anecdote shows that if the representation is lacking, visibility
+          can completely tank, even if every other dimension is fulfilled. So
+          ask yourself questions like:
         </p>
         <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>Could I spot issues looking in its current form?</li>
+          <li>Could I spot issues looking at it in its current form?</li>
           <li>Is my data aggregated enough?</li>
-          <li>Does my data need a special visualization? (e.g. graph)</li>
+          <li>Does my data need a special visualization? (e.g. a graph)</li>
         </ul>
         <h3>2.4 Knowledge</h3>
         <p>
@@ -514,10 +515,7 @@ const VisibilityBlog: NextPage = () => {
           part of the code with the cryptic comments, you have a better chance
           of understanding your past self.
         </p>
-        <p>
-          If there's a playbook for recurring issues, more people can handle
-          them.
-        </p>
+        <p>If there's a playbook for recurring issues, more people can help.</p>
         <p>
           I won't tell you "just write documentation" - docs have their own
           problems and are not a silver bullet. But you should keep a paper
@@ -577,8 +575,10 @@ const VisibilityBlog: NextPage = () => {
           thumb:
         </p>
         <p>
-          If something isn't exercised by either users or automation, assume
-          it's broken.
+          <strong>
+            If something isn't exercised by either users or automation, assume
+            it's broken.
+          </strong>
         </p>
         <p>
           Which leads to the conclusion: you should probably delete more things.
@@ -603,10 +603,7 @@ const VisibilityBlog: NextPage = () => {
           <ul className="ml-4 pl-4 list-outside list-disc">
             <li>I'd spent my limited hours building it.</li>
             <li>It worked (at least at some point).</li>
-            <li>
-              Deleting it felt like throwing something away food that is still
-              good.
-            </li>
+            <li>Deleting it felt like throwing away food that's still fine.</li>
           </ul>
           <p>
             So I kept code around "just in case" and maintained code paths that
