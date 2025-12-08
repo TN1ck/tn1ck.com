@@ -155,46 +155,62 @@ const VisibilityBlog: NextPage = () => {
           is often a gradual thing: over time, more people can understand,
           trace, and explain what is going on.
         </p>
-        <Card title="Example: letting the shop owner debug a spike">
+        <Card title="Anecdote: even a crude debug view helps">
           <p>
-            Imagine you run an online shop and the system shows you a graph of
-            your sales for the last 30 days. One day there's a big spike, but
-            your total revenue barely moved. You spot a potential issue - and
-            now you try to understand how this number came to be:
+            If you've ever used open banking, you probably know it has issues.
+            With PSD2, the EU made it law that banks have to provide APIs. It
+            did not standardize how the API should look or behave, so every bank
+            did its own thing.
+          </p>
+          <p>
+            For a product, this means: you don't integrate with every bank
+            yourself - you use an open banking provider. I've worked with
+            multiple. They all have their quirks. When a customer had trouble
+            connecting their bank, all of these could be at fault:
           </p>
           <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>The customer (wrong credentials, wrong bank selected, etc.)</li>
+            <li>The bank (outage, random error)</li>
+            <li>The open banking provider (implementation bug, API change)</li>
+            <li>Us (a bug in our integration)</li>
+          </ul>
+          <p>
+            Initially, when our support asked "what went wrong for this user?",
+            I had to go dig through logs. Finding the right entries took time
+            and was annoying.
+          </p>
+          <p>
+            So I started saving all relevant connection attempts into a table
+            (bank_account_connection), which we already had to handle webhooks
+            anyway. Now I just had to run a simple SQL query to see all attempts
+            and their status.
+          </p>
+          <p>
+            Then I added a very simple table view for this to our internal
+            operations app. I actually only did this to make my own life easier,
+            but it turned out to be a win for everyone:
+          </p>
+          <ul className="ml-4 pl-4 list-outside list-disc">
+            <li>Non-technical team members could see these attempts.</li>
             <li>
-              The shop system shows you raw orders, filterable by time and
-              product.
+              With a bit of guidance, ops could quickly tell which party was at
+              fault.
             </li>
-            <li>You filter down to the time window of the spike.</li>
             <li>
-              You see that the product sold is your most popular one, but the
-              price is lower than usual.
-            </li>
-            <li>
-              You click on an order and see that the price was discounted with a
-              PROMOTION2025 code.
-            </li>
-            <li>
-              You go to the list of discount codes, see it was created by
-              someone in marketing a week earlier, and reach out to them.
+              Support stopped needing a developer to investigate this for almost
+              all issues.
             </li>
           </ul>
         </Card>
         <p>
-          The example is simple, but it shows how much the person could
-          investigate the issue themselves. If they didn't have access to
-          historical orders or discount codes, they'd be stuck. They could spot
-          the spike, but not verify or explain it.
+          The team members were able to spot issues before - as the customer
+          reached out, but they didn't have enough access to verify anything on
+          their own. By giving them access to even the most crude debug view,
+          the team members were empowered to investigate on their own.
         </p>
         <p>
-          Empowering users to do these things can reduce support tickets and
-          increase confidence in your product, especially if it's numbers-heavy.
-          The nice thing is: this often equals good UX. If the user can
-          investigate issues on their own, they gain more confidence in the
-          product. Magical products that are black boxes are amazing when they
-          work, but incredibly frustrating when they don't.
+          So next time you have to execute some database queries due to an
+          internal request, think about making it easier.
         </p>
         <h2>2. How much effort does it take to verify?</h2>
         <p>
@@ -244,26 +260,76 @@ const VisibilityBlog: NextPage = () => {
           automation. People forget to look, priorities shift, that "critical"
           dashboard tab stays closed.
         </p>
-        <p>Rough intuition:</p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>
-            Seconds: you'll check all the time (tests on save, tiny scripts).
-          </li>
-          <li>
-            Minutes: you'll check sometimes (e.g. "run the full suite before
-            pushing").
-          </li>
-          <li>Hours: you'll only check on CI or explicit runs.</li>
-          <li>Days or weeks: you'll almost never check manually.</li>
-        </ul>
+        <Card title="Anecdote: the joy and annoyance of pre-commit checks">
+          <p>
+            Pre-commit checks allow you to execute an action whenever you commit
+            code. The pitch is great: Never forget to run formatting, type
+            checks, unit testing etc. Simply put these checks into the
+            pre-commit.
+          </p>
+          <p>
+            But if you ever worked at a place where pre-commit started to take
+            longer, you are also familiar with the command line argument{" "}
+            <code>--no-verify</code> that skips the pre-commit check. As you
+            don't really want to wait that long, so you start to{" "}
+            <strong>execute it less often</strong>.
+          </p>
+          <p>
+            We faced this exact issue, more and more team members started to
+            skip the checks, me included. So we simply removed the biggest
+            offenders as we also run them in the CI. One of them was the code
+            formatter - which in theory shouldn't break as it runs whenever you
+            save.
+          </p>
+          <p>
+            This definitely helped... but it actually didn't help in merging the
+            PRs faster, as more often than not, the formatting was broken. As
+            Claude Code or Codex skips your on-save hook and are also not the
+            most reliable in following commands, the formatting was often
+            skipped.
+          </p>
+          <p>
+            The formatter we used was{" "}
+            <a
+              className="link"
+              target="_blank"
+              href="https://github.com/segmentio/golines"
+            >
+              <code>golines</code>
+            </a>{" "}
+            . It's an improvement over the normal go formatter, which doesn't
+            restrict any line length. But contrary to the default go formatter{" "}
+            <code>gofmt</code> which is almost instant, <code>golines</code>{" "}
+            could take up to a minute for our codebase.
+          </p>
+          <p>
+            So what to do - put it back into pre-commit and never forget it and
+            be annoyed, or accept that one has to handle the occasional
+            breakage.
+          </p>
+          <p>
+            The solution was neither for us. We decided to switch to{" "}
+            <a
+              className="link"
+              target="_blank"
+              href="https://github.com/mvdan/gofumpt"
+            >
+              <code>gofumpt</code>
+            </a>
+            . The project is healthy and while not supporting to break long
+            lines yet, it's on their roadmap. Because even though breaking long
+            lines is nice and helps, they don't happen too often in golang and
+            the time penalty was too much to bear.
+          </p>
+        </Card>
         <p>
-          This has huge impact on design: a 10-second local check encourages
-          experiments and refactors. A 2-hour "full" check means you'll be very
-          picky about when you touch that code. Developers already know this
-          from slow test suites and compilers. I still think decreasing the
-          time-to-feedback for anything is underrated. If your whole test suite
-          ran in a second, you (and your AI agents) would develop very
-          differently.
+          The anecdote showed that <i>how long</i> directly correlates with{" "}
+          <i>how often</i>. Even though developers know how annoying long
+          running tests or compilers are and do strive to make faster tools
+          (thanks to everyone rewriting slow tools in go, rust or zig). I think
+          decreasing the time-to-feedback for anything is still underrated. E.g.
+          if your whole test suite ran in a second instead of half an hour, you
+          (and your AI agents) would be able to develop completely differently.
         </p>
         <h3>2.2 Ease of access</h3>
         <p>
@@ -282,66 +348,69 @@ const VisibilityBlog: NextPage = () => {
           easy. The nice thing: improvements in "who can access this?" also
           usually improve ease of access in general.
         </p>
-        <Card title="Anecdote: even a crude debug view helps">
+        <p>This definitely correlates also with how long it takes, but it's</p>
+
+        <Card title="Anecdote: making device testing easier at YouTube">
           <p>
-            If you've ever used open banking, you probably know it has issues.
-            With PSD2, the EU made it law that banks have to provide APIs. It
-            did not standardize how the API should look or behave, so every bank
-            did its own thing.
+            YouTube is one of the biggest apps ever, as such it runs on every
+            device that can theoretically run it. To make sure we didn't break
+            anything when changing the mobile apps, we had plenty of test
+            devices laying around of different form factors and types (e.g.
+            Android Tablet, older iPhone).
           </p>
           <p>
-            For a product, this means: you don't integrate with every bank
-            yourself - you use an open banking provider. I've worked with
-            multiple. They all have their quirks. When a customer had trouble
-            connecting their bank, all of these could be at fault:
+            Testing on the devices was easy if your feature was already launched
+            - simply sign in with the setup test accounts and check it out. But
+            that's already too late if you want to be careful. The issue was
+            that test accounts on these devices didn't allow the manual override
+            of feature flags. You could do it with your own corporate account,
+            but that meant:
           </p>
-          <ul className="ml-4 pl-4 list-outside list-disc">
-            <li>The customer (wrong credentials, wrong bank selected, etc.)</li>
-            <li>The bank (outage, random error)</li>
-            <li>The open banking provider (implementation bug, API change)</li>
-            <li>Us (a bug in our integration)</li>
-          </ul>
-          <p>
-            Initially, when support asked "what went wrong for this user?", I
-            had to go dig through logs. Finding the right entries took time and
-            was annoying.
-          </p>
-          <p>
-            So I started saving all relevant connection attempts into a table
-            (bank_account_connection), which we already had to handle webhooks
-            anyway. Now I just had to run a simple SQL query to see all attempts
-            and their status.
-          </p>
-          <p>
-            Then I added a very simple table view for this to our internal
-            operations app. This took the task from minutes to seconds - for me.
-            But it also meant:
-          </p>
-          <ul className="ml-4 pl-4 list-outside list-disc">
-            <li>Non-technical team members could see these attempts.</li>
+          <ol>
             <li>
-              With a bit of guidance, ops could quickly tell which party was at
-              fault.
+              Signing in with your Account on every test device you want to test
+              on
             </li>
+            <li>Doing the security challenges</li>
+            <li>Flipping the Flag and testing the new feature</li>
             <li>
-              Support stopped needing a developer for every single "bank
-              connection failed" case.
+              Cleaning up afterwards as you don't want anyone else to have
+              access to your account
             </li>
-          </ul>
+          </ol>
+          <p>
+            Only point 3. should actually be necessary. I was a bit confused why
+            this is so annoying and why nobody didn't do anything to fix it yet.
+            Reading the docs it became clear that there actually existed a
+            solution, but only in the main YouTube office in San Bruno. There
+            they had a custom WiFi setup that allowed setting feature flags on
+            test accounts.
+          </p>
+          <p>
+            As we were a sizeable YouTube operation in Zurich back then (it
+            became even bigger, but I don't work there anymore), I was able to
+            get our own custom WiFi setup, making the whole testing on test
+            devices easier.
+          </p>
+          <p>
+            Now I should mention how this transformed our device testing, but
+            sadly Covid hit and we were working from home. With me leaving to
+            join re:cap, I was never able to see the glory of the testing WiFi.
+          </p>
         </Card>
+
         <p>
-          All from "just showing some data" in a crude internal UI. Adding this
-          kind of table to internal tools is often just boilerplate. With LLMs,
-          the threshold of "is it worth it to build a view for this?" has
-          dropped even further. The answer is "yes" much more often.
+          The anecdote should show, that it was mostly an annoying access
+          problem that made one not want to test quickly on a test device. The
+          steps to test weren't difficult before, nor took they that long. But
+          they were annoying enough, that one really didn't want to do it often.
         </p>
+
         <h3>2.3 Representation</h3>
         <p>
-          The shop owner wouldn't even have noticed the sales spike without the
-          line chart. A table of daily totals is far less likely to make you
-          think "woah, what happened here?". Representation matters a lot. The
-          more data points you have, the more necessary it becomes as 1000 rows
-          of data are not intuitive, bar charts are.
+          Representation matters a lot. The more data points you have, the more
+          necessary it becomes as 1000 rows of data are not intuitive, bar
+          charts are.
         </p>
         <Card title="Anecdote: aggregate your snapshots">
           <p>
