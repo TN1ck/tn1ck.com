@@ -24,10 +24,10 @@ const VisibilityBlog: NextPage = () => {
           broken in some way.
         </p>
         <p>
-          Sometimes "broken" is an obvious bug. Sometimes it's a nonsensical UI.
-          Sometimes it's a business process where multiple steps have quietly
-          drifted out of sync. The exact nature doesn't matter. What matters is:
-          if nobody looks at it, it quietly decays.
+          "Broken" can be anything from a glitchy UI, to a bug, a major data
+          pipeline creating rubbish to you losing all your customer data,
+          because backups did not work correctly. The point is, that if nobody
+          is looking at it, it decays or was never working to begin with.
         </p>
         <p>
           When something is visible, issues are found quickly, because there is
@@ -52,15 +52,12 @@ const VisibilityBlog: NextPage = () => {
           </li>
           <li>Your QA team checks features before they are launched.</li>
         </ul>
-        <p>
-          Put like that, visibility sounds like an obvious win. Why wouldn't you
-          make everything visible?
-        </p>
+        <p>Put like that, why wouldn't you make everything visible?</p>
         <p>Because visibility isn't free.</p>
         <ul className="ml-4 pl-4 list-outside list-disc">
           <li>
-            Letting your users be the integration tests creates churn and
-            support tickets - and frankly, it's disrespectful.
+            Letting your users be the integration tests is just wrong on so many
+            levels.
           </li>
           <li>Integration tests are non-trivial to write and maintain.</li>
           <li>QA time is expensive and limited.</li>
@@ -77,6 +74,7 @@ const VisibilityBlog: NextPage = () => {
           <a
             className="link"
             target="_blank"
+            rel="noopener noreferrer"
             href="https://en.wikipedia.org/wiki/Carcinisation"
           >
             But similar how every animal's final evolution is a crab
@@ -99,14 +97,13 @@ const VisibilityBlog: NextPage = () => {
           You can imagine a feature sitting somewhere on each of those axes. The
           more things cluster on the "only one dev knows how to check this,
           slowly, by running custom code, and nobody ever does" side, the more
-          likely they are to be broken.
+          you want to turn in your resignation.
         </p>
         <p>Let's go through these.</p>
         <h2>1. Who can spot issues (and who can investigate them)?</h2>
         <p>
           This is the most intuitive dimension: who could notice that this thing
-          is broken? Just the original developer? Any teammate? An internal
-          operations person? The end user?
+          is broken? Just the original developer? Any teammate? The end user?
         </p>
         <p>A lot of bugs are not found by the team who wrote the code.</p>
         <ul className="ml-4 pl-4 list-outside list-disc">
@@ -151,28 +148,20 @@ const VisibilityBlog: NextPage = () => {
         <p>
           As mentioned, spotting an issue is different from being able to verify
           it. Just because someone thinks a number looks sketchy in a report
-          doesn't mean they can determine why it is the way it is. Verification
-          is often a gradual thing: over time, more people can understand,
-          trace, and explain what is going on.
+          doesn't mean they can determine why it is the way it is.
         </p>
         <Card title="Anecdote: even a crude debug view helps">
           <p>
-            If you've ever used open banking, you probably know it has issues.
-            With PSD2, the EU made it law that banks have to provide APIs. It
-            did not standardize how the API should look or behave, so every bank
-            did its own thing.
-          </p>
-          <p>
-            For a product, this means: you don't integrate with every bank
-            yourself - you use an open banking provider. I've worked with
-            multiple. They all have their quirks. When a customer had trouble
-            connecting their bank, all of these could be at fault:
+            If you want to provide your customer a way to connect your customer,
+            you have to rely on a service like Plaid or GoCardless to do so,
+            which also means, that every time something goes wrong, it could be
+            any of these things:
           </p>
           <ul className="ml-4 pl-4 list-outside list-disc">
-            <li>The customer (wrong credentials, wrong bank selected, etc.)</li>
             <li>The bank (outage, random error)</li>
             <li>The open banking provider (implementation bug, API change)</li>
             <li>Us (a bug in our integration)</li>
+            <li>The customer (wrong credentials, wrong bank selected, etc.)</li>
           </ul>
           <p>
             Initially, when our support asked "what went wrong for this user?",
@@ -188,17 +177,17 @@ const VisibilityBlog: NextPage = () => {
           <p>
             Then I added a very simple table view for this to our internal
             operations app. I actually only did this to make my own life easier,
-            but it turned out to be a win for everyone:
+            but in the end, I didn't have to look at this stuff at all anymore:
           </p>
           <ul className="ml-4 pl-4 list-outside list-disc">
             <li>Non-technical team members could see these attempts.</li>
             <li>
-              With a bit of guidance, ops could quickly tell which party was at
-              fault.
+              After explaining some error codes, our support team could
+              perfectly understand them.
             </li>
             <li>
-              Support stopped needing a developer to investigate this for almost
-              all issues.
+              All customer requests since then were completely handled by them
+              alone.
             </li>
           </ul>
         </Card>
@@ -206,13 +195,14 @@ const VisibilityBlog: NextPage = () => {
           The team members were able to spot issues before - as a customer
           reached out - but they didn't have enough access to verify anything on
           their own. By giving them access to even the crudest debug view, they
-          were suddenly empowered to investigate themselves.
+          were able to debug it themselves. This is in line with the famous
+          saying:
         </p>
-        <p>
-          So next time you have to execute some database queries due to an
-          internal request, think about whether you can make that path easier or
-          even self-serve.
-        </p>
+        <blockquote>
+          "Take over a support ticket for someone and you helped them for a day;
+          give the person access to a debug table, and they can answer support
+          tickets for their lifetime."
+        </blockquote>
         <h2>2. How much effort does it take to verify?</h2>
         <p>
           Even if people can see an issue and are allowed to investigate,
@@ -258,8 +248,7 @@ const VisibilityBlog: NextPage = () => {
         <p>
           If checking whether something works takes weeks or months, it
           effectively never gets checked unless you have very disciplined
-          automation. People forget to look, priorities shift, that "critical"
-          dashboard tab stays closed.
+          automation.
         </p>
         <Card title="Anecdote: the joy and annoyance of pre-commit checks">
           <p>
@@ -498,22 +487,25 @@ const VisibilityBlog: NextPage = () => {
         </Card>
         <p>
           The anecdote shows that if the representation is lacking, visibility
-          can completely tank, even if every other dimension is fulfilled. So
-          ask yourself questions like:
+          can completely tank, even if every other dimension is fulfilled. Ask
+          yourself if a different representation would make your life easier.
         </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>Could I spot issues looking at it in its current form?</li>
-          <li>Is my data aggregated enough?</li>
-          <li>Does my data need a special visualization? (e.g. a graph)</li>
-        </ul>
         <h3>2.4 Knowledge</h3>
         <p>
-          Legacy code is often just "code where nobody on the team has a mental
-          model anymore". This ties directly into how hard it is to verify
-          something. If you set up the business process, you know the idea
-          behind it and whether it still makes sense. If you wrote that weird
-          part of the code with the cryptic comments, you have a better chance
-          of understanding your past self.
+          {"Legacy code can be understood as "}
+          <a
+            className="link"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://johnwhiles.com/posts/programming-as-theory"
+          >
+            code where nobody on the team has a mental model of it anymore
+          </a>
+          . This ties directly into how hard it is to verify something. If you
+          set up the business process, you know the idea behind it and whether
+          it still makes sense. If you wrote that weird part of the code with
+          the cryptic comments, you have a better chance of understanding your
+          past self.
         </p>
         <p>If there's a playbook for recurring issues, more people can help.</p>
         <p>
@@ -545,9 +537,8 @@ const VisibilityBlog: NextPage = () => {
         </p>
         <h2>3. How often is it actually verified?</h2>
         <p>
-          This is where everything comes together. Even if something is easy and
-          quick in theory, the important bit is: how often does anyone actually
-          do it?
+          Even if something is easy and quick in theory, the important bit is:
+          how often does anyone actually do it?
         </p>
         <p>Some examples:</p>
         <ul className="ml-4 pl-4 list-outside list-disc">
@@ -558,96 +549,11 @@ const VisibilityBlog: NextPage = () => {
             releases.
           </li>
         </ul>
-        <p>At system level:</p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>
-            Your uptime monitor probably checks your website every few seconds.
-          </li>
-          <li>
-            Your off-site backup restoration probably happens... quarterly, if
-            you're lucky.
-          </li>
-        </ul>
         <p>
-          Features and code that nobody runs, nobody clicks, and no test touches
-          effectively live in a dark corner. They might technically "work"
-          today, but you'd be brave to bet your business on it. A useful rule of
-          thumb:
+          The only advice here is to automate whatever you can, put any check
+          you can into your CI. Put required password and token rotations into
+          your calendar.
         </p>
-        <p>
-          <strong>
-            If something isn't exercised by either users or automation, assume
-            it's broken.
-          </strong>
-        </p>
-        <p>
-          Which leads to the conclusion: you should probably delete more things.
-        </p>
-        <Card title="Anecdote: invisible features rot">
-          <p>
-            If I ever get tattoos with phrases that are important to me, it
-            would be YAGNI ("You Ain't Gonna Need It") and KISS ("Keep It
-            Simple, Stupid"). But let's go back in time, when I didn't have
-            those yet ingrained through experience.
-          </p>
-          <p>
-            At my first job, I was somehow responsible for the frontend as a
-            working student. Not great for me, not great for the company, but it
-            had one strong side effect: I got very attached to "my" code.
-          </p>
-          <p>
-            Like any product, we built experiments and features that later
-            turned out to be unneeded. But when the time came to delete
-            something, it felt... wrong.
-          </p>
-          <ul className="ml-4 pl-4 list-outside list-disc">
-            <li>I'd spent my limited hours building it.</li>
-            <li>It worked (at least at some point).</li>
-            <li>Deleting it felt like throwing away food that's still fine.</li>
-          </ul>
-          <p>
-            So I kept code around "just in case" and maintained code paths that
-            the product didn't actually use anymore. You can probably guess how
-            this ended: one day, someone needed that old feature again. We
-            flipped the switch back on.
-          </p>
-          <p>And it was broken.</p>
-          <p>
-            Not dramatically broken; just subtly incompatible. Over the months,
-            everything around it had changed:
-          </p>
-          <ul className="ml-4 pl-4 list-outside list-disc">
-            <li>Different data shapes</li>
-            <li>Different assumptions</li>
-            <li>Different authentication flows</li>
-            <li>New invariants that the old code didn't respect</li>
-          </ul>
-          <p>We now had to:</p>
-          <ol className="ml-4 pl-4 list-outside list-decimal">
-            <li>Understand how it worked back then.</li>
-            <li>Understand how the system changed since.</li>
-            <li>Patch it back into shape.</li>
-          </ol>
-          <p>
-            In the end, it would have been faster and safer to rebuild it from
-            scratch with current constraints in mind. The painful insight: code
-            that nobody runs and nobody looks at isn't "sleeping". It's
-            decaying.
-          </p>
-        </Card>
-        <p>
-          Once I started looking at features through the visibility spectrum,
-          the rule became simple:
-        </p>
-        <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>
-            If something is unused and invisible, it's already broken - you just
-            haven't observed it yet.
-          </li>
-          <li>If you ever need it again, you won't trust it anyway.</li>
-          <li>So delete it. Be glad to delete it.</li>
-        </ul>
-        <p>You ain't gonna need it. Keep your codebase simple, stupid.</p>
         <h2>Making things visible on purpose</h2>
         <p>
           So what do you do with all of this? When you work on a feature, piece
@@ -658,8 +564,7 @@ const VisibilityBlog: NextPage = () => {
             Who can tell if this is broken?
             <ul className="ml-4 pl-4 list-outside list-disc">
               <li>Only me?</li>
-              <li>Any engineer?</li>
-              <li>Support, ops, finance?</li>
+              <li>Any team member?</li>
               <li>The end user?</li>
             </ul>
           </li>
@@ -681,16 +586,6 @@ const VisibilityBlog: NextPage = () => {
               <li>Dashboards someone looks at weekly?</li>
               <li>A manual run once per quarter?</li>
               <li>Never?</li>
-            </ul>
-          </li>
-        </ol>
-        <p>And one extra question that often decides everything:</p>
-        <ol start={4} className="ml-4 pl-4 list-outside list-decimal">
-          <li>
-            If nobody uses this anymore, why is it still here?
-            <ul className="ml-4 pl-4 list-outside list-disc">
-              <li>Can we delete it now?</li>
-              <li>If we keep it, are we willing to pay the visibility cost?</li>
             </ul>
           </li>
         </ol>
