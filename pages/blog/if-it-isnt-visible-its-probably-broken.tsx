@@ -552,7 +552,7 @@ const VisibilityBlog: NextPage = () => {
         <p>
           The only advice here is to automate whatever you can, put any check
           you can into your CI. Put required password and token rotations into
-          your calendar.
+          your calendar. The bare minimum is a recurring reminder of some sort.
         </p>
         <h2>Making things visible on purpose</h2>
         <p>
