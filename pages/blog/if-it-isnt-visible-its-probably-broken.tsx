@@ -24,10 +24,27 @@ const VisibilityBlog: NextPage = () => {
           broken in some way.
         </p>
         <p>
-          "Broken" can be anything from a glitchy UI, to a bug, a major data
-          pipeline creating rubbish to you losing all your customer data,
-          because backups did not work correctly. The point is, that if nobody
-          is looking at it, it decays or was never working to begin with.
+          "Broken" can be anything from a glitchy UI, to a bug, to a major data
+          pipeline creating rubbish,{" "}
+          <a
+            className="link"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://www.theregister.com/2017/02/23/kcl_external_review/"
+          >
+            to you losing all your data
+          </a>{" "}
+          or{" "}
+          <a
+            className="link"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://en.wikipedia.org/wiki/Knight_Capital_Group#2012_stock_trading_disruption"
+          >
+            losing $ 440 million
+          </a>
+          . The point is, that if nobody is looking at it, it decays or was
+          never working to begin with.
         </p>
         <p>
           When something is visible, issues are found quickly, because there is
