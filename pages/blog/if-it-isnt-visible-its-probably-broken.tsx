@@ -51,6 +51,10 @@ const VisibilityBlog: NextPage = () => {
             fail when it stops doing so.
           </li>
           <li>Your QA team checks features before they are launched.</li>
+          <li>
+            Your On Call is pinged at 3:14 AM due to a threshold alert and will
+            then check what is happening
+          </li>
         </ul>
         <p>Put like that, why wouldn't you make everything visible?</p>
         <p>Because visibility isn't free.</p>
@@ -61,6 +65,10 @@ const VisibilityBlog: NextPage = () => {
           </li>
           <li>Integration tests are non-trivial to write and maintain.</li>
           <li>QA time is expensive and limited.</li>
+          <li>
+            Your On Call will reflect on their life decisions the more they get
+            pinged while sleeping
+          </li>
         </ul>
         <p>
           So you have to decide where to pay for visibility, and how much. As
@@ -105,11 +113,16 @@ const VisibilityBlog: NextPage = () => {
           This is the most intuitive dimension: who could notice that this thing
           is broken? Just the original developer? Any teammate? The end user?
         </p>
-        <p>A lot of bugs are not found by the team who wrote the code.</p>
+        <p>
+          Most bug are not found by the person who wrote the code, instead they
+          are found by the user. The user can be a lot of things:
+        </p>
         <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>A user who sees a weird number they don't understand.</li>
-          <li>A support person who gets three similar tickets.</li>
-          <li>A finance person whose export doesn't add up.</li>
+          <li>The users of your product</li>
+          <li>The CEO looking at an automatically created business report</li>
+          <li>
+            The new hire that notices that links in the documentation are dead
+          </li>
         </ul>
         <p>There's also an important distinction between:</p>
         <ul className="ml-4 pl-4 list-outside list-disc">
@@ -124,9 +137,9 @@ const VisibilityBlog: NextPage = () => {
         </ul>
         <p>
           You want both, but they're different skills and different levels of
-          access. If we want to improve this axis, we first aim to increase the
-          number of people who can spot issues. To do this, we have to make
-          things accessible:
+          access and knowledge. If we want to improve this axis, we first aim to
+          increase the number of people who can spot issues. To do this, we have
+          to make things accessible:
         </p>
         <ul className="ml-4 pl-4 list-outside list-disc">
           <li>If I can't see the data, I cannot spot issues in it.</li>
@@ -137,6 +150,10 @@ const VisibilityBlog: NextPage = () => {
           <li>
             If the feature cannot be toggled via a feature flag, I cannot try it
             myself.
+          </li>
+          <li>
+            If the business report cannot be exported into an excel, I cannot
+            make my own calculations.
           </li>
         </ul>
         <p>
@@ -273,42 +290,49 @@ const VisibilityBlog: NextPage = () => {
           </p>
           <p>
             This definitely helped... but it didn't actually help in merging PRs
-            faster, as more often than not, the formatting was broken. As Claude
-            Code or Codex skip your on-save hook and are also not the most
-            reliable in following commands, the formatting was often skipped.
+            faster, as more often than not, the formatting was broken{" "}
+            <Footnote>
+              We did not have yet a CI action that would automatically fix your
+              PR, but it's a pattern I can highly recommend. When the CI knows
+              your formatting is wrong - why not have it fix it?
+            </Footnote>
+            . As Claude Code or Codex skip your on-save hook and are also not
+            the most reliable in following commands, the formatting was often
+            skipped.
           </p>
           <p>
-            The formatter we used was{" "}
-            <a
-              className="link"
-              target="_blank"
-              href="https://github.com/segmentio/golines"
-            >
-              <code>golines</code>
-            </a>
-            . It's an improvement over the default Go formatter{" "}
-            <code>gofmt</code>, which doesn't restrict any line length. But
-            contrary to it, <code>golines</code> could take up to a minute on
-            our codebase, while <code>gofmt</code> is basically instant.
+            The formatter we used was an improved version of the language
+            default, but it took much longer and there was no option to improve
+            its time.
           </p>
           <p>
-            So what to do - put it back into pre-commit and never forget it but
-            always be annoyed, or accept that one has to handle the occasional
-            breakage?
-          </p>
-          <p>
-            The solution was neither. We decided to switch to{" "}
-            <a
-              className="link"
-              target="_blank"
-              href="https://github.com/mvdan/gofumpt"
-            >
-              <code>gofumpt</code>
-            </a>
-            . The project is healthy and while not supporting breaking long
-            lines yet, it's on their roadmap. Even though breaking long lines is
-            nice and helps, it doesn't happen that often in Go - and the time
-            penalty we paid for it was simply too much.
+            The solution was to drop the fancy, but slow formatter and go back
+            to using the fast one.
+            <Footnote>
+              <p>
+                The formatter we used was golines. It's an improvement over the
+                default Go formatter gofmt, which doesn't restrict any line
+                length. But contrary to it, golines could take up to a minute on
+                our codebase, while gofmt is basically instant.
+              </p>
+              <p>
+                The solution was neither. We decided to switch to{" "}
+                <a
+                  className="link"
+                  target="_blank"
+                  href="https://github.com/mvdan/gofumpt"
+                >
+                  <code>gofumpt</code>
+                </a>
+                . The project is healthy and while not supporting breaking long
+                lines yet, it's on their roadmap. Even though breaking long
+                lines is nice and helps, it doesn't happen that often in Go -
+                and the time penalty we paid for it was simply too much.
+              </p>
+            </Footnote>{" "}
+            We were able to run it again on pre-commit without noticable lag.
+            The trade off for better formatting was not worth it for us and in
+            general. Bias towards feedback time.
           </p>
         </Card>
         <p>
