@@ -38,7 +38,7 @@ const ClaudeCodeMeetingsBlog: NextPage = () => {
           continue to work on the problem if the meeting didn't require my full
           attention - and looking at the typing hands in those meetings, I sure
           wasn't the only one. When my mind is going 100 km/h solving a problem,
-          I can't just force it pull the hand break to a stop and start thinking
+          I can't just force it to pull the handbrake to a stop and start thinking
           about a different one. This is also the reason why I had to stop
           working right before bed, as I couldn't sleep - my brain was still
           racing to solve the problem.
@@ -51,7 +51,7 @@ const ClaudeCodeMeetingsBlog: NextPage = () => {
           working hours.
         </p>
         <p>
-          But this changing now, rapidly. I can have Claude Code or Codex write
+          But this is changing now, rapidly. I can have Claude Code or Codex write
           the majority of my code. I don't need to explore experiments myself
           anymore; it's often enough to give a rough outline and have it crank
           it out in 30 minutes.
