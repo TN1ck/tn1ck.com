@@ -4,9 +4,9 @@ import Container from "../../components/container"
 import { BlogContent } from "../../components/blog"
 
 export const metadata = {
-  title: "How Claude Code made me love meetings again",
+  title: "Claude Code made me love meetings again",
   description:
-    "How AI coding tools reduced my dependence on deep flow and made meetings feel more efficient.",
+    "AI coding tools reduced my dependence on deep flow and gave me the capacity to enjoy spontaneous meetings again.",
   date: "2026-01-27",
   slug: "how-claude-code-made-me-love-meetings-again",
 }
@@ -38,10 +38,10 @@ const ClaudeCodeMeetingsBlog: NextPage = () => {
           continue to work on the problem if the meeting didn't require my full
           attention - and looking at the typing hands in those meetings, I sure
           wasn't the only one. When my mind is going 100 km/h solving a problem,
-          I can't just force it to pull the handbrake to a stop and start thinking
-          about a different one. This is also the reason why I had to stop
-          working right before bed, as I couldn't sleep - my brain was still
-          racing to solve the problem.
+          I can't just force it to pull the handbrake to a stop and start
+          thinking about a different one. This is also the reason why I had to
+          stop working right before bed, as I couldn't sleep - my brain was
+          still racing to solve the problem.
         </p>
         <p>
           And that wasn't bad! As a productive software engineer, you wanted to
@@ -51,10 +51,10 @@ const ClaudeCodeMeetingsBlog: NextPage = () => {
           working hours.
         </p>
         <p>
-          But this is changing now, rapidly. I can have Claude Code or Codex write
-          the majority of my code. I don't need to explore experiments myself
-          anymore; it's often enough to give a rough outline and have it crank
-          it out in 30 minutes.
+          But this is changing now, rapidly. I can have Claude Code or Codex
+          write the majority of my code. I don't need to explore experiments
+          myself anymore; it's often enough to give a rough outline and have it
+          crank it out in 30 minutes.
         </p>
         <p>
           The need to optimize my working time for these hyper-focused states of
