@@ -34,19 +34,21 @@ const ClaudeCodeMeetingsBlog: NextPage = () => {
         </p>
         <p>
           I started to loathe it whenever I was in such a state of deep flow /
-          productivity and had to give it up for some meeting. This led to many
-          engineers continuing to work on the problem if the meeting didn't
-          require their full attention. I always did it, as I just couldn't stop
-          my mind from going 100 km/h, solving a problem and thinking about a
-          different one. This is also the reason why I had to stop working right
-          before bed, as I couldn't sleep - my brain was in full problem-solving
-          mode.
+          productivity and had to give it up for some meeting. This led me to
+          continue to work on the problem if the meeting didn't require my full
+          attention - and looking at the typing hands in those meetings, I sure
+          wasn't the only one. When my mind is going 100 km/h solving a problem,
+          I can't just force it pull the hand break to a stop and start thinking
+          about a different one. This is also the reason why I had to stop
+          working right before bed, as I couldn't sleep - my brain was still
+          racing to solve the problem.
         </p>
         <p>
-          As a productive software engineer, you wanted to be in that flow as
-          much as possible. Only in that state could you deliver quality
-          software at a good pace. I felt like I wasn't doing my job properly
-          when I didn't manage to be in that state for most of my working hours.
+          And that wasn't bad! As a productive software engineer, you wanted to
+          be in that flow as much as possible. Only in that state could you
+          deliver quality software at a good pace. I felt like I wasn't doing my
+          job properly when I didn't manage to be in that state for most of my
+          working hours.
         </p>
         <p>
           But this changing now, rapidly. I can have Claude Code or Codex write
