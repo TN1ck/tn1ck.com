@@ -11,7 +11,7 @@ import { metadata as howToGenerateSudokusMetadata } from "./how-to-generate-sudo
 import { metadata as footnotesMetadata } from "./footnotes-in-react"
 import { metadata as composableUIs } from "./composable-uis"
 import { metadata as howToStopWorryingAndLoveTheEasyFixMetadata } from "./how-i-stopped-worrying-and-learned-to-love-the-easy-fix"
-import { metadata as claudeCodeMeetingsMetadata } from "./how-claude-code-made-me-love-meetings-again"
+import { metadata as claudeCodeMeetingsMetadata } from "./claude-code-made-me-love-meetings-again"
 import { BlogMetadata } from "../../components/blog"
 import Head from "next/head"
 

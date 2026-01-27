@@ -8,7 +8,7 @@ export const metadata = {
   description:
     "AI coding tools reduced my dependence on deep flow and gave me the capacity to enjoy spontaneous meetings again.",
   date: "2026-01-27",
-  slug: "how-claude-code-made-me-love-meetings-again",
+  slug: "claude-code-made-me-love-meetings-again",
 }
 
 const ClaudeCodeMeetingsBlog: NextPage = () => {
