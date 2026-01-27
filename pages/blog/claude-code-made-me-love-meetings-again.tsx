@@ -18,13 +18,8 @@ const ClaudeCodeMeetingsBlog: NextPage = () => {
       <BlogContent metadata={metadata}>
         <p>
           The practice of software engineering is changing as we know it, that's
-          clear to everyone who has used tools such as Claude Code or Codex{" "}
-          <Footnote>
-            I am actually on Codex right now, but its more about the general
-            technology than the specific tool and Claude Code is more known term
-            right now.
-          </Footnote>
-          . There were always people saying "Writing code was never the
+          clear to everyone who has used tools such as Claude Code or Codex.
+          There were always people saying "Writing code was never the
           bottleneck", but I wholeheartedly disagree.
         </p>
         <p>
