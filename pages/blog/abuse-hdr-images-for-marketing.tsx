@@ -4,14 +4,9 @@ import Container from "../../components/container"
 import { BlogContent } from "../../components/blog"
 import { Footnote } from "../../components/footnote"
 import { HDRImageWidget } from "../../components/hdr-image-widget"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
-export const metadata = {
-  title: "(Ab)use HDR images for marketing",
-  description:
-    "How HDR images can make logos and highlights appear unnaturally bright, and how to create them yourself.",
-  date: "2026-04-04",
-  slug: "abuse-hdr-images-for-marketing",
-}
+export const metadata = getBlogMetadata("abuse-hdr-images-for-marketing")
 
 const Placeholder = ({
   children,
@@ -85,26 +80,35 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           and stumbled upon a promotion that instantly caught my attention, not
           because of its content, but because the white of the logo was brighter
           than anything else on my screen. I had never seen something like this
-          and tried to screenshot it, to no avail, the effect was not captured <Footnote>Turns out, you just have to enable a setting on the iPhone for this: Go to Screen Capture and set the Format to "HDR"</Footnote>.
-          What was going on? Am I tripping? I won't link to the exact page I
-          saw, <a href="https://www.linkedin.com/company/extra-bright-images">but I created my own page with an extra bright picture</a>. If your device passed the previous HDR
-          image check, the company's logo should be abnormally bright. Works especially good on a recent MacBook Pro.
+          and tried to screenshot it, to no avail, the effect was not captured{" "}
+          <Footnote>
+            Turns out, you just have to enable a setting on the iPhone for this:
+            Go to Screen Capture and set the Format to "HDR"
+          </Footnote>
+          . What was going on? Am I tripping? I won't link to the exact page I
+          saw,{" "}
+          <a href="https://www.linkedin.com/company/extra-bright-images">
+            but I created my own page with an extra bright picture
+          </a>
+          . If your device passed the previous HDR image check, the company's
+          logo should be abnormally bright. Works especially good on a recent
+          MacBook Pro.
         </p>
 
         <p>
           So what's going on? The image is an HDR image. This is not to be
           confused with the classic HDR tone mapping where, for example, you
           took three photos with different exposures, merged them, and created
-          some artistically valuable or horrifying image. The HDR here refers
-          to the newer display technology, which is capable of displaying colors
-          outside of the classical 00 - FF range by using the dynamic
-          brightness of the display to make certain parts extra bright or dark.
+          some artistically valuable or horrifying image. The HDR here refers to
+          the newer display technology, which is capable of displaying colors
+          outside of the classical 00 - FF range by using the dynamic brightness
+          of the display to make certain parts extra bright or dark.
         </p>
 
         <p>
-          To properly see HDR images, you first and foremost need a display
-          that has this capability, and then a software stack that can use it.
-          My iPhone with Safari checked both of these boxes, enabling me to see
+          To properly see HDR images, you first and foremost need a display that
+          has this capability, and then a software stack that can use it. My
+          iPhone with Safari checked both of these boxes, enabling me to see
           this.
         </p>
 
@@ -121,7 +125,15 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
 
         <p>
           I also made it into a standalone website for easier usage, as there
-          was nothing like it yet: <a target="_blank" rel="noopener noreferrer" href="https://extrabrightimages.com">extrabrightimages.com</a>.
+          was nothing like it yet:{" "}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://extrabrightimages.com"
+          >
+            extrabrightimages.com
+          </a>
+          .
         </p>
 
         <p>
@@ -165,16 +177,16 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
             be disappointed about the actual brightness. Your display has a
             technical upper limit on how bright it can get. The important unit
             here is "nits". The more nits your display has, the brighter it can
-            get. But this means there is no real max value here, future
-            displays will get brighter and brighter and you cannot fully
-            control how an HDR image will look. Depending on the display's
-            brightness, it will differ.
+            get. But this means there is no real max value here, future displays
+            will get brighter and brighter and you cannot fully control how an
+            HDR image will look. Depending on the display's brightness, it will
+            differ.
           </li>
         </ul>
 
         <p>
-          It's pretty neat as it is backwards compatible and you can control
-          how the image should look for non-HDR displays.
+          It's pretty neat as it is backwards compatible and you can control how
+          the image should look for non-HDR displays.
         </p>
 
         <p>
@@ -200,9 +212,9 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
 
         <p>
           But this is actually not what I used for the image for LinkedIn,
-          because Ultra HDR images sadly do not work there. Which is a shame,
-          as they are so much simpler to create, backwards compatible, and
-          offer complete freedom over the final look.
+          because Ultra HDR images sadly do not work there. Which is a shame, as
+          they are so much simpler to create, backwards compatible, and offer
+          complete freedom over the final look.
         </p>
 
         <p>
@@ -217,11 +229,12 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           </a>
           . The PQ part is what makes this into an HDR image. The bigger color
           space or 10-12 bit colors just make it look better. You can even make
-          8 bit JPEGs into HDR images. But as they only have 255 values for
-          each pixel per channel, you won't be able to create good gradients
-          with that though, but good enough for e.g. a black and white logo. The only difficulty is correctly mapping an existing
-          image into the new color space. Thankfully I found a project by shigedangao on
-          GitHub that does exactly this and it worked perfectly:{" "}
+          8 bit JPEGs into HDR images. But as they only have 255 values for each
+          pixel per channel, you won't be able to create good gradients with
+          that though, but good enough for e.g. a black and white logo. The only
+          difficulty is correctly mapping an existing image into the new color
+          space. Thankfully I found a project by shigedangao on GitHub that does
+          exactly this and it worked perfectly:{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -232,7 +245,12 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           .
         </p>
 
-        <p>So here is the same applet for this approach. You will notice that this image is not as backwards compatible, but at least we can now grab people's attention on LinkedIn now without what building this website taught me about B2B SaaS.</p>
+        <p>
+          So here is the same applet for this approach. You will notice that
+          this image is not as backwards compatible, but at least we can now
+          grab people's attention on LinkedIn now without what building this
+          website taught me about B2B SaaS.
+        </p>
 
         <HDRImageWidget variant="native" />
 
@@ -273,8 +291,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
             shigedangao/lymui
           </a>
           . The bundled third-party notices for the shipped WASM runtime can be
-          found{" "}
-          <a href="/wasm-vips/THIRD-PARTY-NOTICES.md">here</a>.
+          found <a href="/wasm-vips/THIRD-PARTY-NOTICES.md">here</a>.
         </div>
       </BlogContent>
     </Container>

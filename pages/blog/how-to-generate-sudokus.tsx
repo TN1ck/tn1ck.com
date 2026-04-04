@@ -53,17 +53,13 @@ import {
   sample,
   shuffle,
 } from "../../lib/sudoku/seededRandom"
+import { getBlogMetadata } from "../../lib/blog-entries"
 import { Card } from "../../components/card"
 import { TabComponent } from "../../components/tab"
 import { Footnote } from "../../components/footnote"
 import Head from "next/head"
 
-export const metadata = {
-  title: "Generating sudokus for fun and no profit",
-  description: "A guide on how to generate sudokus of any difficulty.",
-  date: "2024-06-25",
-  slug: "how-to-generate-sudokus",
-}
+export const metadata = getBlogMetadata("how-to-generate-sudokus")
 
 const dataAnalysis = [
   {

@@ -47,6 +47,12 @@ const Container = ({
         />
         <title>tn1ck.com</title>
         <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="tn1ck.com RSS"
+          href="/rss.xml"
+        />
       </Head>
       <main className="max-w-screen-md m-auto mt-8 mb-16">
         <Navigation activeId={activeId} />

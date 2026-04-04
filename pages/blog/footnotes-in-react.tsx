@@ -5,13 +5,9 @@ import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
 import Head from "next/head"
 import { Footnote } from "../../components/footnote"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
-export const metadata = {
-  title: "Footnotes for your React / Next.js blog",
-  description: "",
-  date: "2024-07-16",
-  slug: "footnotes-in-react",
-}
+export const metadata = getBlogMetadata("footnotes-in-react")
 
 const Footnotes: NextPage = () => {
   return (

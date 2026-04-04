@@ -3,14 +3,9 @@ import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
 import Head from "next/head"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
-export const metadata = {
-  title: "Place 101 at Hashcode 2017",
-  description:
-    "Hashcode is an international programming competition where teams, with a maximum of 4 people, have to solve a complex problem in under 4 hours. We reached place 101 in the 2017 competition; this is a short summary of our experience.",
-  date: "2017-03-16",
-  slug: "hashcode",
-}
+export const metadata = getBlogMetadata("hashcode")
 
 const Hashcode: NextPage = () => {
   return (

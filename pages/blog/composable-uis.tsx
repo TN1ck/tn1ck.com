@@ -8,13 +8,9 @@ import { Footnote } from "../../components/footnote"
 import React, { useState } from "react"
 import { Accordion } from "../../components/accordion"
 import clsx from "clsx"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
-export const metadata = {
-  title: "Don't extend UIs, compose them",
-  description: "",
-  date: "2024-09-29",
-  slug: "composable-uis",
-}
+export const metadata = getBlogMetadata("composable-uis")
 
 const PseudoModal = ({
   header,

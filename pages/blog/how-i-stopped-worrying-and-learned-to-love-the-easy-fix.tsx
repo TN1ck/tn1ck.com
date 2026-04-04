@@ -3,9 +3,10 @@ import { NextPage, Metadata } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import { Footnote } from "../../components/footnote"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
 export const metadata = {
-  title: "How I stopped worrying and learned to love the easy fix",
+  ...getBlogMetadata("how-i-stopped-worrying-and-learned-to-love-the-easy-fix"),
   reactTitle: (
     <span>
       How I stopped worrying and learned
@@ -13,10 +14,6 @@ export const metadata = {
       to love the easy fix
     </span>
   ),
-  description:
-    "On the balance between perfect solutions and pragmatic fixes in software engineering",
-  date: "2025-11-06",
-  slug: "how-i-stopped-worrying-and-learned-to-love-the-easy-fix",
 }
 
 const SimpleFixBlog: NextPage = () => {

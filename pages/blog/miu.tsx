@@ -2,14 +2,9 @@ import { NextPage, Metadata } from "next"
 import Container from "../../components/container"
 import { Author, BlogContent } from "../../components/blog"
 import Head from "next/head"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
-export const metadata = {
-  title: "The MIU System",
-  description:
-    "The first exercise introduced in Gödel, Escher, Bach is the MIU System. This post describes the system and how to solve it.",
-  date: "2017-09-07",
-  slug: "miu",
-}
+export const metadata = getBlogMetadata("miu")
 
 const Miu: NextPage = () => {
   return (
