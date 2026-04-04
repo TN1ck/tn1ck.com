@@ -88,7 +88,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           and tried to screenshot it, to no avail, the effect was not captured <Footnote>Turns out, you just have to enable a setting on the iPhone for this: Go to Screen Capture and set the Format to "HDR"</Footnote>.
           What was going on? Am I tripping? I won't link to the exact page I
           saw, <a href="https://www.linkedin.com/company/extra-bright-images">but I created my own page with an extra bright picture</a>. If your device passed the previous HDR
-          image check, the company's logo should be abnormally bright. Works especially good on a recent Macbook Pro.
+          image check, the company's logo should be abnormally bright. Works especially good on a recent MacBook Pro.
         </p>
 
         <p>
@@ -114,7 +114,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           territory. I don't think it will take long until the major sites
           disable this behavior for images uploaded to their pages, or try to
           monetize it. But until then, let's have some fun and use the effect
-          for ourselves. Try it out here (it's completely client side):
+          for ourselves. Try it out here (it's completely client-side):
         </p>
 
         <HDRImageWidget variant="ultra" />
@@ -232,7 +232,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           .
         </p>
 
-        <p>So here is the same applet for this approach. You will notice that this image is not as backwards compatible, but at least we can now grab peoples attention on LinkedIn now without what building this website taught me about B2B sass.</p>
+        <p>So here is the same applet for this approach. You will notice that this image is not as backwards compatible, but at least we can now grab people's attention on LinkedIn now without what building this website taught me about B2B SaaS.</p>
 
         <HDRImageWidget variant="native" />
 
