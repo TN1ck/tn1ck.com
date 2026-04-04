@@ -4,14 +4,9 @@ import { Author, BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
 import { Fragment, useState } from "react"
 import Head from "next/head"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
-export const metadata = {
-  title: "Finding the optimal solution for the numbers game",
-  description:
-    "One of the games bored students play is the 'Numbers Game,' also known as 'Take Tens' or in German, 'Zahlenspiel.' I once implemented it and wrote a solver to find the minimum number of steps required to solve the game. Here is the solution.",
-  date: "2017-10-31",
-  slug: "numbers-game",
-}
+export const metadata = getBlogMetadata("numbers-game")
 
 const MINIMAL_SOLUTION_STEPS = [
   [0, 9],

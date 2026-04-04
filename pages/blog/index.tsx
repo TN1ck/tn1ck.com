@@ -1,35 +1,8 @@
 import type { NextPage } from "next"
 import Link from "next/link"
 import Container from "../../components/container"
-import { metadata as visibilityMetadata } from "./if-it-isnt-visible-its-probably-broken"
-import { metadata as updatePlansMetadata } from "./update-plans"
-import { metadata as miuMetadata } from "./miu"
-import { metadata as numbersGameMetadata } from "./numbers-game"
-import { metadata as dropboxMetadata } from "./dropbox-header"
-import { metadata as hashCodeMetadata } from "./hashcode"
-import { metadata as howToGenerateSudokusMetadata } from "./how-to-generate-sudokus"
-import { metadata as footnotesMetadata } from "./footnotes-in-react"
-import { metadata as composableUIs } from "./composable-uis"
-import { metadata as howToStopWorryingAndLoveTheEasyFixMetadata } from "./how-i-stopped-worrying-and-learned-to-love-the-easy-fix"
-import { metadata as claudeCodeMeetingsMetadata } from "./claude-code-made-me-love-meetings-again"
-import { metadata as abuseHDRImagesMetadata } from "./abuse-hdr-images-for-marketing"
-import { BlogMetadata } from "../../components/blog"
+import { BLOG_ENTRIES } from "../../lib/blog-entries"
 import Head from "next/head"
-
-const BLOG_ENTRIES: BlogMetadata[] = [
-  abuseHDRImagesMetadata,
-  claudeCodeMeetingsMetadata,
-  visibilityMetadata,
-  howToStopWorryingAndLoveTheEasyFixMetadata,
-  composableUIs,
-  footnotesMetadata,
-  howToGenerateSudokusMetadata,
-  updatePlansMetadata,
-  dropboxMetadata,
-  numbersGameMetadata,
-  miuMetadata,
-  hashCodeMetadata,
-]
 
 const Home: NextPage = () => {
   return (

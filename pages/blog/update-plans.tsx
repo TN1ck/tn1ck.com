@@ -8,14 +8,9 @@ import { Author, BlogContent } from "../../components/blog"
 import { Card } from "../../components/card"
 import { Footnote } from "../../components/footnote"
 import Head from "next/head"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
-export const metadata = {
-  title: "Safeguarding changes using the plan-execute pattern",
-  description:
-    "The plan-execute pattern is a way to preview changes before they are applied. This blog post shows how to use this pattern for database updates.",
-  date: "2024-02-26",
-  slug: "update-plans",
-}
+export const metadata = getBlogMetadata("update-plans")
 
 /* eslint-disable react/no-unescaped-entities */
 

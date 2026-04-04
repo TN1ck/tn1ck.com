@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tn1ck.com</title>
+    <link>https://tn1ck.com</link>
+    <description>Blog posts by Tom Nick about programming, design, and other topics.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 04 Apr 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link href="https://tn1ck.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(Ab)use HDR images for marketing</title>
+      <link>https://tn1ck.com/blog/abuse-hdr-images-for-marketing</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/abuse-hdr-images-for-marketing</guid>
+      <pubDate>Sat, 04 Apr 2026 00:00:00 GMT</pubDate>
+      <description>How HDR images can make logos and highlights appear unnaturally bright, and how to create them yourself.</description>
+    </item>
+    <item>
+      <title>Claude Code made me love meetings again</title>
+      <link>https://tn1ck.com/blog/claude-code-made-me-love-meetings-again</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/claude-code-made-me-love-meetings-again</guid>
+      <pubDate>Tue, 27 Jan 2026 00:00:00 GMT</pubDate>
+      <description>AI coding tools reduced my dependence on deep flow and gave me the capacity to enjoy spontaneous meetings again.</description>
+    </item>
+    <item>
+      <title>If it isn&apos;t visible, it&apos;s probably broken</title>
+      <link>https://tn1ck.com/blog/if-it-isnt-visible-its-probably-broken</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/if-it-isnt-visible-its-probably-broken</guid>
+      <pubDate>Sun, 07 Dec 2025 00:00:00 GMT</pubDate>
+      <description>A framework for thinking about visibility: who can see issues, how hard it is to verify, and how often anything gets checked.</description>
+    </item>
+    <item>
+      <title>How I stopped worrying and learned to love the easy fix</title>
+      <link>https://tn1ck.com/blog/how-i-stopped-worrying-and-learned-to-love-the-easy-fix</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/how-i-stopped-worrying-and-learned-to-love-the-easy-fix</guid>
+      <pubDate>Thu, 06 Nov 2025 00:00:00 GMT</pubDate>
+      <description>On the balance between perfect solutions and pragmatic fixes in software engineering</description>
+    </item>
+    <item>
+      <title>Don&apos;t extend UIs, compose them</title>
+      <link>https://tn1ck.com/blog/composable-uis</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/composable-uis</guid>
+      <pubDate>Sun, 29 Sep 2024 00:00:00 GMT</pubDate>
+      <description>Don&apos;t extend UIs, compose them</description>
+    </item>
+    <item>
+      <title>Footnotes for your React / Next.js blog</title>
+      <link>https://tn1ck.com/blog/footnotes-in-react</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/footnotes-in-react</guid>
+      <pubDate>Tue, 16 Jul 2024 00:00:00 GMT</pubDate>
+      <description>Footnotes for your React / Next.js blog</description>
+    </item>
+    <item>
+      <title>Generating sudokus for fun and no profit</title>
+      <link>https://tn1ck.com/blog/how-to-generate-sudokus</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/how-to-generate-sudokus</guid>
+      <pubDate>Tue, 25 Jun 2024 00:00:00 GMT</pubDate>
+      <description>A guide on how to generate sudokus of any difficulty.</description>
+    </item>
+    <item>
+      <title>Safeguarding changes using the plan-execute pattern</title>
+      <link>https://tn1ck.com/blog/update-plans</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/update-plans</guid>
+      <pubDate>Mon, 26 Feb 2024 00:00:00 GMT</pubDate>
+      <description>The plan-execute pattern is a way to preview changes before they are applied. This blog post shows how to use this pattern for database updates.</description>
+    </item>
+    <item>
+      <title>Recreating the New Dropbox Header Animation</title>
+      <link>https://tn1ck.com/blog/dropbox-header</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/dropbox-header</guid>
+      <pubDate>Mon, 20 Nov 2017 00:00:00 GMT</pubDate>
+      <description>Dropbox just revamped their branding - and their website. The new header uses a cool clipping effect, which we’ll recreate.</description>
+    </item>
+    <item>
+      <title>Finding the optimal solution for the numbers game</title>
+      <link>https://tn1ck.com/blog/numbers-game</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/numbers-game</guid>
+      <pubDate>Tue, 31 Oct 2017 00:00:00 GMT</pubDate>
+      <description>One of the games bored students play is the &apos;Numbers Game,&apos; also known as &apos;Take Tens&apos; or in German, &apos;Zahlenspiel.&apos; I once implemented it and wrote a solver to find the minimum number of steps required to solve the game. Here is the solution.</description>
+    </item>
+    <item>
+      <title>The MIU System</title>
+      <link>https://tn1ck.com/blog/miu</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/miu</guid>
+      <pubDate>Thu, 07 Sep 2017 00:00:00 GMT</pubDate>
+      <description>The first exercise introduced in Gödel, Escher, Bach is the MIU System. This post describes the system and how to solve it.</description>
+    </item>
+    <item>
+      <title>Place 101 at Hashcode 2017</title>
+      <link>https://tn1ck.com/blog/hashcode</link>
+      <guid isPermaLink="true">https://tn1ck.com/blog/hashcode</guid>
+      <pubDate>Thu, 16 Mar 2017 00:00:00 GMT</pubDate>
+      <description>Hashcode is an international programming competition where teams, with a maximum of 4 people, have to solve a complex problem in under 4 hours. We reached place 101 in the 2017 competition; this is a short summary of our experience.</description>
+    </item>
+  </channel>
+</rss>

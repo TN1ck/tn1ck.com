@@ -5,14 +5,11 @@ import { BlogContent } from "../../components/blog"
 import { CodeBlock } from "../../components/code-block"
 import { Footnote } from "../../components/footnote"
 import { Card } from "../../components/card"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
-export const metadata = {
-  title: "If it isn't visible, it's probably broken",
-  description:
-    "A framework for thinking about visibility: who can see issues, how hard it is to verify, and how often anything gets checked.",
-  date: "2025-12-07",
-  slug: "if-it-isnt-visible-its-probably-broken",
-}
+export const metadata = getBlogMetadata(
+  "if-it-isnt-visible-its-probably-broken",
+)
 
 const VisibilityBlog: NextPage = () => {
   return (

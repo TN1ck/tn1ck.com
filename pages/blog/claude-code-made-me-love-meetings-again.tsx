@@ -3,14 +3,11 @@ import type { NextPage } from "next"
 import Container from "../../components/container"
 import { BlogContent } from "../../components/blog"
 import { Footnote } from "../../components/footnote"
+import { getBlogMetadata } from "../../lib/blog-entries"
 
-export const metadata = {
-  title: "Claude Code made me love meetings again",
-  description:
-    "AI coding tools reduced my dependence on deep flow and gave me the capacity to enjoy spontaneous meetings again.",
-  date: "2026-01-27",
-  slug: "claude-code-made-me-love-meetings-again",
-}
+export const metadata = getBlogMetadata(
+  "claude-code-made-me-love-meetings-again",
+)
 
 const ClaudeCodeMeetingsBlog: NextPage = () => {
   return (
