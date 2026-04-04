@@ -237,6 +237,45 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
         <HDRImageWidget variant="native" />
 
         <p>That is all, have fun with your extra bright images.</p>
+
+        <div className="my-8 border-2 border-slate-900 bg-slate-100 p-4 text-sm leading-6 text-slate-700">
+          <strong>Attribution / licenses:</strong> The widgets above are based
+          on{" "}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/kleisauke/wasm-vips"
+          >
+            wasm-vips by kleisauke
+          </a>
+          , which in turn exposes functionality from projects such as{" "}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/libvips/libvips"
+          >
+            libvips
+          </a>{" "}
+          and{" "}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/google/libultrahdr"
+          >
+            libultrahdr
+          </a>
+          . The native HDR path was also informed by{" "}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/shigedangao/lymui"
+          >
+            shigedangao/lymui
+          </a>
+          . The bundled third-party notices for the shipped WASM runtime can be
+          found{" "}
+          <a href="/wasm-vips/THIRD-PARTY-NOTICES.md">here</a>.
+        </div>
       </BlogContent>
     </Container>
   )
