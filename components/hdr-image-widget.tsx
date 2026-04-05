@@ -104,17 +104,7 @@ function formatBytes(bytes: number) {
 }
 
 function formatThreshold(value: number) {
-  const threshold = sliderToThreshold(value)
-
-  if (threshold <= 0.02) {
-    return "Highlights only"
-  }
-
-  if (threshold >= 0.98) {
-    return "Lift dark grays"
-  }
-
-  return `${Math.round(threshold * 100)}%`
+  return `${value}%`
 }
 
 function toFsSafeExtension(name: string) {
