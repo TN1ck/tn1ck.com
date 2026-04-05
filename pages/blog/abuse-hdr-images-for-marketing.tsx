@@ -65,6 +65,10 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
   return (
     <Container activeId="blog">
       <BlogContent metadata={metadata}>
+        <p className="text-sm italic text-slate-600">
+          Previously published as "(Ab)use HDR images for marketing".
+        </p>
+
         <p>
           <strong>Does one of these images look brighter to you?</strong> If
           not, try opening this on a recent iPhone (with battery saving
@@ -247,9 +251,8 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
 
         <p>
           So here is the same applet for this approach. You will notice that
-          this image is not as backwards compatible, but at least we can now
-          grab people's attention on LinkedIn now without what building this
-          website taught me about B2B SaaS.
+          this image is not as backwards compatible, but it is more likely to
+          work in custom image uploads, like company logos on LinkedIn.
         </p>
 
         <HDRImageWidget variant="native" />

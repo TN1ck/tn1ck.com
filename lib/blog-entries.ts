@@ -8,7 +8,7 @@ export interface BlogEntry {
 // Keep entries in reverse chronological order.
 export const BLOG_ENTRIES: BlogEntry[] = [
   {
-    title: "(Ab)use HDR images for marketing",
+    title: "Why Some Images Look Brighter Than Your Screen",
     description:
       "How HDR images can make logos and highlights appear unnaturally bright, and how to create them yourself.",
     date: "2026-04-04",
