@@ -57,6 +57,14 @@ const Container = ({
       <main className="max-w-screen-md m-auto mt-8 mb-16">
         <Navigation activeId={activeId} />
         <div className={className}>{children}</div>
+        <footer className="mt-20 text-right">
+          <Link
+            href="/legal"
+            className="text-[11px] text-slate-500 hover:text-slate-900"
+          >
+            Legal
+          </Link>
+        </footer>
       </main>
     </div>
   )
