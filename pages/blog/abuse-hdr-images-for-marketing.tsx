@@ -27,11 +27,6 @@ const Placeholder = ({
 const HDRComparisonImages = () => {
   const images = [
     {
-      src: "/hdr-images/cat-normal.jpg",
-      alt: "Cat image in normal color space",
-      label: "Normal",
-    },
-    {
       src: "/hdr-images/cat-hdr.jpg",
       alt: "Cat image in HDR color space",
       label: "HDR",
@@ -40,6 +35,11 @@ const HDRComparisonImages = () => {
       src: "/hdr-images/cat-ultrahdr.jpg",
       alt: "Cat image encoded as Ultra HDR",
       label: "Ultra HDR",
+    },
+    {
+      src: "/hdr-images/cat-normal.jpg",
+      alt: "Cat image in normal color space",
+      label: "Normal",
     },
   ]
 
