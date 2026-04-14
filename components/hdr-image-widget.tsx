@@ -705,9 +705,9 @@ const PreviewCard = ({
 }) => {
   return (
     <div className="min-w-0">
-      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-700">
+      <div className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate-700">
         {title}
-      </p>
+      </div>
       <div className="border-2 border-slate-900 bg-white">
         {src ? (
           <img className="w-full" src={src} alt={alt} />
@@ -1054,22 +1054,10 @@ export const HDRImageWidget = ({
               />
             </div>
           </div>
-
-          <p
-            className={`mt-4 min-h-6 text-sm ${
-              statusTone === "error"
-                ? "text-red-700"
-                : statusTone === "success"
-                  ? "text-green-700"
-                  : "text-slate-600"
-            }`}
-          >
-            {status}
-          </p>
         </div>
 
-        <div className="min-w-0">
-          <div className="grid gap-4 md:grid-cols-2">
+        <div className="min-w-0 flex justify-between flex-col">
+          <div className="grid gap-4 grid-cols-2">
             <PreviewCard
               title={previewLabel}
               src={previewUrl}
