@@ -196,12 +196,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           There are two ways to create an HDR image. One is a new format called "Ultra HDR", the other is by using an HDR color profile. Let's see how they work:
         </p>
         <h2>Ultra HDR</h2>
-
-        <HDRImageWidget variant="ultra" />
-
         <p>
-          There are several ways to create these images. The "best" is creating
-          an{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -209,7 +204,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           >
             Ultra HDR
           </a>{" "}
-          image, which is an extension of the JPEG file format. You can think of
+          image is an extension of the JPEG file format. You can think of
           it like this:
         </p>
 
@@ -238,8 +233,9 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
 
         <p>
           It's pretty neat as it is backwards compatible and you can control how
-          the image should look for non-HDR displays.
+          the image should look for non-HDR displays. Here is a widget to create your own Ultra HDR images:
         </p>
+        <HDRImageWidget variant="ultra" />
 
         <p>
           The actual heavy lifting is done by libraries that use this data to
