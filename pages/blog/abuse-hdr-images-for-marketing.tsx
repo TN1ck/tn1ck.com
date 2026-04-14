@@ -76,6 +76,27 @@ const EquationMarker = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
+const OverviewBlock = ({
+  label,
+  widthClass = "w-36",
+  children,
+}: {
+  label: string
+  widthClass?: string
+  children: React.ReactNode
+}) => {
+  return (
+    <figure className={`m-0 ${widthClass} shrink-0`}>
+      <div className="flex h-28 items-center justify-center border-2 border-slate-900 bg-slate-50 p-3">
+        {children}
+      </div>
+      <figcaption className="mt-2 text-center text-[0.65rem] uppercase tracking-[0.16em] text-slate-600">
+        {label}
+      </figcaption>
+    </figure>
+  )
+}
+
 const UltraHdrOverview = () => {
   return (
     <div className="my-8">
@@ -93,24 +114,82 @@ const UltraHdrOverview = () => {
             alt="Gain map generated from the cat image"
           />
           <EquationMarker>+</EquationMarker>
-          <figure className="m-0 w-36 shrink-0">
-            <div className="flex h-28 items-center border-2 border-slate-900 bg-slate-50 p-3">
-              <pre className="overflow-x-auto text-[0.62rem] leading-5 text-slate-700">
-                {`max-content-boost: 15x
+          <OverviewBlock label="metadata">
+            <pre className="overflow-x-auto text-[0.62rem] leading-5 text-slate-700">
+              {`max-content-boost: 15x
 min-content-boost: 0.9x
 gamma: 1
 hdr-capacity-max: 15x`}
-              </pre>
-            </div>
-            <figcaption className="mt-2 text-center text-[0.65rem] uppercase tracking-[0.16em] text-slate-600">
-              metadata
-            </figcaption>
-          </figure>
+            </pre>
+          </OverviewBlock>
           <EquationMarker>=</EquationMarker>
           <OverviewItem
             label="ultra hdr"
             src="/hdr-images/cat-ultrahdr.jpg"
             alt="Ultra HDR cat JPEG"
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const NativeHdrOverview = () => {
+  return (
+    <div className="my-8">
+      <div className="-mx-1 overflow-x-auto px-1">
+        <div className="flex min-w-max items-start gap-3">
+          <OverviewItem
+            label="sdr jpg"
+            src="/hdr-images/cat-normal.jpg"
+            alt="Standard dynamic range cat JPEG"
+          />
+          <EquationMarker>+</EquationMarker>
+          <OverviewBlock label="pq remap" widthClass="w-32">
+            <svg
+              viewBox="0 0 100 100"
+              aria-hidden="true"
+              className="h-full w-full"
+            >
+              <defs>
+                <linearGradient
+                  id="pq-remap-gradient"
+                  x1="0%"
+                  y1="100%"
+                  x2="100%"
+                  y2="0%"
+                >
+                  <stop offset="0%" stopColor="#94a3b8" />
+                  <stop offset="55%" stopColor="#f59e0b" />
+                  <stop offset="100%" stopColor="#ea580c" />
+                </linearGradient>
+              </defs>
+              <path d="M14 82H88" stroke="#cbd5e1" strokeWidth="2" />
+              <path d="M14 82V12" stroke="#cbd5e1" strokeWidth="2" />
+              <path
+                d="M18 78C34 78 50 74 62 60C72 48 78 32 84 18"
+                fill="none"
+                stroke="url(#pq-remap-gradient)"
+                strokeLinecap="round"
+                strokeWidth="6"
+              />
+              <circle cx="18" cy="78" r="4" fill="#94a3b8" />
+              <circle cx="84" cy="18" r="4" fill="#ea580c" />
+            </svg>
+          </OverviewBlock>
+          <EquationMarker>+</EquationMarker>
+          <OverviewBlock label="rec.2100 pq">
+            <pre className="overflow-x-auto text-[0.62rem] leading-5 text-slate-700">
+              {`profile: Rec.2100
+transfer: PQ
+primaries: Rec.2020`}
+            </pre>
+          </OverviewBlock>
+          <EquationMarker>=</EquationMarker>
+          <OverviewItem
+            label="hdr jpg"
+            src="/hdr-images/cat-hdr.jpg"
+            alt="Cat image with HDR color profile"
           />
         </div>
       </div>
@@ -183,17 +262,21 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
         </p>
 
         <p>
-          Read on if you are curious how it works, else just go to <a
+          Read on if you are curious how it works, else just go to{" "}
+          <a
             target="_blank"
             rel="noopener noreferrer"
             href="https://extrabrightimages.com"
           >
             extrabrightimages.com
-          </a> to create your extra bright images. It's completely client side!
+          </a>{" "}
+          to create your extra bright images. It's completely client side!
         </p>
 
         <p>
-          There are two ways to create an HDR image. One is a new format called "Ultra HDR", the other is by using an HDR color profile. Let's see how they work:
+          There are two ways to create an HDR image. One is a new format called
+          "Ultra HDR", the other is by using an HDR color profile. Let's see how
+          they work:
         </p>
         <h2>Ultra HDR</h2>
         <p>
@@ -204,8 +287,8 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           >
             Ultra HDR
           </a>{" "}
-          image is an extension of the JPEG file format. You can think of
-          it like this:
+          image is an extension of the JPEG file format. You can think of it
+          like this:
         </p>
 
         <UltraHdrOverview />
@@ -213,9 +296,9 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
         <ul className="ml-4 pl-4 list-outside list-disc">
           <li>The original JPG</li>
           <li>
-            A gain JPG, which is a black and white image (mask) that says
-            which parts should be made brighter / darker. White will make
-            something bright, black darker, and gray won't change anything.
+            A gain JPG, which is a black and white image (mask) that says which
+            parts should be made brighter / darker. White will make something
+            bright, black darker, and gray won't change anything.
           </li>
           <li>
             Metadata that says how strong the effect should be. For example, if
@@ -233,7 +316,8 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
 
         <p>
           It's pretty neat as it is backwards compatible and you can control how
-          the image should look for non-HDR displays. Here is a widget to create your own Ultra HDR images:
+          the image should look for non-HDR displays. Here is a widget to create
+          your own Ultra HDR images:
         </p>
         <HDRImageWidget variant="ultra" />
 
@@ -295,6 +379,8 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           .
         </p>
 
+        <NativeHdrOverview />
+
         <p>
           So here is the same applet for this approach. You will notice that
           this image is not as backwards compatible, but it is more likely to
@@ -303,13 +389,18 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
 
         <HDRImageWidget variant="native" />
 
-        <p>That is all, have fun with your extra bright images. If you want to read more about HDR images, highly recommend <a
+        <p>
+          That is all, have fun with your extra bright images. If you want to
+          read more about HDR images, highly recommend{" "}
+          <a
             target="_blank"
             rel="noopener noreferrer"
             href="https://gregbenzphotography.com/hdr/"
           >
             the website of Greg Benz
-          </a>.</p>
+          </a>
+          .
+        </p>
 
         <div className="my-8 border-2 border-slate-900 bg-slate-100 p-4 text-sm leading-6 text-slate-700">
           <strong>Attribution / licenses:</strong> The widgets above are based
