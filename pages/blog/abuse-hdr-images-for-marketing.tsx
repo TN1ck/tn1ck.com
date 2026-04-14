@@ -389,7 +389,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           So here is the same applet for this approach. You will notice that it
           is not as backwards-compatible, but unlike Ultra HDR it is more
           likely to work in custom image uploads, like company logos on
-          LinkedIn and other sites (I heard Instagram works too).
+          LinkedIn and other sites.
         </p>
 
         <HDRImageWidget variant="native" />
