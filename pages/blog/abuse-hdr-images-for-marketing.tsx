@@ -179,37 +179,25 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           territory. I don't think it will take long until the major sites
           disable this behavior for images uploaded to their pages, or try to
           monetize it. But until then, let's have some fun and use the effect
-          for ourselves. Try it out here (it's completely client-side):
+          for ourselves.
         </p>
 
-        <HDRImageWidget variant="ultra" />
-
         <p>
-          I also made it into a standalone website for easier usage, as there
-          was nothing like it yet:{" "}
-          <a
+          Read on if you are curious how it works, else just go to <a
             target="_blank"
             rel="noopener noreferrer"
             href="https://extrabrightimages.com"
           >
             extrabrightimages.com
-          </a>
-          .
+          </a> to create your extra bright images. It's completely client side!
         </p>
 
         <p>
-          But how does this actually work?{" "}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://gregbenzphotography.com/hdr/"
-          >
-            Greg Benz has a really great overview about all this
-          </a>
-          , so definitely check out his resources for a much more detailed
-          breakdown.
+          There are two ways to create an HDR image. One is a new format called "Ultra HDR", the other is by using an HDR color profile. Let's see how they work:
         </p>
         <h2>Ultra HDR</h2>
+
+        <HDRImageWidget variant="ultra" />
 
         <p>
           There are several ways to create these images. The "best" is creating
@@ -319,7 +307,13 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
 
         <HDRImageWidget variant="native" />
 
-        <p>That is all, have fun with your extra bright images.</p>
+        <p>That is all, have fun with your extra bright images. If you want to read more about HDR images, highly recommend <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://gregbenzphotography.com/hdr/"
+          >
+            the website of Greg Benz
+          </a>.</p>
 
         <div className="my-8 border-2 border-slate-900 bg-slate-100 p-4 text-sm leading-6 text-slate-700">
           <strong>Attribution / licenses:</strong> The widgets above are based
