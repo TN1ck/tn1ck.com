@@ -231,7 +231,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
             but I created my own page with an extra bright picture
           </a>
           . If your device passed the previous HDR image check, the company's
-          logo should be abnormally bright. Works especially good on a recent
+          logo should be abnormally bright. Works especially well on a recent
           MacBook Pro.
         </p>
 
@@ -239,10 +239,11 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           So what's going on? The image is an HDR image. This is not to be
           confused with the classic HDR tone mapping where, for example, you
           took three photos with different exposures, merged them, and created
-          some artistically valuable or horrifying image. The HDR here refers to
-          the newer display technology, which is capable of displaying colors
-          outside of the classical 00 - FF range by using the dynamic brightness
-          of the display to make certain parts extra bright or dark.
+          some artistically valuable or horrifying image. The HDR here refers
+          to newer display technology that can show a much wider range of
+          brightness than a normal SDR image. On supported screens, that means
+          selected highlights can become physically brighter instead of just
+          being mapped to the brightest SDR white.
         </p>
 
         <p>
@@ -262,7 +263,8 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
         </p>
 
         <p>
-          Read on if you are curious how it works, else just go to{" "}
+          Read on if you are curious how it works. Otherwise, you can jump
+          straight to{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -270,16 +272,17 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           >
             extrabrightimages.com
           </a>{" "}
-          to create your extra bright images. It's completely client side!
+          to create your own extra-bright images. It's completely client-side!
         </p>
 
         <p>
-          There are two ways to create an HDR image. One is a new format called
-          "Ultra HDR", the other is by using an HDR color profile. Let's see how
-          they work:
+          For this project, I ended up with two practical ways to create an HDR
+          image. One is a new format called "Ultra HDR", the other is using
+          an HDR color profile. Let's see how they work:
         </p>
         <h2>Ultra HDR</h2>
         <p>
+          An{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -315,15 +318,15 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
         </ul>
 
         <p>
-          It's pretty neat as it is backwards compatible and you can control how
-          the image should look for non-HDR displays. Here is a widget to create
-          your own Ultra HDR images:
+          It's pretty neat because it is backwards-compatible, and you can
+          control how the image should look on non-HDR displays. Here is a
+          widget to create your own Ultra HDR images:
         </p>
         <HDRImageWidget variant="ultra" />
 
         <p>
-          The actual heavy lifting is done by libraries that use this data to
-          create the actual images. I used{" "}
+          The actual heavy lifting is done by libraries that turn this source
+          data into the final images. I used{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -343,32 +346,33 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
         </p>
 
         <p>
-          But this is actually not what I used for the image for LinkedIn,
-          because Ultra HDR images sadly do not work there. Which is a shame, as
-          they are so much simpler to create, backwards compatible, and offer
-          complete freedom over the final look.
+          But this is actually not what I used for the LinkedIn image, because
+          in my tests LinkedIn did not preserve the HDR effect of Ultra HDR
+          images. Which is a shame, because they are so much simpler to create,
+          backwards-compatible, and offer complete freedom over the final look.
         </p>
 
         <h2>HDR color profile</h2>
 
         <p>
-          The other way to create an HDR image is to use an HDR color profile.
-          The only one I found that's properly supported is{" "}
+          The other way I used for this project is to use an HDR color profile.
+          Of the HDR profiles I tested,{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
             href="https://en.wikipedia.org/wiki/Rec._2100"
           >
             Rec.2100 PQ
-          </a>
-          . The PQ part is what makes this into an HDR image. The bigger color
-          space or 10-12 bit colors just make it look better. You can even make
-          8 bit JPEGs into HDR images. But as they only have 255 values for each
-          pixel per channel, you won't be able to create good gradients with
-          that though, but good enough for e.g. a black and white logo. The only
+          </a>{" "}
+          was the only one I found to be consistently supported. The PQ part is
+          what makes this into an HDR image. The bigger color space or 10-12-bit
+          colors just make it look better. You can even store HDR signaling in
+          an 8-bit JPEG, although quality is limited. With only 256 values per
+          channel, smooth gradients can break down more easily, so this works
+          best for simple graphics such as black-and-white logos. The only
           difficulty is correctly mapping an existing image into the new color
-          space. Thankfully I found a project by shigedangao on GitHub that does
-          exactly this and it worked perfectly:{" "}
+          space. Thankfully I found a project by shigedangao on GitHub that
+          does exactly this and it worked perfectly:{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -382,9 +386,10 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
         <NativeHdrOverview />
 
         <p>
-          So here is the same applet for this approach. You will notice that
-          this image is not as backwards compatible, but it is more likely to
-          work in custom image uploads, like company logos on LinkedIn and other sites (I heard Instagram works too).
+          So here is the same applet for this approach. You will notice that it
+          is not as backwards-compatible, but unlike Ultra HDR it is more
+          likely to work in custom image uploads, like company logos on
+          LinkedIn and other sites (I heard Instagram works too).
         </p>
 
         <HDRImageWidget variant="native" />
