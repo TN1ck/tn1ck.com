@@ -8,22 +8,6 @@ import { getBlogMetadata } from "../../lib/blog-entries"
 
 export const metadata = getBlogMetadata("abuse-hdr-images-for-marketing")
 
-const Placeholder = ({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode
-  className?: string
-}) => {
-  return (
-    <div
-      className={`my-8 border-2 border-dashed border-slate-400 bg-slate-100 p-4 text-sm text-slate-700 ${className}`}
-    >
-      {children}
-    </div>
-  )
-}
-
 const HDRComparisonImages = () => {
   const images = [
     {
@@ -57,6 +41,79 @@ const HDRComparisonImages = () => {
           </figcaption>
         </figure>
       ))}
+    </div>
+  )
+}
+
+const OverviewItem = ({
+  label,
+  src,
+  alt,
+}: {
+  label: string
+  src: string
+  alt: string
+}) => {
+  return (
+    <figure className="m-0 w-28 shrink-0">
+      <img
+        src={src}
+        alt={alt}
+        className="w-full border-2 border-slate-900 bg-white"
+      />
+      <figcaption className="mt-2 text-center text-[0.65rem] uppercase tracking-[0.16em] text-slate-600">
+        {label}
+      </figcaption>
+    </figure>
+  )
+}
+
+const EquationMarker = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <span className="flex h-28 shrink-0 items-center text-lg text-slate-500">
+      {children}
+    </span>
+  )
+}
+
+const UltraHdrOverview = () => {
+  return (
+    <div className="my-8">
+      <div className="-mx-1 overflow-x-auto px-1">
+        <div className="flex min-w-max items-start gap-3">
+          <OverviewItem
+            label="sdr jpg"
+            src="/hdr-images/cat-normal.jpg"
+            alt="Standard dynamic range cat JPEG"
+          />
+          <EquationMarker>+</EquationMarker>
+          <OverviewItem
+            label="gain jpg"
+            src="/hdr-images/cat-gain.jpg"
+            alt="Gain map generated from the cat image"
+          />
+          <EquationMarker>+</EquationMarker>
+          <figure className="m-0 w-36 shrink-0">
+            <div className="flex h-28 items-center border-2 border-slate-900 bg-slate-50 p-3">
+              <pre className="overflow-x-auto text-[0.62rem] leading-5 text-slate-700">
+                {`max-content-boost: 15x
+min-content-boost: 0.9x
+gamma: 1
+hdr-capacity-max: 15x`}
+              </pre>
+            </div>
+            <figcaption className="mt-2 text-center text-[0.65rem] uppercase tracking-[0.16em] text-slate-600">
+              metadata
+            </figcaption>
+          </figure>
+          <EquationMarker>=</EquationMarker>
+          <OverviewItem
+            label="ultra hdr"
+            src="/hdr-images/cat-ultrahdr.jpg"
+            alt="Ultra HDR cat JPEG"
+          />
+        </div>
+      </div>
     </div>
   )
 }
@@ -152,6 +209,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           , so definitely check out his resources for a much more detailed
           breakdown.
         </p>
+        <h2>Ultra HDR</h2>
 
         <p>
           There are several ways to create these images. The "best" is creating
@@ -163,14 +221,16 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           >
             Ultra HDR
           </a>{" "}
-          image, which is an extension of the JPEG file format. It consists of
-          three things:
+          image, which is an extension of the JPEG file format. You can think of
+          it like this:
         </p>
 
+        <UltraHdrOverview />
+
         <ul className="ml-4 pl-4 list-outside list-disc">
-          <li>The original JPEG</li>
+          <li>The original JPG</li>
           <li>
-            A gain image, which is a black and white image (mask) that says
+            A gain JPG, which is a black and white image (mask) that says
             which parts should be made brighter / darker. White will make
             something bright, black darker, and gray won't change anything.
           </li>
@@ -220,6 +280,8 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           they are so much simpler to create, backwards compatible, and offer
           complete freedom over the final look.
         </p>
+
+        <h2>HDR color profile</h2>
 
         <p>
           The other way to create an HDR image is to use an HDR color profile.
