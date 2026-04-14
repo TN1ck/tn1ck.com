@@ -101,7 +101,7 @@ const UltraHdrOverview = () => {
   return (
     <div className="my-8">
       <div className="-mx-1 overflow-x-auto px-1">
-        <div className="flex min-w-max items-start gap-3">
+        <div className="flex min-w-max items-start justify-center gap-3">
           <OverviewItem
             label="sdr jpg"
             src="/hdr-images/cat-normal.jpg"
@@ -138,7 +138,7 @@ const NativeHdrOverview = () => {
   return (
     <div className="my-8">
       <div className="-mx-1 overflow-x-auto px-1">
-        <div className="flex min-w-max items-start gap-3">
+        <div className="flex min-w-max items-start justify-center gap-3">
           <OverviewItem
             label="sdr jpg"
             src="/hdr-images/cat-normal.jpg"
@@ -384,7 +384,7 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
         <p>
           So here is the same applet for this approach. You will notice that
           this image is not as backwards compatible, but it is more likely to
-          work in custom image uploads, like company logos on LinkedIn.
+          work in custom image uploads, like company logos on LinkedIn and other sites (I heard Instagram works too).
         </p>
 
         <HDRImageWidget variant="native" />
