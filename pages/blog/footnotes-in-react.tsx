@@ -22,8 +22,9 @@ const Footnotes: NextPage = () => {
           Foster Wallace.
           <Footnote>
             David Foster Wallace&apos;s most famous book is Infinite Jest, which
-            has about 200 pages. If you know nothing about him, I can highly
-            recommend listening to the graduation speech he gave titled{" "}
+            has about 200 pages of just footnotes. If you know nothing about
+            him, I can highly recommend listening to the graduation speech he
+            gave titled{" "}
             <a
               target="_blank"
               href="https://www.youtube.com/watch?v=DCbGM4mqEVw"
@@ -104,7 +105,7 @@ const Footnotes: NextPage = () => {
         </p>
         <p>
           But I like proper footnote tables and I don’t have the need to be that
-          dynamic with by footnotes, so I created a solution that works for me
+          dynamic with my footnotes, so I created a solution that works for me
           (and for most others I think as well). So it is limited by design and
           is reliant on how React works. The <code>{`<Footnote>`}</code>{" "}
           components have to be executed in order. If this can not be
@@ -125,7 +126,7 @@ const Footnotes: NextPage = () => {
           to. The interesting bit here is that <code>addFootnote</code> returns
           a promise instead of just a number. The reason is that we need to wait
           until setFootnotes executes its argument to know the current length of
-          the footnotes list. This is an unusual way of using hooks and as has
+          the footnotes list. This is an unusual way of using hooks and has
           side effects, multiple calls to it would lead to unexpected behavior.
           But as mentioned above, this is a limitation by design.
         </p>
