@@ -21,6 +21,7 @@ const ProjectComponent = ({
       className="w-full border border-black border-2"
       loop
       muted
+      preload="none"
       poster={project.preview}
       controls
     >
