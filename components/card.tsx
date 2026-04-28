@@ -26,7 +26,7 @@ export const Card = ({
       {title}
     </div>
     {/* Add the content again, so that the layout is always correct (especially with word breaks).. */}
-    <div className="opacity-0">{title}</div>
+    <div className="opacity-0 pointer-events-none">{title}</div>
     <div className="-mt-6">{children}</div>
   </div>
 )

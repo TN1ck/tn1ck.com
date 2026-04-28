@@ -40,9 +40,14 @@ const workData = [
     title: "VP of Engineering @ re:cap",
     description: (
       <>
-        We’re building a funding marketplace for the subscription economy. With
-        re:cap, companies can trade recurring revenue streams for upfront
-        capital – no dilution, no debt, no hassle.
+        <a className="link" href="https://re-cap.com">
+          re:cap
+        </a>{" "}
+        provides companies with non dilutive funding as well as best in class
+        financial tools. Built a contract trading platform that ingests open
+        banking, subscription, and accounting data, enriches it with ML/AI,
+        and rates funding-seeking companies. Worked closely with product and
+        underwriting and led a team of 10 engineers.
       </>
     ),
   },
@@ -51,9 +56,11 @@ const workData = [
     title: "Software Engineer @ Google / YouTube",
     description: (
       <>
-        Worked on bringing e-commerce features onto YouTube (ShopTube). Work
-        included working on the whole YouTube stack and cross collaborating with
-        several other teams.
+        Worked on YouTube Shopping, enabling creators to sell products
+        as an additional revenue stream. Built creator-facing tooling for
+        product tagging, payout onboarding, and review pipelines, launched live
+        stream product promotions that contributed to YouTube Shopping&apos;s
+        highest-grossing day.
       </>
     ),
   },
@@ -160,7 +167,7 @@ const Home: NextPage = () => {
                 LinkedIn:{" "}
                 <a
                   className="link"
-                  href="https://www.linkedin.com/in/tom-nick-50515110b/"
+                  href="https://www.linkedin.com/in/tom-nick/"
                 >
                   @tom-nick
                 </a>
