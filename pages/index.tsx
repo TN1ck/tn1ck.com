@@ -145,20 +145,34 @@ const Home: NextPage = () => {
               projects
             </Link>
             , many of which are already launched. I believe in self-improvement
-            and always try to get better at my skills and learn new ones.{" "}
-            {"I'm on "}
-            <a className="link" href="https://github.com/tn1ck">
-              Github
-            </a>{" "}
-            and{" "}
-            <a
-              className="link"
-              href="https://www.linkedin.com/in/tom-nick-50515110b/"
-            >
-              LinkedIn
-            </a>
-            .
+            and always try to get better at my skills and learn new ones.
           </p>
+          <div className="mt-4">
+            <p>Feel free to reach out:</p>
+            <ul className="mt-2 space-y-1">
+              <li>
+                Email:{" "}
+                <a className="link" href="mailto:tomwanick@gmail.com">
+                  tomwanick@gmail.com
+                </a>
+              </li>
+              <li>
+                LinkedIn:{" "}
+                <a
+                  className="link"
+                  href="https://www.linkedin.com/in/tom-nick-50515110b/"
+                >
+                  @tom-nick
+                </a>
+              </li>
+              <li>
+                GitHub:{" "}
+                <a className="link" href="https://github.com/Tn1ck">
+                  @Tn1ck
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div className="flex flex-col relative bg-slate-50 border-2 border-slate-900 p-6 py- mt-16">
