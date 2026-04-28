@@ -23,6 +23,25 @@ const Projects: NextPage = () => {
       <div className="grid gap-8">
         <ProjectComponent
           project={{
+            title: "pokedexquiz.com",
+            year: "2026",
+            author: "Tom Nick & Taisia Tichnowetzki",
+            video: "/projects/pokedexquiz.mp4",
+            preview: "/projects/pokedexquiz.png",
+          }}
+        >
+          <p>
+            <a className="link" href="https://pokedexquiz.com">
+              Pokedexquiz.com
+            </a>{" "}
+            is a project by Taisia Tichnowetzki and me. As we had quite some
+            success with pokemoncries.com, we explored new game options. In
+            this game you have to guess the pokemons by its flavor text. It has
+            shinies, achievements and supports multiple languages.
+          </p>
+        </ProjectComponent>
+        <ProjectComponent
+          project={{
             title: "sudoku.tn1ck.com",
             year: "2022",
             author: "Tom Nick",
