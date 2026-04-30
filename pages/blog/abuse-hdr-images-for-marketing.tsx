@@ -350,6 +350,9 @@ const AbuseHDRImagesForMarketingBlog: NextPage = () => {
           in my tests LinkedIn did not preserve the HDR effect of Ultra HDR
           images. Which is a shame, because they are so much simpler to create,
           backwards-compatible, and offer complete freedom over the final look.
+          Instagram however only works with this format, but only for posts and
+          only as long as you don't do any modifications in Instagram to the
+          image (e.g. text overlays).
         </p>
 
         <h2>HDR color profile</h2>
